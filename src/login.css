@@ -1,0 +1,40 @@
+@import url("./global.css");
+
+.login-google {
+    margin: 20px 0;
+}
+
+.login-google > button {
+    width: 408px;
+    height: 62px;
+    font-family: 'Pretendard-Regular';
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-google > button > img {
+    width: 30px;
+    height: auto;
+    padding: 0 10px;
+    margin: 0;
+}
+
+.login-google > button > span {
+    margin: 0;
+}
+
+.or {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.or > hr {
+    width: 177px;
+}
+
+.or > span {
+    padding: 0 20px;
+}
