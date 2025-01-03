@@ -1,7 +1,56 @@
+import { useState } from 'react';
+
 import './global.css';
 import './login.css';
 
 function Login() {
+
+    const [loginInfo, setLoginInfo] = useState({
+        email: '',
+        pw: '',
+    });
+
+    const isFormValid = loginInfo.email && loginInfo.pw;
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setLoginInfo((prevForm) => ({
+            ...prevForm,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if(!isFormValid) {
+            console.log('Please fill in all required fileds.');
+            return;
+        }
+
+        console.log('Login Info: ', loginInfo);
+
+        // connect BE
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginInfo),
+            });
+
+            if(!response.ok) {
+                throw new Error('Faild to login');
+            }
+
+            const data = await response.json();
+            console.log('Login Success: ', data);
+        }
+        catch (error) {
+            console.error('Error during login: ', error.message);
+        }
+    };
 
     return (
         <>
@@ -29,22 +78,25 @@ function Login() {
                             <hr />
                         </div>
                         <div className="login-itself">
-                            <form action="" method="post">
+                            <form onSubmit={handleSubmit}>
                                 <div className="input">
                                     <label name="email">
                                     Email address
                                     </label>
-                                    <input type="email" name="email" id="email" required />
+                                    <input type="email" name="email" id="email" 
+                                    onChange={handleChange}
+                                    required />
                                 </div>
                                 <div className="input">
                                     <label name="pw">
                                     Password
                                     </label>
-                                    <input type="password" name="pw" id="pw" required />
+                                    <input type="password" name="pw" id="pw"
+                                    onChange={handleChange} required />
                                 </div>
                                 <div className="right">
                                 <button
-                                    className="btn"
+                                    className={`btn ${isFormValid ? 'btn-enabled' : ''}`}
                                     type="submit"
                                 >
                                     Login
