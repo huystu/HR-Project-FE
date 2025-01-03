@@ -52,7 +52,7 @@ body {
     font-family: 'Pretendard-Light';
     font-size: 13px;
     color: #212631;
-    padding: 10px 0 ;
+    padding: 10px 0;
 }
 
 .other-info a{
@@ -67,6 +67,7 @@ body {
     height: 50px;
     font-family: "Pretenard-Regular";
     font-size: 20px;
+    padding: 0;
 }
 
 .btn:hover {
@@ -79,6 +80,12 @@ body {
 
 .btn-enabled:hover {
     background-color: #0e38b7;
+}
+
+.btn-disabled {
+    background-color: #d3d3d3; /* 비활성화 상태 색상 */
+    color: white;
+    cursor: not-allowed; /* 클릭 불가 커서 */
 }
 
 .input {
@@ -104,4 +111,8 @@ body {
 .right {
     display: inline-block;
     float: right;
+}
+
+.left {
+    margin: 0;
 }
