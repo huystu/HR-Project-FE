@@ -1,56 +1,41 @@
-import { useState } from 'react';
-
+// import { useState } from 'react';
+import { useFormik } from 'formik';
+import { validationSchema } from './validationSchema';
 import './global.css';
 import './login.css';
 
 function Login() {
 
-    const [loginInfo, setLoginInfo] = useState({
-        email: '',
-        pw: '',
-    });
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            pw: '',
+        },
+        validationSchema, // 유효성 검사 추가
+        onSubmit: async (values) => {
+            console.log('Login Info: ', values);
 
-    const isFormValid = loginInfo.email && loginInfo.pw;
+            // connect BE
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(values),
+                });
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setLoginInfo((prevForm) => ({
-            ...prevForm,
-            [name]: value,
-        }));
-    };
+                if (!response.ok) {
+                throw new Error('fail login');
+                }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if(!isFormValid) {
-            console.log('Please fill in all required fileds.');
-            return;
-        }
-
-        console.log('Login Info: ', loginInfo);
-
-        // connect BE
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(loginInfo),
-            });
-
-            if(!response.ok) {
-                throw new Error('Faild to login');
+                const data = await response.json();
+                console.log('success login: ', data);
+            } catch (error) {
+                console.error('error login: ', error.message);
             }
-
-            const data = await response.json();
-            console.log('Login Success: ', data);
-        }
-        catch (error) {
-            console.error('Error during login: ', error.message);
-        }
-    };
+        },
+    });
 
     return (
         <>
@@ -78,26 +63,37 @@ function Login() {
                             <hr />
                         </div>
                         <div className="login-itself">
-                            <form onSubmit={handleSubmit}>
+                            {/* <form onSubmit={handleSubmit}> */}
+                            <form onSubmit={formik.handleSubmit}>
                                 <div className="input">
-                                    <label name="email">
-                                    Email address
-                                    </label>
+                                    <label name="email">Email address</label>
                                     <input type="email" name="email" id="email" 
-                                    onChange={handleChange}
-                                    required />
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.email}
+                                    />
+                                    {formik.touched.email && formik.errors.email ? (
+                                        <div style={{ color: 'red' }}>{formik.errors.email}</div>
+                                    ) : null}
                                 </div>
                                 <div className="input">
                                     <label name="pw">
                                     Password
                                     </label>
                                     <input type="password" name="pw" id="pw"
-                                    onChange={handleChange} required />
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.pw}
+                                    />
+                                    {formik.touched.pw && formik.errors.pw ? (
+                                        <div style={{ color: 'red' }}>{formik.errors.pw}</div>
+                                    ) : null}
                                 </div>
                                 <div className="right">
                                 <button
-                                    className={`btn ${isFormValid ? 'btn-enabled' : ''}`}
+                                    className={`btn ${formik.isValid && formik.dirty? 'btn-enabled' : 'btn-disabled'}`}
                                     type="submit"
+                                    disabled={!formik.isValid && formik.dirty}
                                 >
                                     Login
                                 </button>
