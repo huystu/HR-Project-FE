@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { validationSchema } from './validationSchema';
 import './global.css';
 import './login.css';
+import Button from './components/Button';
 
 function Login() {
 
@@ -50,11 +51,11 @@ function Login() {
                             <p>Don’t have an account? <a href="">Sign Up</a></p>
                         </div>
                         <div className="login">
-                            <div className="login-google">
-                                <button type='button'>
+                            <div>
+                                <Button type="button" img={true}>
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png" alt="goolge logo" />
                                     <span>Log in with Google</span>
-                                </button>
+                                </Button>
                             </div>
                         </div>
                         <div className="or">
@@ -90,13 +91,9 @@ function Login() {
                                     ) : null}
                                 </div>
                                 <div className="right">
-                                <button
-                                    className={`btn ${formik.isValid && formik.dirty? 'btn-enabled' : 'btn-disabled'}`}
-                                    type="submit"
-                                    disabled={!formik.isValid && formik.dirty}
-                                >
+                                <Button type="submit" variant={`${formik.isValid && formik.dirty? 'enabled' : 'disabled'}`} disabled={!formik.isValid && formik.dirty}>
                                     Login
-                                </button>
+                                </Button>
                                 </div>
                             </form>
                         </div>

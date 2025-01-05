@@ -1,0 +1,57 @@
+@import url("../global.css");
+
+.btn {
+    color: white;
+    width: 152px;
+    height: 50px;
+    font-family: "Pretenard-Regular";
+    font-size: 20px;
+    padding: 0;
+}
+
+.btn:hover {
+    cursor: default;
+    border: transparent;
+}
+
+.btn-enabled {
+    background-color: #305CDE;
+}
+
+.btn-enabled:hover {
+    background-color: #0e38b7;
+}
+
+.btn-disabled {
+    background-color: #83A0F5;
+    color: white;
+    cursor: not-allowed;
+}
+
+.btn-img {
+    background-color: #F3F4F7;
+    width: 410px;
+    height: 62px;
+    font-family: 'Pretendard-Regular';
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-img > img {
+    width: 30px;
+    height: auto;
+    padding: 0 10px;
+    margin: 0;
+}
+
+.btn-img > span {
+    margin: 0;
+    color: black;
+}
+
+.btn-img:hover {
+    background-color: #dadbdd;
+    border: transparent;
+}
