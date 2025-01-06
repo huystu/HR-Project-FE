@@ -1,0 +1,7 @@
+/* src/styles/Title.css */
+@import url("./global.css");
+
+.title {
+    font-family: 'Pretendard-SemiBold';
+    font-size: 40px;
+}
