@@ -1,0 +1,35 @@
+// src/components/Input.jsx
+import PropTypes from 'prop-types';
+import '../styles/InputField.css'
+
+const InputField = ({ label, type, name, formik, }) => {
+    return (
+      <div className="input-field">
+        <label htmlFor={name}>{label}</label>
+        <input
+          type={type}
+          name={name}
+          id={name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values[name]}
+        />
+        {formik.touched[name] && formik.errors[name] ? (
+          <div className="msg">{formik.errors[name]}</div>
+        ) : <div className="msg"></div>}
+      </div>
+    );
+};
+
+InputField.propTypes = {
+    label: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    formik: PropTypes.object,
+};
+
+InputField.defaultProps = {
+    type: 'text',
+};
+
+export default InputField;
