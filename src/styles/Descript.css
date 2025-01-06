@@ -1,0 +1,14 @@
+/* src/styles/Descript.css */
+@import url("./global.css");
+
+.descript {
+    font-family: 'Pretendard-Light';
+    font-size: 13px;
+    color: #212631;
+    padding: 10px 0;
+}
+
+.descript > a{
+    text-decoration: underline;
+    color: #212631;
+}

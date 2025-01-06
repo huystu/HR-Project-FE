@@ -1,0 +1,15 @@
+@import url("./global.css");
+
+.or {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.or > hr {
+    width: 177px;
+}
+
+.or > span {
+    padding: 0 20px;
+}
