@@ -11,4 +11,21 @@
     padding: 20px;
     width: 100%;
     box-sizing: border-box;
+    display: flex;
+    justify-content: space-between; /* 왼쪽과 오른쪽 요소를 양끝에 정렬 */
+    align-items: center; /* 세로로 중앙 정렬 */
+}
+
+.header p {
+    margin: 0; /* p 태그의 기본 마진 제거 */
+}
+  
+.header button {
+    margin: 0; /* p 태그의 기본 마진 제거 */
+    background-color: transparent;
+    border: transparent;
+}
+
+.header button:hover {
+    color: #6d6d6d;
 }
