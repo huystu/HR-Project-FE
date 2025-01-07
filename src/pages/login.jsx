@@ -1,8 +1,13 @@
 // src/pages/login.jsx
-// import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { validationSchema } from '../validationSchema';
+
+import api from '../api';
+
+import { GoogleLogin } from '@react-oauth/google';
+
 import '../styles/global.css';
 import '../styles/Login.css';
 
@@ -13,46 +18,58 @@ import Descript from '../components/Descript';
 import InputField from '../components/InputField';
 
 function Login() {
-
     const navigate = useNavigate();
+    const [message, setMessage] = useState("");
 
     const formik = useFormik({
         initialValues: {
             email: '',
             pw: '',
         },
-        validationSchema, // 유효성 검사 추가
-        // onSubmit: async (values) => {
-        onSubmit: (values) => {
+        validationSchema,
+        onSubmit: async (values) => {
             console.log('Login Info: ', values);
 
-            navigate('/employee');
+            // connect BE
+            try {
+                const response = await api.post('/signin', {
+                    email: values.email,
+                    password: values.pw,
+                });
 
-            // // connect BE
-            // try {
-            //     const response = await fetch('/api/login', {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //         body: JSON.stringify(values),
-            //     });
-
-            //     if (!response.ok) {
-            //     throw new Error('fail login');
-            //     }
-
-            //     const data = await response.json();
-            //     console.log('success login: ', data);
-
-            //     // store login-token in localstorage
-
-            //     navigate('/employee');
-            // } catch (error) {
-            //     console.error('error login: ', error.message);
-            // }
+                console.log('Success Login:', response.data);
+                
+                if (response.data.status === 200) {
+                    setMessage(response.data.message);
+                    localStorage.setItem('token', response.data.data.accessToken);
+                    navigate('/employee');
+                }
+                else {
+                    setMessage('Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error Login:', error.message);
+                setMessage(error.response?.data?.message || 'An error occurred during login.');
+            }
         },
     });
+
+    const handleGoogleLogin = async (response) => {
+        try {
+            const googleToken = response.credential;
+
+            const res = await api.post('/oauth2/authorization/google', { token: googleToken });
+            if (res.data.status === 200) {
+                // localStorage.setItem('memberId', res.data.data.memberId);
+                navigate('/employee');
+            } else {
+                setMessage('Google login failed');
+            }
+        } catch (error) {
+            console.error('Error with Google login:', error);
+            setMessage('An error occurred during Google login.');
+        }
+    };
 
     return (
         <>
@@ -66,7 +83,7 @@ function Login() {
                     >
                         <div className="login">
                             <div>
-                                <Button type="button" img={true}>
+                                <Button type="button" img={true} onClick={handleGoogleLogin}>
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png" alt="goolge logo" />
                                     <span>Log in with Google</span>
                                 </Button>
