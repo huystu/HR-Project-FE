@@ -1,5 +1,7 @@
 // src/pages/EmployeePage.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Layout from "../components/layouts/Layout";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
@@ -65,6 +67,8 @@ const EmployeePage = () => {
     },
   ]);
 
+  const navigate = useNavigate();
+
   // Add Employee
   const handleAddEmployee = () => {
     const newEmployee = {
@@ -78,6 +82,13 @@ const EmployeePage = () => {
     };
     setData((prevData) => [...prevData, newEmployee]);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/"); 
+    }
+  }, [navigate]);
 
   return (
     <Layout user={user} route="Employees">
