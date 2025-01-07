@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
+import '../styles/InputField.css'
 
 const CustomModal = ({
   isModalOpen,

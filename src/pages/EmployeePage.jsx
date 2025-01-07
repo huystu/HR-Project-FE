@@ -6,13 +6,34 @@ import Table from "../components/Table";
 import CustomModal from '../components/Modal';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
+import ImgButton from '../components/ImgButton';
 import Title from '../components/Title';
 import { useFormik } from 'formik';
-import { validationSchema } from '../validationSchema';
+import '../styles/global.css';
+
 
 const EmployeePage = () => {
   const user = "Admin"; // User Name
   const columns = ["Date", "Employee", "Role", "Skills", "Email", "Phone Number", "Action"];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null); //선택된 직원 데이터
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  }
+
+  const handleAddEmployee = () => {
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const handleEditClick = (employee) => {
+    setSelectedEmployee(employee); //클릭한 직원 데이터 설정
+    setIsModalOpen(true); //모달 열기
+  }
 
   const [data, setData] = useState([
     {
@@ -71,34 +92,24 @@ const EmployeePage = () => {
     },
   ]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
 
+  /*
   const showModal = () => {
     setIsModalOpen(true);
   }
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  }
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  }
-
-  const handleAddEmployee = () => {
-    setIsModalOpen(true); // Open the modal
-  };
+  */
 
   
   // Formik settings
   const formik = useFormik({
     initialValues: {
-      date: '',
-      employee: '',
-      email: '',
-      phoneNumber: '',
-      role: '',
-      skills: '',
+      date: selectedEmployee?.Date || '',
+      employee: selectedEmployee?.Employee || '',
+      email: selectedEmployee?.Email || '',
+      phoneNumber: selectedEmployee?.PhoneNumber || '',
+      role: selectedEmployee?.Role || '',
+      skills: selectedEmployee?.Skills || '',
     },
     validate: (values) => {
       const errors = {};
@@ -131,24 +142,6 @@ const EmployeePage = () => {
       console.log(values);
     },
   });
-    
-  /*
-    validationSchema,
-    onSubmit: async (values) => {
-      const newEmployee = {
-        Date: new Date().toLocaleDateString('en-US'),
-        Employee: values.name,
-        Role: values.role,
-        Skills: values.skills,
-        Email: values.email,
-        "Phone Number": values.phoneNumber,
-        Action: "50px",
-      };
-
-      setData((prevData) => [...prevData, newEmployee]);
-      setIsModalOpen(false);  // Close the modal after adding the employee
-    },
-  });*/
 
   return (
     <Layout user={user} route="Employees">
@@ -159,17 +152,16 @@ const EmployeePage = () => {
             handleOk={formik.handleSubmit} //폼 제출
             handleCancel={handleCancel}
             title = {<Title>Add Employee</Title>}
-            footer={(
-              <>
+
+            footer={
+        
             <div className = "button-container">
               <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
-              <Button onClick={formik.handleSubmit}>Add</Button></div>
-            </>
-          )}
+              <Button onClick={formik.handleSubmit}>Add</Button>
+              </div>
+            }
           >
           {/*date, Name, role, skills, email, phoneNumber, actions*/}
-          {/*email, phoneNumber formik*/}
-          {/*<div className = "update">*/}
             
           <form onSubmit={formik.handleSubmit}>
             <InputField label="Date" type="date" name="date" formik={formik} />
@@ -181,12 +173,15 @@ const EmployeePage = () => {
 
 
           </form>
-            </CustomModal>
-                            
+            </CustomModal>                     
 
 
-        <Table columns={columns} data={data} />
-        
+            <Table 
+          columns={columns} 
+          data={data}
+          onEditClick = {handleEditClick}
+          // 테이블에서 Edit 클릭 시 실행될 함수 전달
+        />
       </DashboardCard>
     </Layout>
   );
