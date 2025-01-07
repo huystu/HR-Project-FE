@@ -1,0 +1,18 @@
+/* src/styles/DashboardCard.css */
+@import url("./global.css");
+
+.dashboard {
+    margin: 10px;
+    width: 1195px;
+    height: 880px;
+    border-radius: 25px;
+    background-color: white;
+}
+
+.dashboard-header {
+    font-size: 24px;
+    font-family: 'Pretendard-SemiBold';
+    display: flex;
+    justify-content: space-between;
+    padding: 30px;
+}

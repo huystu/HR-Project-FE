@@ -7,6 +7,9 @@
     font-family: "Pretenard-Regular";
     font-size: 20px;
     padding: 0;
+    margin: 0;
+    border: transparent;
+    border-radius: 5px;
 }
 
 .btn-gray {
@@ -50,6 +53,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border: transparent;
+    border-radius: 5px;
 }
 
 .btn-img > img {

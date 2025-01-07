@@ -1,9 +1,10 @@
 // src/pages/login.jsx
 // import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { validationSchema } from '../validationSchema';
 import '../styles/global.css';
-import '../styles/login.css';
+import '../styles/Login.css';
 
 import Button from '../components/Button';
 import Card from '../components/Card';
@@ -13,34 +14,43 @@ import InputField from '../components/InputField';
 
 function Login() {
 
+    const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
             email: '',
             pw: '',
         },
         validationSchema, // 유효성 검사 추가
-        onSubmit: async (values) => {
+        // onSubmit: async (values) => {
+        onSubmit: (values) => {
             console.log('Login Info: ', values);
 
-            // connect BE
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(values),
-                });
+            navigate('/employee');
 
-                if (!response.ok) {
-                throw new Error('fail login');
-                }
+            // // connect BE
+            // try {
+            //     const response = await fetch('/api/login', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //         },
+            //         body: JSON.stringify(values),
+            //     });
 
-                const data = await response.json();
-                console.log('success login: ', data);
-            } catch (error) {
-                console.error('error login: ', error.message);
-            }
+            //     if (!response.ok) {
+            //     throw new Error('fail login');
+            //     }
+
+            //     const data = await response.json();
+            //     console.log('success login: ', data);
+
+            //     // store login-token in localstorage
+
+            //     navigate('/employee');
+            // } catch (error) {
+            //     console.error('error login: ', error.message);
+            // }
         },
     });
 
