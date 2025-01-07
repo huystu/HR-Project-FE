@@ -1,0 +1,13 @@
+@import url("./global.css");
+
+.skill-container {
+    border-radius: 8px;
+    background-color: #CCE0FF; 
+    border: 0.5px solid #92BFFF;
+    color: #3565A9;
+    font-family: 'Pretendard-Light';
+    text-align: center;
+    display:inline-block;
+    padding: 5px 10px;
+    margin: 5px;
+}
