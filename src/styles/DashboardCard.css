@@ -16,3 +16,13 @@
     justify-content: space-between;
     padding: 30px;
 }
+
+.dashboard-content {
+    height: 75%;
+}
+
+.dashboard-footer {
+    display: flex;
+    justify-content: center; /* 하단 중앙 정렬 */
+    padding-bottom: 10px;
+}

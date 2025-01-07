@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../components/layouts/Layout";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
+import Pagination from "../components/Pagination";
 
 const EmployeePage = () => {
   const user = "Admin"; // User Name
@@ -67,6 +68,12 @@ const EmployeePage = () => {
     },
   ]);
 
+  const [pageCount, setPageCount] = useState(21);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+
+  const accessToken = localStorage.getItem('token');
+
   const navigate = useNavigate();
 
   // Add Employee
@@ -92,7 +99,7 @@ const EmployeePage = () => {
 
   return (
     <Layout user={user} route="Employees">
-      <DashboardCard header="Employees" btn="Add Employee" btnClick={handleAddEmployee}>
+      <DashboardCard header="Employees" btn="Add Employee" btnClick={handleAddEmployee} footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}>
         <Table columns={columns} data={data} />
       </DashboardCard>
     </Layout>
