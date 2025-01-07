@@ -1,0 +1,29 @@
+/* src/styles/InputField.css */
+@import url("./global.css");
+
+.input {
+    margin-bottom: 10px;
+}
+
+.input label {
+    font-family: "Pretenard-Regular";
+    font-size: 14px;
+}
+
+.input input {
+    min-width: 408px;
+    height: 40px;
+    background-color: #F7F7F7;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-family: "Pretendard-Regular";
+    font-size: 20px;
+    padding: 0 10px;
+}
+
+.msg {
+    color: red;
+    font-family: "Pretendard-Light";
+    font-size: 14px;
+    height: 20px;
+}

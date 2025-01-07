@@ -9,10 +9,23 @@
     padding: 0;
 }
 
+.btn-gray {
+    float:left; /*버튼 왼쪽 정렬*/
+    background-color: #6964649a !important;
+    color: white !important;
+}
+
+.btn-gray:hover {
+    background-color: #a9a9a9;
+}
+
+
+
 .btn:hover {
     cursor: default;
     border: transparent;
 }
+
 
 .btn-enabled {
     background-color: #305CDE;
