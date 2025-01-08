@@ -2,10 +2,11 @@
 import PropTypes from 'prop-types';
 import '../styles/Button.css';
 
-const Button = ({ children, onClick, type = 'button', variant = 'enabled', disabled = false, img = false }) => {
+const Button = ({ children, onClick, type = 'button', variant = 'enabled', disabled = false, img = false, className='' }) => {
   return (
     <button
-      className={`btn-${variant} ${img ? 'btn-img' : 'btn'}`}
+      className={`btn-${variant} ${img ? 'btn-img' : 'btn'} ${className}`}
+      /*img가 true이면 btn-img클래스가 적용, 기본적으로는 btn 클래스 적용*/
       onClick={onClick}
       type={type}
       disabled={disabled}
@@ -22,6 +23,7 @@ Button.propTypes = {
   variant: PropTypes.oneOf(['enabled', 'disabled']),
   disabled: PropTypes.bool,
   img: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 Button.defaultProps = {
@@ -29,6 +31,7 @@ Button.defaultProps = {
   variant: 'enabled',
   disabled: false,
   img: false,
+  className: '',
 };
 
 export default Button;

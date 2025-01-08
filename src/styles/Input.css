@@ -1,17 +1,16 @@
 /* src/styles/InputField.css */
 @import url("./global.css");
 
-.input-field {
+.input {
     margin-bottom: 10px;
 }
 
-.input-field > label {
-    display: block; /*레이블을 블록 요소로 설정하여 한 줄에 표시*/
+.input label {
     font-family: "Pretenard-Regular";
     font-size: 14px;
 }
 
-.input-field > input {
+.input input {
     min-width: 408px;
     height: 40px;
     background-color: #F7F7F7;
@@ -19,7 +18,7 @@
     border-radius: 5px;
     font-family: "Pretendard-Regular";
     font-size: 20px;
-    padding: 0 10px ;
+    padding: 0 10px;
 }
 
 .msg {
