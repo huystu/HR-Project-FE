@@ -1,0 +1,46 @@
+
+   .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination li {
+    margin: 0 5px;
+    cursor: pointer;
+    align-items: center;
+  }
+  
+  .pagination .active {
+    background-color: #305CDE;
+    color: white;
+  }
+  
+  .pagination .disabled {
+    pointer-events: none;
+    color: gray;
+  }
+  
+  .page-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: flex;
+    align-items: center;  /* 수직 중앙 정렬 */
+    justify-content: center;  /* 수평 중앙 정렬 */
+  }
+  
+  .page-item:hover {
+    background-color: #f0f0f0;
+    color: black;
+  }
+  
+  .active:hover {
+        background-color: #305CDE;
+    color: white;
+  }

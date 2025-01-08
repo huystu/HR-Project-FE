@@ -1,5 +1,7 @@
 // src/pages/EmployeePage.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Layout from "../components/layouts/Layout";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
@@ -11,6 +13,7 @@ import Title from '../components/Title';
 import { useFormik } from 'formik';
 import '../styles/global.css';
 
+import Pagination from "../components/Pagination";
 
 const EmployeePage = () => {
   const user = "Admin"; // User Name
@@ -142,10 +145,38 @@ const EmployeePage = () => {
       console.log(values);
     },
   });
+  const [pageCount, setPageCount] = useState(21);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+
+  const accessToken = localStorage.getItem('token');
+
+  const navigate = useNavigate();
+
+  // Add Employee
+  // const handleAddEmployee = () => {
+  //   const newEmployee = {
+  //     Date: new Date().toLocaleDateString(),
+  //     Employee: "New Employee",
+  //     Role: "Developer",
+  //     Skills: "React",
+  //     Email: "new@st.com",
+  //     "Phone Number": "0000000000",
+  //     Action: "50px",
+  //   };
+  //   setData((prevData) => [...prevData, newEmployee]);
+  // };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/"); 
+    }
+  }, [navigate]);
 
   return (
     <Layout user={user} route="Employees">
-      <DashboardCard header="Employees" btn="Add Employee" btnClick={handleAddEmployee}>
+      <DashboardCard header="Employees" btn="Add Employee" btnClick={handleAddEmployee} footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}>
           
           <CustomModal 
             isModalOpen={isModalOpen}

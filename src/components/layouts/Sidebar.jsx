@@ -11,8 +11,8 @@ const Sidebar = ({user})=> {
                 <div className="user">{user}</div>
                 <nav>
                     <p>Dashboards</p>
-                    <p><AiOutlineRight /><a href="">Employees</a></p>
-                    <p><AiOutlineRight /><a href="">Projects</a></p>
+                    <p><AiOutlineRight /><a className="menu" href="">Employees</a></p>
+                    <p><AiOutlineRight /><a className="menu" href="">Projects</a></p>
                 </nav>
             </aside>
         </>
