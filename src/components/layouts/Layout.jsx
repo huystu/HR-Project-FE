@@ -4,12 +4,14 @@ import "../../styles/Layout.css";
 
 import Sidebar from "./Sidebar";
 import Content from "./Content";
+import ChatbotIcon from "../ChatbotIcon";
 
 const Layout = ({ children, user, route }) => {
   return (
     <div className="layout">
         <Sidebar user={user} />
         <Content route={route}>{children}</Content>
+        <ChatbotIcon />
     </div>
   );
 };
