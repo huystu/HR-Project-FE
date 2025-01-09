@@ -42,10 +42,12 @@ const EmployeePage = () => {
   };
 
   const handleEditClick = (employee) => {
+    setModalMode("edit");
     setSelectedEmployee(employee); //클릭한 직원 데이터 설정
     setIsModalOpen(true); //모달 열기
   }
 
+  const navigate = useNavigate();
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -93,7 +95,8 @@ const EmployeePage = () => {
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
-          Action: "50px"
+          Action: "50px",
+          id: employee.id,
         }));
         setData(formattedData);
       }
@@ -191,11 +194,48 @@ const EmployeePage = () => {
           console.error("Error adding employee:", error);
           alert("Failed to add employee. Please try again.");
         }
-      };
+      }
+
+      if (modalMode === "edit" && selectedEmployee){
+        const updatedEmployeeData = {
+
+          name: values.name,
+          email: values.email,
+          contact: values.phoneNumber,
+          skills: values.skills,
+          role: values.role,
+          joiningDate: formatDateForBackend(values.date),
+        };
+
+        console.log("selectedEmployee: ", selectedEmployee);
+
+        await updateEmployee(selectedEmployee.id, updatedEmployeeData);
+      }
     },
   });
 
-  const navigate = useNavigate();
+  // PUT 요청을 보내는 함수
+const updateEmployee = async (id, updatedData) => {
+  //const token = localStorage.getItem('token'); // 인증 토큰 가져오기
+  setAuthToken(accessToken); // 인증 토큰 설정
+
+  try {
+    const response = await api.put(`/employee/${id}`, updatedData);
+    console.log('Response:', response.data);
+
+    // Refresh data after update
+    fetchData(currentPage - 1, pageSize);
+
+    alert("Employee updated successfully!");
+    setIsModalOpen(false);
+  } catch (error) {
+    console.error('Error making PUT request:', error);
+    alert("Failed to update employee, please try again.");
+  }
+};
+
+
+  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
