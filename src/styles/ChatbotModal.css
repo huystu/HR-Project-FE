@@ -1,0 +1,85 @@
+@import url("./global.css");
+.ant-modal {
+    margin: 0;
+}
+
+.ant-modal-content {
+    border-radius: 15px;
+    padding: 0;
+}
+
+.chat-header {
+    padding: 15px;
+    background-color: #305CDE;
+    color: white;
+}
+
+.chatbox {
+    height: 450px;
+    overflow-y: auto;
+    background-color: #F3F4F7;
+    padding: 10px;
+    font-family: 'Pretendard-Light';
+}
+
+.message {
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.user-msg {
+    text-align: right;
+}
+
+.bot-msg > .chat-name > img {
+    padding-right: 5px;
+}
+
+.chat-msg {
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-msg > .chat-msg {
+    background-color: #DEE2E6;
+}
+
+.bot-msg {
+    text-align: left;
+}
+
+.bot-msg > .chat-msg {
+    background-color: #264BBA;
+    color: white;
+}
+
+.chat-time {
+    font-size: 0.8em;
+    color: grey;
+    text-align: right;
+}
+
+.bot-msg .chat-time {
+    text-align: left;
+}
+
+.type-msg {
+    display: flex;
+    padding: 15px;
+    background-color: white;
+}
+
+.type-msg .ant-input {
+    flex: 1;
+    margin-right: 10px;
+    background-color: #F3F4F7;
+    border: transparent;
+    font-size: 16px;
+}
+
+.chat-date {
+    color: #6D6D6D;
+    font-size: 10px;
+}
