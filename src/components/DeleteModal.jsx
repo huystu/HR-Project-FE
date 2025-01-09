@@ -15,7 +15,7 @@ const DeleteModal = ({ isModalOpen, onCancel, onDelete, employee, title, subTitl
         title={title}
         subTitle={subTitle}
         footer={footer}
-        className="deletemodal"
+        
     
       >
         {/*<p>Are you sure you want to delete {employee?.Employee}? This action cannot be undone.</p>*/}
