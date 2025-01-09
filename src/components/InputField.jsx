@@ -2,9 +2,9 @@
 import PropTypes from 'prop-types';
 import '../styles/InputField.css'
 
-const InputField = ({ label, type, name, formik, }) => {
+const InputField = ({ label, type, name, formik, className }) => {
     return (
-      <div className="input-field">
+      <div className={`input-field ${className ? '-' : className}`.trim()}>
         <label htmlFor={name}>{label}</label>
         <input
           type={type}
@@ -26,10 +26,12 @@ InputField.propTypes = {
     type: PropTypes.string,
     name: PropTypes.string.isRequired,
     formik: PropTypes.object,
+    className: PropTypes.string,
 };
 
 InputField.defaultProps = {
     type: 'text',
+    className: '',
 };
 
 export default InputField;

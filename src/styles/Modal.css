@@ -2,6 +2,7 @@
 
 .modal {
     margin-bottom: 10px;
+    max-width: 100%; /*부모 요소 크기 초과하지 않도록*/
 }
 
 .modal > label {

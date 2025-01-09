@@ -1,10 +1,6 @@
 /* src/styles/InputField.css */
 @import url("./global.css");
 
-.input-field {
-    margin-bottom: 10px;
-}
-
 .input-field > label {
     display: block; /*레이블을 블록 요소로 설정하여 한 줄에 표시*/
     font-family: "Pretenard-Regular";
@@ -12,7 +8,7 @@
 }
 
 .input-field > input {
-    min-width: 408px;
+    width: 90%;
     height: 40px;
     background-color: #F7F7F7;
     border: 1px solid transparent;
@@ -20,6 +16,45 @@
     font-family: "Pretendard-Regular";
     font-size: 20px;
     padding: 0 10px ;
+}
+
+/*자식 요소 간의 간격을 10픽셀로 설정*/
+.input-field-half-row {
+    display: flex;
+    /*flex-wrap: wrap; 반응형 줄바꿈*/
+   gap: 10px; /*요소 간 간격*/
+   max-width: 100%;
+}
+
+.input-field-half {
+    /*display: inline-block; 한 줄에 나란히 표시*/
+    /* display: flex; */
+    flex-wrap: wrap; /*부모 요소 크기를 초과하면 줄바꿈*/
+    width: 50%; /*부모 요소의 반 크기*/
+    /*margin-right: 10px;*/
+}
+
+.input-field-half > label {
+    font-family: "Pretenard-Regular";
+    font-size: 14px;
+    display: flex;
+    width: 50%;
+}
+       
+.input-field-half > input {
+    width: 50%; /*입력 필드가 나머지 절반 크기*/
+    height: 40px;
+    background-color: #F7F7F7;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-family: "Pretendard-Regular";
+    font-size: 20px;
+    padding: 0 10px ;
+}
+
+
+.input-field {
+    margin-bottom: 10px;
 }
 
 .msg {
