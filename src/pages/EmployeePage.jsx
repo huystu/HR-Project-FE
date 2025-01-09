@@ -43,74 +43,54 @@ const EmployeePage = () => {
     setIsModalOpen(true); //모달 열기
   }
 
-  const [pageCount, setPageCount] = useState(21);
+  const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
 
   const accessToken = localStorage.getItem('token');
 
-  const [data, setData] = useState([
-    {
-      Date: "05/01/25",
-      Employee: "Aisha Doe",
-      Role: "HR Manager",
-      Skills: ["java", "python", "C", "JavaScript"],
-      Email: "email@st.com",
-      "Phone Number": "01234567890",
-      Action: "50px",
-    },
-    {
-      Date: "05/01/25",
-      Employee: "Aisha Doe",
-      Role: "HR Manager",
-      Skills: ["java", "python", "C", "JavaScript"],
-      Email: "email@st.com",
-      "Phone Number": "01234567890",
-      Action: "50px",
-    },
-    {
-      Date: "05/01/25",
-      Employee: "Aisha Doe",
-      Role: "HR Manager",
-      Skills: ["java", "python", "C", "JavaScript"],
-      Email: "email@st.com",
-      "Phone Number": "01234567890",
-      Action: "50px",
-    },
-    {
-      Date: "05/01/25",
-      Employee: "Aisha Doe",
-      Role: "HR Manager",
-      Skills: ["java", "python", "C", "JavaScript"],
-      Email: "email@st.com",
-      "Phone Number": "01234567890",
-      Action: "50px",
-    },
-    {
-      Date: "05/01/25",
-      Employee: "Aisha Doe",
-      Role: "HR Manager",
-      Skills: ["java", "python", "C", "JavaScript"],
-      Email: "email@st.com",
-      "Phone Number": "01234567890",
-      Action: "50px",
-    },
-    {
-      Date: "05/01/25",
-      Employee: "Aisha Doe",
-      Role: "HR Manager",
-      Skills: ["java", "python", "C", "JavaScript"],
-      Email: "email@st.com",
-      "Phone Number": "01234567890",
-      Action: "50px",
-    },
-  ]);
+  const [data, setData] = useState([]);
 
   /*
   const showModal = () => {
     setIsModalOpen(true);
   }
   */
+
+ // Fetch data from API
+ const fetchData = async (page = 0, size = 10) => {
+    setAuthToken(accessToken); // set the accessToken
+
+    console.log(accessToken);
+    
+    try {
+      const response = await api.get('/employee', {
+        params: {
+          page: page,
+          size: size,
+        }
+      });
+
+      if (response.status === 200) {
+        console.log("Success Pagination: ", response);
+        console.log(response.data.data.content);
+        setPageCount(response.data.data.page.totalPages);
+        
+        const formattedData = response.data.data.content.map(employee => ({
+          Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
+          Employee: employee.name, Role: employee.role || 'N/A',
+          Skills: employee.skills.split(',').map(skill => skill.trim()),
+          Email: employee.email,
+          "Phone Number": employee.contact,
+          Action: "50px"
+        }));
+        setData(formattedData);
+      }
+    }
+    catch (error) {
+      console.error('Error fetching employee data:', error);
+    }
+  };
 
   // Change Date Type (LocalDate Type in Java)
   const formatDateForBackend = (date) => {
@@ -162,7 +142,7 @@ const EmployeePage = () => {
     onSubmit: async (values) => {
       console.log(values);
       if (modalMode === "add") { 
-        console.log("Add Employee Info: ", values);
+        // console.log("Add Employee Info: ", values);
 
         const formattedDate = formatDateForBackend(values.date); // Convert to 'YYYY-MM-DD'
 
@@ -191,7 +171,7 @@ const EmployeePage = () => {
 
             setData((prevData) => [...prevData, newEmployee]); // Update UI
 
-            console.log(`Success Employee Info: ${response.data}`);
+            console.log(`Success Employee Info: ${JSON.stringify(response)}`);
             alert("Employee added successfully!");
 
             setIsModalOpen(false);
@@ -212,6 +192,10 @@ const EmployeePage = () => {
       navigate("/"); 
     }
   }, [navigate]);
+
+  useEffect(() => {
+    fetchData(currentPage - 1, pageSize);
+  }, [currentPage]);
 
   return (
     <Layout user={user} route="Employees">

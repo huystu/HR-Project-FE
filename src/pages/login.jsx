@@ -37,6 +37,7 @@ function Login() {
                     password: values.pw,
                 });
 
+                console.log('Success Login:', response);
                 console.log('Success Login:', response.data);
                 
                 if (response.data.status === 200) {
