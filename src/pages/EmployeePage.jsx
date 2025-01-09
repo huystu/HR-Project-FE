@@ -17,6 +17,7 @@ import { useFormik } from 'formik';
 import '../styles/global.css';
 import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 
 const EmployeePage = () => {
@@ -27,6 +28,8 @@ const EmployeePage = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null); //선택된 직원 데이터
 
   const [modalMode, setModalMode] = useState("add"); // Setting of Modal: "add" or "edit"
+
+  const [loading, setLoading] = useState(false); // 로딩 상태
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -72,6 +75,8 @@ const EmployeePage = () => {
  const fetchData = async (page = 0, size = 10) => {
     setAuthToken(accessToken); // set the accessToken
 
+    setLoading(true);
+
     console.log(accessToken);
     
     try {
@@ -101,6 +106,8 @@ const EmployeePage = () => {
     catch (error) {
       console.error('Error fetching employee data:', error);
     }
+    
+    setLoading(false);
   };
 
   // Change Date Type (LocalDate Type in Java)
@@ -223,7 +230,6 @@ const EmployeePage = () => {
             </div>
           }
         >
-        {/*date, Name, role, skills, email, phoneNumber, actions*/}
           <form onSubmit={formik.handleSubmit}>
             <div className="input-field-half-row">
               <InputField className = "input-field-half" label="Date" type="date" name="date" formik={formik} />
@@ -234,48 +240,38 @@ const EmployeePage = () => {
             <InputField label="Email" type="email" name="email" formik={formik} />
             <InputField label="PhoneNumber" type="tel" name="phoneNumber" formik={formik} />
           </form>
-            </CustomModal>        
+        </CustomModal>        
 
-            {/* Delete Confirmation Modal */}
-            <DeleteModal    
-              isModalOpen={isDeleteModalOpen}
-              onCancel={() => setIsDeleteModalOpen(false)}
-              onDelete={deleteEmployee}
-              employee={selectedEmployee}
-              title = {
-                <div style={{ textAlign: "center "}}>
-                  <img src="/1.png" alt="Delete Confirmation" style={{ width: "50px", height: "50px", marginBottom: "10px" }} />
-                  <Title>Are you sure?</Title>
-                </div>
-              }
-              subTitle ={
-                <p style={{ textAlign: "center" }}>
-                  Do you want to delete the record? <br></br>
-                  This process cannot be undone.
-                </p>
-              } 
-              footer={
-        
-                <div className = "button-container">
-                  {/*<img src="/images/1.png" alt="Delete Confirmation" />*/}
-                  <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                  <Button onClick={formik.handleSubmit}>Delete</Button>
-                  </div>
-                }
-              />
-            
-
-
-
-            <Table 
-            columns={columns} 
-            data={data}
-            onEditClick = {handleEditClick}
-            onDeleteClick = {handleDeleteClick}
-
-          // 테이블에서 Edit 클릭 시 실행될 함수 전달
-
-        />
+        {/* Delete Confirmation Modal */}
+        <DeleteModal    
+          isModalOpen={isDeleteModalOpen}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          onDelete={deleteEmployee}
+          employee={selectedEmployee}
+          title = {
+            <div style={{ textAlign: "center "}}>
+              <img src="/1.png" alt="Delete Confirmation" style={{ width: "50px", height: "50px", marginBottom: "10px" }} />
+              <Title>Are you sure?</Title>
+            </div>
+          }
+          subTitle ={
+            <p style={{ textAlign: "center" }}>
+              Do you want to delete the record? <br></br>
+              This process cannot be undone.
+            </p>
+          } 
+          footer={
+            <div className = "button-container">
+              {/*<img src="/images/1.png" alt="Delete Confirmation" />*/}
+              <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+              <Button onClick={formik.handleSubmit}>Delete</Button>
+              </div>
+            }
+          />
+        {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
+        : (
+        <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} />)
+        }
       </DashboardCard>
     </Layout>
   );
