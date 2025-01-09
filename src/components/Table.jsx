@@ -6,7 +6,9 @@ import Skill from "./Skill";
 import ImgButton from "./ImgButton";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"; //테이블에서 사용하는 편집 및 삭제 아이콘
 
-const Table = ({ columns, data, onEditClick }) => {
+//columns, data 기반으로 테이블 동적 렌더링
+//action 열의 편집 및 삭제 버튼, 사용자가 데이터 수정하거나 삭제
+const Table = ({ columns, data, onEditClick, onDeleteClick  }) => {
   return (
     <table className="table">
       <thead>
@@ -23,6 +25,7 @@ const Table = ({ columns, data, onEditClick }) => {
               <td key={i}>
                 {column === "Skills" ? (
                   <>
+                  {/*첫 두개의 기술만 표시하고 나머지 기술은 +x 형태로 개수 표시*/}
                     {row[column].slice(0, 2).map((skill, skillIndex) => (
                       <Skill key={skillIndex} skill={skill} />
                     ))}
@@ -32,10 +35,12 @@ const Table = ({ columns, data, onEditClick }) => {
                   </>
                 ) : column === "Action" ? (
                   <>
+                  {/*ImgButton 컴포넌트로 아이콘을 감싸고, onClick 이벤트 처리하여 클릭된 행의 데이터를 onEditClick 함수로 전달*/}
+                  {/*onEditClick 함수는 EmployeePage.jsx에 정의*/}
                     <ImgButton onClick={() => onEditClick(row)}>
                       <AiOutlineEdit />
                     </ImgButton>
-                    <ImgButton>
+                    <ImgButton onClick={() => onDeleteClick(row)}>
                       <AiOutlineDelete />
                     </ImgButton>
                   </>
@@ -55,6 +60,7 @@ Table.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.string).isRequired,
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   onEditClick: PropTypes.func.isRequired, //onEditClick을 prop으로 전달
+  onDeleteClick: PropTypes.func.isRequired,
 };
 
 export default Table;

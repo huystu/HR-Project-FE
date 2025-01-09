@@ -8,19 +8,22 @@ import Layout from "../components/layouts/Layout";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
 import CustomModal from '../components/Modal';
+import DeleteModal from '../components/DeleteModal';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
 import ImgButton from '../components/ImgButton';
 import Title from '../components/Title';
 import { useFormik } from 'formik';
 import '../styles/global.css';
-
+import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
+
 
 const EmployeePage = () => {
   const user = "Admin"; // User Name
   const columns = ["Date", "Employee", "Role", "Skills", "Email", "Phone Number", "Action"];
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null); //선택된 직원 데이터
 
   const [modalMode, setModalMode] = useState("add"); // Setting of Modal: "add" or "edit"
@@ -106,11 +109,19 @@ const EmployeePage = () => {
     },
   ]);
 
-  /*
-  const showModal = () => {
-    setIsModalOpen(true);
+  //삭제하는 로직 추가
+  const handleDeleteClick = (employee) => {
+    setSelectedEmployee(employee); //삭제할 직원 설정
+    setIsDeleteModalOpen(true);
   }
-  */
+
+  //item은 data 배열의 각 요소
+  const deleteEmployee = () => {
+
+    const updatedData = data.filter(item => item !== item.selectedEmployee)
+    setData(updatedData); //상태 업데이트하여 UI에 반영
+    setIsDeleteModalOpen(false);
+  }
 
   // Change Date Type (LocalDate Type in Java)
   const formatDateForBackend = (date) => {
@@ -230,18 +241,56 @@ const EmployeePage = () => {
         >
         {/*date, Name, role, skills, email, phoneNumber, actions*/}
           <form onSubmit={formik.handleSubmit}>
-            <InputField label="Date" type="date" name="date" formik={formik} />
-            <InputField label="Name" type="text" name="name" formik={formik} />
-            <InputField label="Role" type="text" name="role" formik={formik} />
-            <InputField label="Skills" type="text" name="skills" formik={formik} />
+            <div className="input-field-half-row">
+              <InputField className = "input-field-half" label="Date" type="date" name="date" formik={formik} />
+              <InputField className = "input-field-half" label="Name" type="text" name="name" formik={formik} />
+            </div>
+            <InputField label="Role" type="text" name="role" formik={formik} /> {/*드롭다운*/}
+            <InputField label="Skills" type="text" name="skills" formik={formik} /> {/*선택하기*/}
             <InputField label="Email" type="email" name="email" formik={formik} />
             <InputField label="PhoneNumber" type="tel" name="phoneNumber" formik={formik} />
           </form>
-        </CustomModal>
-        <Table 
-          columns={columns} 
-          data={data}
-          onEditClick = {handleEditClick} // 테이블에서 Edit 클릭 시 실행될 함수 전달
+            </CustomModal>        
+
+            {/* Delete Confirmation Modal */}
+            <DeleteModal    
+              isModalOpen={isDeleteModalOpen}
+              onCancel={() => setIsDeleteModalOpen(false)}
+              onDelete={deleteEmployee}
+              employee={selectedEmployee}
+              title = {
+                <div style={{ textAlign: "center "}}>
+                  <img src="/1.png" alt="Delete Confirmation" style={{ width: "50px", height: "50px", marginBottom: "10px" }} />
+                  <Title>Are you sure?</Title>
+                </div>
+              }
+              subTitle ={
+                <p style={{ textAlign: "center" }}>
+                  Do you want to delete the record? <br></br>
+                  This process cannot be undone.
+                </p>
+              } 
+              footer={
+        
+                <div className = "button-container">
+                  {/*<img src="/images/1.png" alt="Delete Confirmation" />*/}
+                  <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+                  <Button onClick={formik.handleSubmit}>Delete</Button>
+                  </div>
+                }
+              />
+            
+
+
+
+            <Table 
+            columns={columns} 
+            data={data}
+            onEditClick = {handleEditClick}
+            onDeleteClick = {handleDeleteClick}
+
+          // 테이블에서 Edit 클릭 시 실행될 함수 전달
+
         />
       </DashboardCard>
     </Layout>
