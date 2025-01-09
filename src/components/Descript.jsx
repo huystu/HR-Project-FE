@@ -2,11 +2,11 @@
 import PropTypes from 'prop-types';
 import '../styles/Descript.css'
 
-const Descript = ({left, link, right, link_href, align='left' }) => {
+const Descript = ({ left, link, right, link_href, align = 'left' }) => {
     return (
         <div className={`descript ${align}`}>
             {left && <span>{left}</span>}
-            {link && <a href={`${link_href}`}>{link}</a>}
+            {link && <a href={link_href}>{link}</a>}
             {right && <span>{right}</span>}
         </div>
     )
@@ -17,11 +17,7 @@ Descript.propTypes = {
     link: PropTypes.string,
     right: PropTypes.string,
     link_href: PropTypes.string,
-    align: PropTypes.oneOf(['left', 'center', 'right']).isRequired,
-}
-
-Descript.defaultProps = {
-    align: 'left',
+    align: PropTypes.oneOf(['left', 'center', 'right']),
 }
 
 export default Descript;

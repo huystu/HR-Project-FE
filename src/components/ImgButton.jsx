@@ -16,8 +16,4 @@ ImgButton.propTypes = {
   type: PropTypes.oneOf(['button', 'submit', 'reset']),
 };
 
-ImgButton.defaultProps = {
-  type: 'button',
-};
-
 export default ImgButton;
