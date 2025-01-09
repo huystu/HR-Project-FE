@@ -1,0 +1,11 @@
+@import url("./global.css");
+
+.ant-modal.deletemodal .ant-modal-conent{
+    width: 423px;
+    min-height: 430px !important;
+    background-color: white;
+    display: grid;
+    align-items: center;
+    padding: 30px;
+}
+
