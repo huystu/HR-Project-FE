@@ -154,7 +154,7 @@ const EmployeePage = () => {
             email: values.email,
             contact: values.phoneNumber,
             skills: values.skills,
-            rolel: values.role,
+            role: values.role,
             joiningDate: formattedDate, // Send formatted date
           });
 
@@ -168,8 +168,8 @@ const EmployeePage = () => {
               "Phone Number": values.phoneNumber,
               Action: "50px",
             };
-
-            setData((prevData) => [...prevData, newEmployee]); // Update UI
+            
+            fetchData(currentPage - 1, pageSize);
 
             console.log(`Success Employee Info: ${JSON.stringify(response)}`);
             alert("Employee added successfully!");
