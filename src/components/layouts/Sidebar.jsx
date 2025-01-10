@@ -10,9 +10,9 @@ const Sidebar = ({user})=> {
             <aside className="sidebar">
                 <div className="user">{user}</div>
                 <nav>
-                    <p>Dashboards</p>
-                    <p><AiOutlineRight /><a className="menu" href="">Employees</a></p>
-                    <p><AiOutlineRight /><a className="menu" href="">Projects</a></p>
+                    <p><a className="menu" href="/dashboards">Dashboards</a></p>
+                    <p><AiOutlineRight /><a className="menu" href="/employee">Employees</a></p>
+                    <p><AiOutlineRight /><a className="menu" href="/project">Projects</a></p>
                 </nav>
             </aside>
         </>
