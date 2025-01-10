@@ -43,7 +43,7 @@ function Login() {
                 if (response.data.status === 200) {
                     setMessage(response.data.message);
                     localStorage.setItem('token', response.data.data.accessToken);
-                    navigate('/employee');
+                    navigate('/employees');
                 }
                 else {
                     setMessage('Login failed. Please try again.');
@@ -62,7 +62,7 @@ function Login() {
             const res = await api.post('/oauth2/authorization/google', { token: googleToken });
             if (res.data.status === 200) {
                 // localStorage.setItem('memberId', res.data.data.memberId);
-                navigate('/employee');
+                navigate('/employees');
             } else {
                 setMessage('Google login failed');
             }
