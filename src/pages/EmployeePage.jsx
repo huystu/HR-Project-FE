@@ -81,10 +81,14 @@ const EmployeePage = () => {
              phoneNumber: employeeData.contact, 
              role: employeeData.role, 
              skills: employeeData.skills, 
-             date: parseDateFromBackend(employeeData.date)
+             date: parseDateFromBackend(employeeData.joiningDate)
           });
 
           console.log("seleced employee: ", selectedEmployee);
+          //console.log("Raw date from backend:", employeeData.date);
+          const employeeDate = employeeData.date || employeeData.joiningDate || "unknown";
+          console.log("Extracted employee date:", employeeDate);
+          console.log("Parsed date for frontend:", parseDateFromBackend);
 
          //formik의 폼 필드 값을 업데이트하고 모달 열기
          formik.setValues({
@@ -185,8 +189,13 @@ const EmployeePage = () => {
   
   const parseDateFromBackend = (dateString) => {
     //convert 'yyyy-mm-dd' format string to date object
-    return new Date(dateString);
-  } 
+    const jsDate = new Date(dateString);
+    const year = jsDate.getFullYear();
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
+    
+  };
   
   
   // Formik settings
@@ -197,7 +206,7 @@ const EmployeePage = () => {
       
       //name: selectedEmployee?.name || '',
       date: selectedEmployee?.date || '',
-      employee: selectedEmployee?.name || '',
+      name: selectedEmployee?.name || '',
       email: selectedEmployee?.email || '',
       phoneNumber: selectedEmployee?.phoneNumber || '',
       role: selectedEmployee?.role || '',
@@ -312,7 +321,7 @@ useEffect(() => {
   if (selectedEmployee) {
     formik.setValues({
       date: selectedEmployee?.date ||'',
-      employee: selectedEmployee?.name ||'',
+      name: selectedEmployee?.name ||'',
       email: selectedEmployee?.email ||'',
       phoneNumber: selectedEmployee.phoneNumber ||'',
       role: selectedEmployee?.role ||'',
