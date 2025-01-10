@@ -1,8 +1,9 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const api = axios.create({
-  // baseURL: "https://f05c-113-160-225-96.ngrok-free.app",
-  baseURL: "http://54.180.159.205:8080",
+  baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
     'ngrok-skip-browser-warning': 'true' ,
