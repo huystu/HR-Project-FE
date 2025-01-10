@@ -42,7 +42,16 @@ const EmployeePage = () => {
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
     setIsModalOpen(true); // Open the modal
-    formik.resetForm();
+    // formik.resetForm();
+
+    formik.setValues({
+      date: '',
+      name: '',
+      email: '',
+      phoneNumber: '',
+      role: '',
+      skills: '',
+    }); // Initialize form
   };
 
   const handleEditClick = (employee) => {
