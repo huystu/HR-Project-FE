@@ -25,8 +25,7 @@ const EmployeePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null); //선택된 직원 데이터
-
-  const [modalMode, setModalMode] = useState("add"); // Setting of Modal: "add" or "edit"
+  const [modalMode, setModalMode] = useState("add"); // Setting of Modal: "add" or "edit" or "delete"
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -115,6 +114,42 @@ const EmployeePage = () => {
   }
 
   
+  //삭제하는 로직 추가
+  const handleDeleteClick = (employee) => {
+    setModalMode("delete");
+    setSelectedEmployee(employee); //삭제할 직원 설정
+    setIsDeleteModalOpen(true);
+    
+  }
+
+  //item은 data 배열의 각 요소
+  const deleteEmployee = async () => {
+    if (!selectedEmployee || !selectedEmployee.id) {
+      alert("Error: Unable to identify the employee to delete.");
+      return;
+    }
+  
+    try {
+      // DELETE 요청 보내기
+      const response = await api.delete(`/employee/${selectedEmployee.id}`);
+      if (response.status === 200) {
+        alert("Employee deleted successfully!");
+  
+        // 상태에서 해당 직원 제거
+        const updatedData = data.filter((item) => item.id !== selectedEmployee.id);
+        setData(updatedData);
+  
+        // 삭제 모달 닫기
+        setIsDeleteModalOpen(false);
+      } else {
+        alert("Failed to delete employee. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      alert("An error occurred while deleting the employee.");
+    }
+  };
+
   const navigate = useNavigate();
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -124,19 +159,8 @@ const EmployeePage = () => {
 
   const [data, setData] = useState([]);
 
-  //삭제하는 로직 추가
-  const handleDeleteClick = (employee) => {
-    setSelectedEmployee(employee); //삭제할 직원 설정
-    setIsDeleteModalOpen(true);
-  }
 
-  //item은 data 배열의 각 요소
-  const deleteEmployee = () => {
-
-    const updatedData = data.filter(item => item !== item.selectedEmployee)
-    setData(updatedData); //상태 업데이트하여 UI에 반영
-    setIsDeleteModalOpen(false);
-  }
+  
 
   // 1. API에서 데이터 가져오기
     const fetchData = async (page = 0, size = 10) => {
@@ -426,7 +450,7 @@ const updateEmployee = async (id, updatedData) => {
                 <div className = "button-container">
                   {/*<img src="/images/1.png" alt="Delete Confirmation" />*/}
                   <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                  <Button onClick={formik.handleSubmit}>Delete</Button>
+                  <Button onClick={deleteEmployee}>Delete</Button>
                   </div>
                 }
               />
