@@ -25,7 +25,7 @@ InputField.propTypes = {
     label: PropTypes.string.isRequired,
     type: PropTypes.string,
     name: PropTypes.string.isRequired,
-    formik: PropTypes.object,
+    formik: PropTypes.object.isRequired, //formik 객체는 필수로 전달되어야 함
     className: PropTypes.string,
 };
 

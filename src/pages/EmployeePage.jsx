@@ -36,17 +36,81 @@ const EmployeePage = () => {
     setIsModalOpen(false);
   }
 
+  //모달 열기, 폼 데이터 초기화 후 모달 열기
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
     setIsModalOpen(true); // Open the modal
+    formik.resetForm();
+    formik.setValues({
+      date: '',
+      name: '',
+      email: '',
+      phoneNumber: '',
+      role: '',
+      skills: '',
+    }); // Initialize form
+
   };
 
-  const handleEditClick = (employee) => {
+  //직원 수정 모달 열기
+  //handleEdiClick 함수가 비동기로 데이터를 가져온 후 selectedEmployee를 업데이트
+  const handleEditClick = async (employee) => {
     setModalMode("edit");
-    setSelectedEmployee(employee); //클릭한 직원 데이터 설정
+    // console.log("click edit: ", employee);
+
+    // setSelectedEmployee(employee); //클릭한 직원 데이터 api에서 불러와 selectedEmployee 상태로 저장
+
+    // console.log("click edit: ", selectedEmployee);
+
+    try {
+         //선택된 직원 데이터 GET 요청
+        //  const getResponse = await api.get(`/employee/${selectedEmployee.id}`);
+        const getResponse = await api.get(`/employee/${employee.id}`); 
+        const employeeData = getResponse.data.data;
+
+
+
+        console.log("Employee data:", employeeData);
+
+         //상태를 업데이트하여 selectedEmployee에 직원
+         setSelectedEmployee({ 
+            //  ...selectedEmployee,
+             id: employeeData.id,
+             name: employeeData.name,
+             email: employeeData.email,
+             phoneNumber: employeeData.contact, 
+             role: employeeData.role, 
+             skills: employeeData.skills, 
+             date: parseDateFromBackend(employeeData.date)
+          });
+
+          console.log("seleced employee: ", selectedEmployee);
+
+         //formik의 폼 필드 값을 업데이트하고 모달 열기
+         formik.setValues({
+          name: employeeData.name,
+          email: employeeData.email,
+          phoneNumber: employeeData.contact,
+          role: employeeData.role,
+          skills: employeeData.skills,
+          date: parseDateFromBackend(employeeData.date),
+        });
+        
+         //const employeeData = getResponse.data;
+
+        //  console.log("selected employee state:", selectedEmployee);
+        //console.log("formik iniia")
+
+
+    }
+    catch(error)
+    {
+      console.error(error);
+    }
     setIsModalOpen(true); //모달 열기
   }
 
+  
   const navigate = useNavigate();
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,10 +134,9 @@ const EmployeePage = () => {
     setIsDeleteModalOpen(false);
   }
 
- // Fetch data from API
- const fetchData = async (page = 0, size = 10) => {
-    setAuthToken(accessToken); // set the accessToken
-
+  // 1. API에서 데이터 가져오기
+    const fetchData = async (page = 0, size = 10) => {
+    setAuthToken(accessToken); // 인증 토큰 설정
     console.log(accessToken);
     
     try {
@@ -89,6 +152,7 @@ const EmployeePage = () => {
         console.log(response.data.data.content);
         setPageCount(response.data.data.page.totalPages);
         
+        //2. 데이터를 화면에 맞게 변환
         const formattedData = response.data.data.content.map(employee => ({
           Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
           Employee: employee.name, Role: employee.role || 'N/A',
@@ -98,7 +162,10 @@ const EmployeePage = () => {
           Action: "50px",
           id: employee.id,
         }));
+
+        //3. 상태 업데이트
         setData(formattedData);
+        setPageCount(response.data.data.page.totalPages);
       }
     }
     catch (error) {
@@ -116,16 +183,27 @@ const EmployeePage = () => {
     return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
   };
   
+  const parseDateFromBackend = (dateString) => {
+    //convert 'yyyy-mm-dd' format string to date object
+    return new Date(dateString);
+  } 
+  
+  
   // Formik settings
+  //initialValues는 처음 렌더링할 때만 설정됨
+  //selectedEmployee가 바뀔 때마다 폼 값을 업데이트하려면 formik.setValues를 이용해 명시적으로
   const formik = useFormik({
     initialValues: {
-      date: selectedEmployee?.Date || '',
-      employee: selectedEmployee?.Employee || '',
-      email: selectedEmployee?.Email || '',
-      phoneNumber: selectedEmployee?.PhoneNumber || '',
-      role: selectedEmployee?.Role || '',
-      skills: selectedEmployee?.Skills || '',
+      
+      //name: selectedEmployee?.name || '',
+      date: selectedEmployee?.date || '',
+      employee: selectedEmployee?.name || '',
+      email: selectedEmployee?.email || '',
+      phoneNumber: selectedEmployee?.phoneNumber || '',
+      role: selectedEmployee?.role || '',
+      skills: selectedEmployee?.skills || '',
     },
+    enableReinitialize: true, //selectedEmployee가 변경될 때 초기화
     validate: (values) => {
       const errors = {};
       if (!values.date)
@@ -154,12 +232,12 @@ const EmployeePage = () => {
         return errors;
     },
     onSubmit: async (values) => {
-      console.log(values);
+      console.log("submited values:", values);
+      
       if (modalMode === "add") { 
         // console.log("Add Employee Info: ", values);
 
         const formattedDate = formatDateForBackend(values.date); // Convert to 'YYYY-MM-DD'
-
         setAuthToken(accessToken); // accessToken 설정
 
         try {
@@ -184,6 +262,7 @@ const EmployeePage = () => {
             };
             
             fetchData(currentPage - 1, pageSize);
+            //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
 
             console.log(`Success Employee Info: ${JSON.stringify(response)}`);
             alert("Employee added successfully!");
@@ -195,25 +274,53 @@ const EmployeePage = () => {
           alert("Failed to add employee. Please try again.");
         }
       }
+  
 
-      if (modalMode === "edit" && selectedEmployee){
-        const updatedEmployeeData = {
+      else if (modalMode === "edit" && selectedEmployee){
+        try {
+       
+          //폼에 데이터 채우기
 
+          const formattedDate = formatDateForBackend(values.date);
+
+          const updatedEmployeeData = {
           name: values.name,
           email: values.email,
           contact: values.phoneNumber,
           skills: values.skills,
           role: values.role,
-          joiningDate: formatDateForBackend(values.date),
-        };
+          joiningDate: formattedDate,
+          };
+
+        
 
         console.log("selectedEmployee: ", selectedEmployee);
 
         await updateEmployee(selectedEmployee.id, updatedEmployeeData);
+        } catch (error) {
+          console.error('Error fetching employee:', error);
+          alert("Failed to fetch employee data");
+        }
       }
     },
-  });
+    });
 
+
+    // selectedEmployee가 변경될 때마다 폼 값을 업데이트
+useEffect(() => {
+  console.log("useEffect when chaning selectedEmployee: ", selectedEmployee);
+  if (selectedEmployee) {
+    formik.setValues({
+      date: selectedEmployee?.date ||'',
+      employee: selectedEmployee?.name ||'',
+      email: selectedEmployee?.email ||'',
+      phoneNumber: selectedEmployee.phoneNumber ||'',
+      role: selectedEmployee?.role ||'',
+      skills: selectedEmployee?.skills ||'',
+    });
+  }
+}, [selectedEmployee]);  // selectedEmployee가 변경될 때마다 실행
+      
   // PUT 요청을 보내는 함수
 const updateEmployee = async (id, updatedData) => {
   //const token = localStorage.getItem('token'); // 인증 토큰 가져오기
@@ -221,22 +328,32 @@ const updateEmployee = async (id, updatedData) => {
 
   try {
     const response = await api.put(`/employee/${id}`, updatedData);
-    console.log('Response:', response.data);
+    console.log('PUT Response:', response.data);
+
+    if (response.status === 200) {
+      //데이터 갱신
+      console.log("fetching updated data...");
+      await fetchData(currentPage - 1, pageSize);
+      console.log("data refreshed!");
+      console.log("formik initial values:", formik.initialValues);
+      console.log(selectedEmployee);
 
     // Refresh data after update
-    fetchData(currentPage - 1, pageSize);
+      
 
-    alert("Employee updated successfully!");
-    setIsModalOpen(false);
+    //console.log(response.data);
+
+      alert("Employee updated successfully!");
+      setIsModalOpen(false); 
+    }
+
   } catch (error) {
     console.error('Error making PUT request:', error);
     alert("Failed to update employee, please try again.");
   }
 };
 
-
-  
-
+ //4. 컴포넌트가 렌더링 될 때 데이터 가져오기
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -247,6 +364,7 @@ const updateEmployee = async (id, updatedData) => {
   useEffect(() => {
     fetchData(currentPage - 1, pageSize);
   }, [currentPage]);
+ 
 
   return (
     <Layout user={user} route="Employees">
@@ -309,7 +427,7 @@ const updateEmployee = async (id, updatedData) => {
 
             <Table 
             columns={columns} 
-            data={data}
+            data={data} //상태에서 가져온 데이터 전달
             onEditClick = {handleEditClick}
             onDeleteClick = {handleDeleteClick}
 
