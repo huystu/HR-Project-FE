@@ -2,27 +2,59 @@
 @import url("./global.css");
 
 .dashboard {
-    margin: 10px;
-    width: 1195px;
-    height: 880px;
+    /* margin: 10px; */
+
+    /* 크기 */
+    /* width: 1195px; */
+    /* height: 880px; */
+    width: 95%;
+    height: 100%;
+
+    /* 정렬 방식 */
+    display: flex;
+    flex-direction: column;
+
+    /* 디자인 속성 */
     border-radius: 25px;
     background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-header {
+    margin: 0;
+    padding: 20px 30px 0 30px;
+
+    /* 크기 */
+    width: auto;
+
+    /* 정렬 방식 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    /* 폰트 */
     font-size: 24px;
     font-family: 'Pretendard-SemiBold';
-    display: flex;
-    justify-content: space-between;
-    padding: 30px;
 }
 
 .dashboard-content {
-    height: 75%;
+    margin: 0;
+    padding: 20px 30px 0 30px;
+
+    flex: 1;
+    
+    overflow-y: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: start;
 }
 
 .dashboard-footer {
-    display: flex;
-    justify-content: center; /* 하단 중앙 정렬 */
-    padding-bottom: 10px;
+    /* flex: 1; */
+    /* display: flex; */
+    /* justify-content: center; 하단 중앙 정렬 */
+    /* padding-bottom: 10px; */
+    padding: 20px 30px;
+    text-align: center;
 }

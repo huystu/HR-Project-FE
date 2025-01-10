@@ -74,7 +74,7 @@ function Login() {
 
     return (
         <>
-            <main>
+            <main className="login-main">
                 <div>
                     <Card
                         header={

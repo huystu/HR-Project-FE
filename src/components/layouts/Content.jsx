@@ -16,12 +16,14 @@ const Content = ({route, children}) => {
       };
 
     return (
-        <main className="content">
-            <header className="header">
+        <main>
+            <header className="main-header">
                 <p>Dashboards / {route}</p>
                 <button onClick={handleLogout}>logout</button>
             </header>
-            {children}
+            <div className="main-content">
+                {children}
+            </div>
         </main>
     );
 }
