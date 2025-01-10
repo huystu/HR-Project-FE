@@ -42,6 +42,7 @@ const EmployeePage = () => {
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
     setIsModalOpen(true); // Open the modal
+    formik.resetForm();
   };
 
   const handleEditClick = (employee) => {
@@ -98,7 +99,8 @@ const EmployeePage = () => {
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
-          Action: "50px"
+          Action: "50px",
+          id: employee.id,
         }));
         setData(formattedData);
       }
@@ -160,11 +162,9 @@ const EmployeePage = () => {
     onSubmit: async (values) => {
       console.log(values);
       if (modalMode === "add") { 
-        // console.log("Add Employee Info: ", values);
-
         const formattedDate = formatDateForBackend(values.date); // Convert to 'YYYY-MM-DD'
 
-        setAuthToken(accessToken); // accessToken 설정
+        setAuthToken(accessToken); // set accessToken
 
         try {
           const response = await api.post("/employee", {
@@ -177,16 +177,6 @@ const EmployeePage = () => {
           });
 
           if (response.status === 200) {
-            const newEmployee = {
-              Date: values.date,
-              Employee: values.name,
-              Role: values.role || "N/A",
-              Skills: values.skills.split(",").map((skill) => skill.trim()),
-              Email: values.email,
-              "Phone Number": values.phoneNumber,
-              Action: "50px",
-            };
-            
             fetchData(currentPage - 1, pageSize);
 
             console.log(`Success Employee Info: ${JSON.stringify(response)}`);
