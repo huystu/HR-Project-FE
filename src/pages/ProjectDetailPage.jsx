@@ -102,15 +102,15 @@ const ProjectDetailPage = () => {
 
                 setProjectInfo(formattedProjectData);
 
-                const members = response.data.data.employees;
+                const members = response.data.data.employeesInfo;
 
                 const formattedMembersData = members.map(member =>({
-                    Name: member.name,
-                    // Status: member.status,
-                    // "Start Date": member.startDate,
-                    // "End Date": member.endDate,
-                    Email: member.email,
-                    Role: <Select defaultValue={`${member.roleInProject}`} onChange={handleChange} options={roleOptions} />,
+                    Name: member.employeeInfo.name,
+                    Status: member.employeeProjectInfo.joinStatus,
+                    "Start Date": member.employeeProjectInfo.joinDate,
+                    "End Date": member.employeeProjectInfo.exitDate,
+                    Email: member.employeeInfo.email,
+                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={handleChange} options={roleOptions} />,
                     Action: ['Link', 'Delete'],
                     id: member.id,
                 }));
