@@ -10,6 +10,7 @@ import Layout from "../components/layouts/Layout";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
 import CustomModal from '../components/Modal';
+import Title from "../components/Title";
 import DeleteModal from '../components/DeleteModal';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
@@ -17,7 +18,6 @@ import ImgButton from '../components/ImgButton';
 import { useFormik } from 'formik';
 import '../styles/global.css';
 import '../styles/deletemodal.css';
-import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 import { IoMdPersonAdd } from "react-icons/io";
@@ -37,7 +37,6 @@ const ProjectDetailPage = () => {
     const columns = ["Name", "Status", "Start Date", "End Date", "Email", "Role", "Action"];
     const [members, setMembers] = useState([]);
 
-
     const roleOptions = [
         {value: "Team Leader", label: "Team Leader",},
         {value: "Designer", label: "Designer",},
@@ -45,18 +44,11 @@ const ProjectDetailPage = () => {
         {value: "Tester", label: "Tester",},
     ];
 
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
-    };
-
     // const [pageCount, setPageCount] = useState(1);
     // const [currentPage, setCurrentPage] = useState(1);
     // const [pageSize] = useState(10);
 
-    const btnsArray = [
-        <Button key="update">Update Project</Button>,
-        <Button key="delete">Delete Project</Button>,
-    ];
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const accessToken = localStorage.getItem('token');
 
@@ -126,9 +118,105 @@ const ProjectDetailPage = () => {
 
     useEffect(() => {fetchData();}, []);
 
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    }
+
+    const handleAddEmployee = () => {
+        setIsModalOpen(true); // Open the modal
+        formik.setValues({
+            title: projectInfo.title,
+            description: projectInfo.description,
+            status: projectInfo.status,
+        }); // Initialize form
+      };
+
+    // Update Formik settings
+    const formik = useFormik({
+        initialValues: {
+            title: projectInfo.title || '',
+            description: projectInfo.description || '',
+            status: projectInfo.status || '',
+        },
+        validate: (values) => {
+            const errors = {};
+            if (!values.title) {
+                errors.title = 'Title is required';
+            }
+            if (!values.description) {
+                errors.description = 'Description is required';
+            }
+            if (!values.status) {
+                errors.status = 'Status is required';
+            }
+            return errors;
+        },
+        onSubmit: async (values) => {
+            console.log(values);
+
+            setAuthToken(accessToken); // set accessToken
+
+            const updatedData = {
+                name: values.title,
+                description: values.description,
+                status: values.status,
+            }
+            
+            try {
+                const response = await api.put(`/project/${id}`, updatedData);
+
+                if (response.status === 200) {
+                    alert("Project Info Updated successfully!");
+                    setIsModalOpen(false);
+                    fetchData();
+                }
+            } catch (error) {
+                console.error("Error adding employee:", error);
+                alert("Failed to add employee. Please try again.");
+            }
+        },
+    });
+
+    const handleChange = (value) => {
+        formik.setFieldValue('status', value);
+    };
+
+    const btnsArray = [
+        <Button key="update" onClick={handleAddEmployee}>Update Project</Button>,
+        <Button key="delete">Delete Project</Button>,
+    ];
+
+    const projectStatusOptions = [
+        {value: "PENDING", label: "PENDING",},
+        {value: "WORKING", label: "WORKING",},
+        {value: "COMPLETE", label: "COMPLETE",},
+    ];
+
     return (
         // turn in into Project title
         <Layout user={user} route={`Projects, ${projectInfo.title}`}>
+            {/*   */}
+            <CustomModal
+                isModalOpen={isModalOpen}
+                handleOk={formik.handleSubmit} //폼 제출
+                handleCancel={handleCancel}
+                title = {<Title>Update Project</Title>}
+                footer={
+                    <div className = "button-container">
+                        <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
+                        <Button onClick={formik.handleSubmit}>Update</Button>
+                    </div>
+                }
+            >
+                <form onSubmit={formik.handleSubmit}>
+                    <InputField label="Title" type="text" name="title" formik={formik} />
+                    <InputField label="Description" type="textarea" name="description" formik={formik} />
+                    <div>
+                        <p>Status</p>
+                        <Select id="status" defaultValue={`${projectInfo.status}`} onChange={handleChange} options={projectStatusOptions} />
+                    </div>
+                </form>
+            </CustomModal>
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
             <DashboardCard
