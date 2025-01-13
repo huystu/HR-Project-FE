@@ -195,7 +195,7 @@ const ProjectDetailPage = () => {
     return (
         // turn in into Project title
         <Layout user={user} route={`Projects, ${projectInfo.title}`}>
-            {/*   */}
+            {/* Update Project  */}
             <CustomModal
                 isModalOpen={isModalOpen}
                 handleOk={formik.handleSubmit} //폼 제출
