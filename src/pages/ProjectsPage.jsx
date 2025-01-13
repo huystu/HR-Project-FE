@@ -32,6 +32,12 @@ const ProjectsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
 
+    const navigate = useNavigate();
+
+    const handleViewClick = (row) => {
+        navigate(`/projects/${row.id}`);
+    };
+
     return (
         <Layout user={user} route="Projects">
             <DashboardCard
@@ -39,7 +45,7 @@ const ProjectsPage = () => {
                 // btnClick={}
                 footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}
             >
-                <Table columns={columns} data={data} />
+                <Table columns={columns} data={data} onViewClick={handleViewClick} />
             </DashboardCard>
         </Layout>
     );
