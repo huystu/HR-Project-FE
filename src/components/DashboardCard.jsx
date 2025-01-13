@@ -10,9 +10,13 @@ const DashboardCard = ({ header, children, progress_tag, date_tag, btn, btnClick
   return (
     <div className='dashboard' >
       <div className='dashboard-header'>
-        {header && <div className='left'>{header}</div>}
-        {progress_tag && <Tag>{progress_tag}</Tag>}
-        {date_tag && <Tag>{date_tag}</Tag>}
+        <div className="dashboard-header-title left">
+          {header && <div>{header}</div>}
+          <div className="dashboard-header-tags">
+            {progress_tag && <Tag color="blue">{progress_tag}</Tag>}
+            {date_tag && <Tag>{date_tag}</Tag>}
+          </div>
+        </div>
         {btn && <Button onClick={btnClick}>{btn}</Button>}
         {btns && <div style={{margin: 0}}>{btns}</div>}
       </div>
