@@ -107,7 +107,10 @@ const ProjectsPage = () => {
                 // btnClick={}
                 footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}
             >
+                {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
+                : (
                 <Table columns={columns} data={data} onViewClick={handleViewClick} />
+                )}
             </DashboardCard>
         </Layout>
     );
