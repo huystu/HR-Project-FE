@@ -2,9 +2,13 @@
 @import url("./global.css");
 
 .table {
+    margin: 0;
+
+    width: 95%;
+
     font-family: 'Pretendard-Light';
     font-size: 14px;
-    width: 95%;
+    
     border-collapse: separate;
     border-spacing: 0;
 }

@@ -51,7 +51,6 @@ const EmployeePage = () => {
       role: '',
       skills: '',
     }); // Initialize form
-
   };
 
   //직원 수정 모달 열기
@@ -196,7 +195,7 @@ const EmployeePage = () => {
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
-          Action: "50px",
+          Action: ["Edit", "Delete"],
           id: employee.id,
         }));
 
@@ -279,8 +278,6 @@ const EmployeePage = () => {
       console.log("submited values:", values);
       
       if (modalMode === "add") { 
-        // console.log("Add Employee Info: ", values);
-
         const formattedDate = formatDateForBackend(values.date); // Convert to 'YYYY-MM-DD'
         setAuthToken(accessToken); // accessToken 설정
 
@@ -295,16 +292,6 @@ const EmployeePage = () => {
           });
 
           if (response.status === 200) {
-            const newEmployee = {
-              Date: values.date,
-              Employee: values.name,
-              Role: values.role || "N/A",
-              Skills: values.skills.split(",").map((skill) => skill.trim()),
-              Email: values.email,
-              "Phone Number": values.phoneNumber,
-              Action: "50px",
-            };
-            
             fetchData(currentPage - 1, pageSize);
             //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
 

@@ -1,6 +1,6 @@
 @import url("./global.css");
 
-main {
+.login-main {
     display: flex;
     justify-content: center;
     align-items: center;

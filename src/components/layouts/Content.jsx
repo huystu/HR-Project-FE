@@ -1,5 +1,4 @@
 // src/components/Content.jsx
-
 import { useNavigate } from 'react-router-dom';
 
 import PropTypes from 'prop-types';
@@ -10,18 +9,18 @@ const Content = ({route, children}) => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-    
-        // redirect to login page
-        navigate('/');
-      };
+        navigate('/'); // redirect to login page
+    };
 
     return (
-        <main className="content">
-            <header className="header">
-                <p>Dashboards / {route}</p>
+        <main>
+            <header className="main-header">
+                <p><a className="head-menu" href="/dashboard">Dashboard</a> / <a className="head-menu menu-active" href={`/${route}`}>{route}</a></p>
                 <button onClick={handleLogout}>logout</button>
             </header>
-            {children}
+            <div className="main-content">
+                {children}
+            </div>
         </main>
     );
 }
