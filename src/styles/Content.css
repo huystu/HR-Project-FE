@@ -1,31 +1,61 @@
-.content {
+@import url("./global.css");
+
+main {
     flex: 1;
+
     display: flex;
     flex-direction: column;
 }
 
-.header {
-    font-size: 14px;
-    color: black;
-    background-color: white;
-    padding: 20px;
-    width: 100%;
+.main-header {
     box-sizing: border-box;
+    padding: 20px;
+
+    width: 100%;
+
     display: flex;
     justify-content: space-between; /* 왼쪽과 오른쪽 요소를 양끝에 정렬 */
     align-items: center; /* 세로로 중앙 정렬 */
+
+    font-family: 'Pretendard-Light';
+    color: #999999;
+    font-size: 14px;
+    
+    background-color: white;
 }
 
-.header p {
+.main-header > p {
     margin: 0; /* p 태그의 기본 마진 제거 */
 }
   
-.header button {
+.main-header > button {
     margin: 0; /* p 태그의 기본 마진 제거 */
+
+    font-family: 'Pretendard-Light';
+
     background-color: transparent;
     border: transparent;
 }
 
-.header button:hover {
+.main-header > button:hover {
     color: #6d6d6d;
+}
+
+.main-content {
+    margin: 0;
+    padding: 10px;
+
+    flex: 1;
+    overflow: hidden;
+}
+
+.head-menu {
+    padding: 10px;
+    
+    color: #999999;
+    text-decoration: none;
+}
+
+.menu-active {
+    color: black;
 }
