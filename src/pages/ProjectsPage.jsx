@@ -22,45 +22,17 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProjectsPage = () => {
     const user = "Admin"; // User Name
-    const columns = ["Period", "Title", "Team Manager", "Status", "Action"];
+
+    const columns = ["Period", "Title", "Status", "Action"];
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("add");
-    const [selectedProject, setSelectedProject] = useState(null); //선택된 프로젝트 데이터
     const [loading, setLoading] = useState(false); // 로딩 상태
-
-
-    const handleOk = () => {
-        setIsModalOpen(false);
-      }
     
       const handleCancel = () => {
         setIsModalOpen(false);
       }
 
       const [data,setData] = useState([]);
-      
-
-    
-    const dummydata = [
-        { Period: "29/12/24 -", Title: "Project Title", "Team Manager": "Aisha Doe", Status: "In Progress", Action: ['View'] },
-        { Period: "29/11/24 - 29/12/24", Title: "Project Title", "Team Manager": "Aisha Doe", Status: "Done", Action: ['View'] },
-    ];
-
-    /*
-    const formik = useFormik({
-        initialValues: {
-            title: '',
-            description: '',
-            status: '',
-        },
-        onSubmit: (values) => {
-          console.log('Form Submitted:', values);
-          setIsModalOpen(false);
-        },
-      });
-
-      
-*/
 
 
     const [pageCount, setPageCount] = useState(1);
@@ -70,10 +42,16 @@ const ProjectsPage = () => {
     const accessToken = localStorage.getItem('token');
     //const [data, setData] = useState([]);
 
+    const formatPeriod = (startDate, endDate) => {
+        if (endDate) {
+            return `${startDate} - ${endDate}`;
+        }
+        else {
+            return `${startDate} - `;
+        }
+    };
+
     //formik 폼데이터를 api.post로 서버에 전송하고, 저장된 데이터를 다시 가져와 UI에 반영
-
-  
-
   // 1. API에서 데이터 가져오기
     const fetchData = async (page = 0, size = 10) => {
     setAuthToken(accessToken); // 인증 토큰 설정
@@ -81,44 +59,43 @@ const ProjectsPage = () => {
 
     //console.log(accessToken);
     
-    if (modalMode === "add")
-    try {
-      const response = await api.get('/project', {
-        params: {
-          page: page,
-          size: size,
+    if (modalMode === "add") {
+        try {
+            const response = await api.get('/project', {
+                params: {
+                page: page,
+                size: size,
+                }
+            });
+            console.log(response.data); //api 응답 확인
+
+            if (response.status === 200) {
+                console.log("Success Pagination: ", response);
+                console.log(response.data.data.content);
+                setPageCount(response.data.data.page.totalPages);
+                
+                //2. 데이터를 화면에 맞게 변환
+                const formattedData = response.data.data.content.map(project => ({
+                    Period: formatPeriod(project.startDate, project.endDate),
+                    Title: project.name,
+                    Status: project.status,
+                    Action: ["View"],
+                    id: project.id,
+                }));
+                
+                //3. 상태 업데이트
+                setData(formattedData);
+                setPageCount(response.data.data.page.totalPages);
+            }
         }
-      });
-      console.log(response.data); //api 응답 확인
-
-      if (response.status === 200) {
-        console.log("Success Pagination: ", response);
-        console.log(response.data.data.content);
-        setPageCount(response.data.data.page.totalPages);
-        
-        //2. 데이터를 화면에 맞게 변환
-        const formattedData = response.data.data.content.map(project => ({
-          name: project.title,
-          description: project.description,
-          status: project.status,
-          startDate: project.data.startdate,
-          endDate: project.data.enddate,
-          id: project.id,
-        }));
-
-        //3. 상태 업데이트
-        setData(formattedData);
-        setPageCount(response.data.data.page.totalPages);
-      }
-    }
-    catch (error) {
-      console.error('Error fetching project data:', error);
+        catch (error) {
+            console.error('Error fetching project data:', error);
+        }
     }
     
     setLoading(false);
   };
 
-  
     //모달 열기, 폼 데이터 초기화 후 모달 열기
     const handleAddProject = () => {
         setModalMode("add"); // Set Mode
@@ -199,10 +176,33 @@ const ProjectsPage = () => {
     },
 );
 
+    const handleViewClick = (row) => {
+        navigate(`/projects/${row.id}`);
+    };
+
+    // Check token
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/"); 
+        }
+      }, [navigate]);
+
+
     useEffect(() => {
         fetchData(currentPage - 1, pageSize);
-    }, [currentPage]);
-  
+      }, [currentPage]);
+
+
+
+    // Check token
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/"); 
+        }
+      }, [navigate]);
+
 
     return (
         <Layout user={user} route="Projects">
@@ -211,33 +211,35 @@ const ProjectsPage = () => {
                 // btnClick={}
                 footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}
             >
-
                 <CustomModal 
-                          isModalOpen={isModalOpen}
-                          handleOk={formik.handleSubmit} //폼 제출
-                          handleCancel={handleCancel}
-                          title = {<Title>{modalMode === "add" ? "Add Project" : "Update Project"}</Title>}
-                          footer={
-                            <div className = "button-container">
-                              <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
-                              <Button onClick={formik.handleSubmit}>Add</Button>
-                            </div>
-                          }
-                        >
-                          <form onSubmit={formik.handleSubmit}>
-                          <InputField label="Title" type="text" name="title" formik={formik} />
-                          <InputField label="Description" type="text" name="description" formik={formik} />
-                          <InputField label="Status" type="select" name="status" formik={formik} 
-                             options = {[
-                                {label: "WORKING", value: "WORKING"},
-                                {label: "COMPLETE", value: "COMPLETE"},
-                                {label: "PENDING", value: "PENDING"}, ]}
-                            /> 
-                       
-                            
-                          </form>
-                        </CustomModal>
-                <Table columns={columns} data={dummydata} />
+                    isModalOpen={isModalOpen}
+                    handleOk={formik.handleSubmit} //폼 제출
+                    handleCancel={handleCancel}
+                    title = {<Title>{modalMode === "add" ? "Add Project" : "Update Project"}</Title>}
+                    footer={
+                    <div className = "button-container">
+                        <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
+                        <Button onClick={formik.handleSubmit}>Add</Button>
+                    </div>
+                    }
+                >
+                    <form onSubmit={formik.handleSubmit}>
+                    <InputField label="Title" type="text" name="title" formik={formik} />
+                    <InputField label="Description" type="text" name="description" formik={formik} />
+                    <InputField label="Status" type="select" name="status" formik={formik} 
+                        options = {[
+                        {label: "WORKING", value: "WORKING"},
+                        {label: "COMPLETE", value: "COMPLETE"},
+                        {label: "PENDING", value: "PENDING"}, ]}
+                    /> 
+                
+                    
+                    </form>
+                </CustomModal>
+                {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
+                : (
+                    <Table columns={columns} data={data} onViewClick={handleViewClick} />
+                )}
             </DashboardCard>
         </Layout>
     );

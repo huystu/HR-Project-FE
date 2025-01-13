@@ -12,10 +12,21 @@ const Content = ({route, children}) => {
         navigate('/'); // redirect to login page
     };
 
+    const routeParts = route.trim().split(',');
+
     return (
         <main>
             <header className="main-header">
-                <p><a className="head-menu" href="/dashboard">Dashboard</a> / <a className="head-menu menu-active" href={`/${route}`}>{route}</a></p>
+                <p>
+                    <a className="head-menu" href="/dashboard">Dashboard</a>
+                    {routeParts.map((part, index) => (
+                        <span key={index}> {" / "}
+                            <a className={`head-menu ${index === routeParts.length - 1 ? "menu-active" : ""}`} href={`/${part.trim()}`} >
+                                {part.trim()}
+                            </a>
+                        </span>
+                    ))}
+                </p>
                 <button onClick={handleLogout}>logout</button>
             </header>
             <div className="main-content">
