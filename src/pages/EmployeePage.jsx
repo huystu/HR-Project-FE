@@ -141,9 +141,13 @@ const EmployeePage = () => {
         // 상태에서 해당 직원 제거
         const updatedData = data.filter((item) => item.id !== selectedEmployee.id);
         setData(updatedData);
-  
+
+        //console.log()
         // 삭제 모달 닫기
         setIsDeleteModalOpen(false);
+        fetchData(currentPage - 1, pageSize);
+        
+        //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
       } else {
         alert("Failed to delete employee. Please try again.");
       }
@@ -165,14 +169,11 @@ const EmployeePage = () => {
 
   
 
-<<<<<<< HEAD
   // 1. API에서 데이터 가져오기
     const fetchData = async (page = 0, size = 10) => {
     setAuthToken(accessToken); // 인증 토큰 설정
-=======
     setLoading(true);
 
->>>>>>> develop
     console.log(accessToken);
     
     try {
@@ -416,7 +417,7 @@ const updateEmployee = async (id, updatedData) => {
           isModalOpen={isModalOpen}
           handleOk={formik.handleSubmit} //폼 제출
           handleCancel={handleCancel}
-          title = {<Title>Add Employee</Title>}
+          title = {<Title>{modalMode === "add" ? "Add Employee" : "Update Employee"}</Title>}
           footer={
             <div className = "button-container">
               <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
@@ -436,7 +437,6 @@ const updateEmployee = async (id, updatedData) => {
           </form>
         </CustomModal>        
 
-<<<<<<< HEAD
             {/* Delete Confirmation Modal */}
             <DeleteModal    
               isModalOpen={isDeleteModalOpen}
@@ -465,50 +465,14 @@ const updateEmployee = async (id, updatedData) => {
                 }
               />
             
-
-
-
-            <Table 
-            columns={columns} 
-            data={data} //상태에서 가져온 데이터 전달
-            onEditClick = {handleEditClick}
-            onDeleteClick = {handleDeleteClick}
-
-          // 테이블에서 Edit 클릭 시 실행될 함수 전달
-
-        />
-=======
-        {/* Delete Confirmation Modal */}
-        <DeleteModal    
-          isModalOpen={isDeleteModalOpen}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          onDelete={deleteEmployee}
-          employee={selectedEmployee}
-          title = {
-            <div style={{ textAlign: "center "}}>
-              <img src="/1.png" alt="Delete Confirmation" style={{ width: "50px", height: "50px", marginBottom: "10px" }} />
-              <Title>Are you sure?</Title>
-            </div>
-          }
-          subTitle ={
-            <p style={{ textAlign: "center" }}>
-              Do you want to delete the record? <br></br>
-              This process cannot be undone.
-            </p>
-          } 
-          footer={
-            <div className = "button-container">
-              {/*<img src="/images/1.png" alt="Delete Confirmation" />*/}
-              <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-              <Button onClick={formik.handleSubmit}>Delete</Button>
-              </div>
-            }
-          />
-        {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
+            {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
         <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} />)
         }
->>>>>>> develop
+
+          {/* 테이블에서 Edit 클릭 시 실행될 함수 전달 */}
+
+        
       </DashboardCard>
     </Layout>
   );
