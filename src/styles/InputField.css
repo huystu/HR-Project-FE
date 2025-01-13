@@ -52,7 +52,22 @@
     padding: 0 10px ;
 }
 
+.input-field-dropbox > label {
+    display: block; /*레이블을 블록 요소로 설정하여 한 줄에 표시*/
+    font-family: "Pretenard-Regular";
+    font-size: 14px;
+}
 
+.input-field-dropbox > input {
+    width: 90%;
+    height: 40px;
+    background-color: #F7F7F7;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-family: "Pretendard-Regular";
+    font-size: 20px;
+    padding: 0 10px ;
+}
 .input-field {
     margin-bottom: 10px;
 }

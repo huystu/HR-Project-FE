@@ -191,7 +191,8 @@ const EmployeePage = () => {
         //2. 데이터를 화면에 맞게 변환
         const formattedData = response.data.data.content.map(employee => ({
           Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
-          Employee: employee.name, Role: employee.role || 'N/A',
+          Employee: employee.name, 
+          Role: employee.role || 'N/A',
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
@@ -209,26 +210,6 @@ const EmployeePage = () => {
     }
     
     setLoading(false);
-  };
-
-  // Change Date Type (LocalDate Type in Java)
-  const formatDateForBackend = (date) => {
-    // Convert JS Date to 'YYYY-MM-DD' format
-    const jsDate = new Date(date); // Ensure it's a Date object
-    const year = jsDate.getFullYear();
-    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const day = String(jsDate.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
-  };
-  
-  const parseDateFromBackend = (dateString) => {
-    //convert 'yyyy-mm-dd' format string to date object
-    const jsDate = new Date(dateString);
-    const year = jsDate.getFullYear();
-    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const day = String(jsDate.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
-    
   };
   
   
