@@ -107,7 +107,7 @@ const EmployeePage = () => {
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
-          Action: "50px",
+          Action: ["Edit", "Delete"],
           id: employee.id,
         }));
         setData(formattedData);
