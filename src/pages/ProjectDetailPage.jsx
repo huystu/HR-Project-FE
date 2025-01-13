@@ -1,6 +1,6 @@
 // src/pages/ProjectDetailPage.jsx
 import { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { Tabs, Select } from 'antd'
 
@@ -24,6 +24,7 @@ import { IoMdPersonAdd } from "react-icons/io";
 
 const ProjectDetailPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const user = "Admin"; // User Name
     const columns = ["Name", "Status", "Start Date", "End Date", "Email", "Role", "Action"];
@@ -68,6 +69,16 @@ const ProjectDetailPage = () => {
         <Button key="update">Update Project</Button>,
         <Button key="delete">Delete Project</Button>,
     ];
+
+    const accessToken = localStorage.getItem('token');
+
+    // Check token
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/"); 
+        }
+      }, [navigate]);
 
     return (
         // turn in into Project title
