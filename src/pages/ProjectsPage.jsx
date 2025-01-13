@@ -59,13 +59,21 @@ const ProjectsPage = () => {
         }
       }, [navigate]);
 
+    const formatPeriod = (startDate, endDate) => {
+        if (endDate) {
+            return `${startDate} - ${endDate}`;
+        }
+        else {
+            return `${startDate} - `;
+        }
+    };
+
     // Fetch data from API
     const fetchData = async (page = 0, size = 10) => {
         setAuthToken(accessToken); // set the accessToken
 
         setLoading(true);
 
-        
         try {
             const response = await api.get('/project', {
                 params: {
@@ -80,7 +88,7 @@ const ProjectsPage = () => {
                 setPageCount(response.data.data.page.totalPages);
                 
                 const formattedData = response.data.data.content.map(project => ({
-                    Period: project.startDate, // 원하는 형식으로 날짜 변환 함수
+                    Period: formatPeriod(project.startDate, project.endDate),
                     Title: project.name,
                     Status: project.status,
                     Action: ["View"],
