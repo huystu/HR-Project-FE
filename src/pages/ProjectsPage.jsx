@@ -44,6 +44,14 @@ const ProjectsPage = () => {
 
     const accessToken = localStorage.getItem('token');
 
+    // Check token
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/"); 
+        }
+      }, [navigate]);
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
