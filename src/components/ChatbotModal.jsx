@@ -15,6 +15,14 @@ const ChatbotModal = ({ visible, handleClose }) => {
     const [input, setInput] = useState('');
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1); // 선택된 제안 인덱스 상태 추가
     const suggestionRefs = useRef([]); // 제안 요소에 대한 참조 배열
+    const chatboxRef = useRef(null); // 대화 상자를 참조
+
+    // 메시지가 업데이트될 때마다 대화 상자의 스크롤 위치를 맨 아래로 조정
+    useEffect(() => {
+        if (chatboxRef.current) {
+            chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     useEffect(() => {
         if (visible) {
@@ -150,7 +158,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 <div className="chat-header">
                     <h2>HR Buddy</h2>
                 </div>
-                <div className="chatbox">
+                <div className="chatbox" ref={chatboxRef}>
                     {messages.map((msg, index) => (
                         <div key={index} className={`message ${msg.isUser ? 'user-msg' : 'bot-msg'}`}>
                             <div className="chat-name">
