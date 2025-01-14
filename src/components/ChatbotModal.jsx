@@ -58,16 +58,49 @@ const ChatbotModal = ({ visible, handleClose }) => {
         }
     }
     
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (input.trim()) {
             const now = new Date();
             const options = { hour: 'numeric', minute: 'numeric', hour12: true };
             const time = now.toLocaleTimeString('en-US', options);
             const userMessage = { text: input, isUser: true, time: time };
+
+            console.log(userMessage);
+
             setMessages([...messages, userMessage]);
             setInput('');
 
-            // 챗봇 응답 추가
+            setAuthToken(accessToken);
+            const headers = { "Session-ID": "test", };
+
+            const data = {
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text: input,
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            try {
+                const response = await api.post("/api/gemini/process-query", data, { headers });
+    
+                if (response.status === 200) {
+                    console.log("chatbot process-query: ", response);
+                    const answer = response.data.data;
+                    const botMessage = { text: answer, isUser: false, time: time };
+                    setMessages(prevMessages => [...prevMessages, botMessage]);
+                }
+            }
+            catch (error) {
+                console.error("Error chatbot process-query:", error);
+                alert("An error occurred during chatbot process-query.");
+            }
+
+            // // 챗봇 응답 추가
             // setTimeout(() => {
             //     if (input.toLowerCase() === 'hi') {
             //         const botMessage = { text: 'Hi', isUser: false, time: time };
