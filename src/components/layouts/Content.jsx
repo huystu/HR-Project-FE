@@ -9,6 +9,7 @@ const Content = ({route, children}) => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('loginUser');
         navigate('/'); // redirect to login page
     };
 

@@ -21,7 +21,7 @@ import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProjectsPage = () => {
-    const user = "Admin"; // User Name
+    const user = localStorage.getItem('loginUser'); // User Name
 
     const columns = ["Period", "Title", "Status", "Action"];
     const [isModalOpen, setIsModalOpen] = useState(false);
