@@ -63,6 +63,9 @@ const ProjectDetailPage = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null); //선택된 직원 데이터
 
+    // Modal - Delete Project
+    const [isDeleteProjectModalOpen, setIsDeleteProjectModalOpen] = useState(false);
+
     // Token
     const accessToken = localStorage.getItem('token');
     // Check token
@@ -101,6 +104,7 @@ const ProjectDetailPage = () => {
                     period: formatPeriod(projectInfo.startDate, projectInfo.endDate),
                     status: projectInfo.status,
                     id: projectInfo.id,
+                    cnt_members: response.data.data.employeesInfo.length, 
                 }
                 setProjectInfo(formattedProjectData);
 
@@ -364,9 +368,38 @@ const ProjectDetailPage = () => {
         }
     };
 
+    // When Click Member Delete Button
+    const handleDeleteProjectClick = () => {
+        setIsDeleteProjectModalOpen(true);
+    }
+
+    // Delete Project
+    const deleteProject = async () => {
+        try {
+            const response = await api.delete(`/project/${id}`);
+            if (response.status === 200) {
+                setIsDeleteModalOpen(false);
+                alert("Project deleted successfully!");
+                navigate('/projects');
+            }
+        } catch (error) {
+            console.error("Error deleting Project:", error);
+            alert("An error occurred while deleting the Project.");
+        }
+    };
+
+    const [variant, setVariant] = useState(projectInfo.cnt_members > 0 ? 'enable' : 'disabled');
+    const [disable, setDisable] = useState(projectInfo.cnt_members > 0 ? false : true);
+    
+    useEffect(() => {
+        console.log("member cnt: ", projectInfo.cnt_members);
+        setVariant(projectInfo.cnt_members === 0 ? 'enabled' : 'disabled');
+        setDisable(projectInfo.cnt_members === 0 ? false : true);
+    }, [projectInfo.cnt_members]);
+
     const btnsArray = [
         <Button key="update" onClick={handleUpdateProject}>Update Project</Button>,
-        <Button key="delete">Delete Project</Button>,
+        <Button key="delete" variant={variant} disabled={disable}onClick={handleDeleteProjectClick}>Delete Project</Button>,
     ];
 
     const projectStatusOptions = [
@@ -443,7 +476,7 @@ const ProjectDetailPage = () => {
                 }
                 subTitle ={
                     <p style={{ textAlign: "center" }}>
-                        Do you want to delete the Member? <br></br>
+                        Do you want to delete the member? <br></br>
                         This process cannot be undone.
                     </p>
                 }
@@ -452,6 +485,31 @@ const ProjectDetailPage = () => {
                         {/*<img src="/images/1.png" alt="Delete Confirmation" />*/}
                         <Button className = "btn-gray" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
                         <Button onClick={deleteMember}>Delete</Button>
+                    </div>
+                }
+            />
+
+            {/* Delete Project */}
+            <DeleteModal    
+                isModalOpen={isDeleteProjectModalOpen}
+                onCancel={() => setIsDeleteProjectModalOpen(false)}
+                onDelete={deleteProject}
+                title = {
+                    <div style={{ textAlign: "center "}}>
+                        <img src="/1.png" alt="Delete Confirmation" style={{ width: "50px", height: "50px", marginBottom: "10px" }} />
+                        <Title>Are you sure?</Title>
+                    </div>
+                }
+                subTitle ={
+                    <p style={{ textAlign: "center" }}>
+                        Do you want to delete the Project? <br></br>
+                        This process cannot be undone.
+                    </p>
+                }
+                footer={
+                    <div className = "button-container">
+                        <Button className = "btn-gray" onClick={() => setIsDeleteProjectModalOpen(false)}>Cancel</Button>
+                        <Button onClick={deleteProject}>Delete</Button>
                     </div>
                 }
             />
