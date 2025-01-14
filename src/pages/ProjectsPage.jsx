@@ -8,15 +8,12 @@ import Layout from "../components/layouts/Layout";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
 import CustomModal from '../components/Modal';
-import DeleteModal from '../components/DeleteModal';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
-import ImgButton from '../components/ImgButton';
 import Title from '../components/Title';
 import { useFormik } from 'formik';
 import '../styles/global.css';
 import '../styles/deletemodal.css';
-import { Select } from "antd";
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
