@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { Tabs, Select } from 'antd'
+import { Tabs, Select, } from 'antd'
 
 import api, { setAuthToken } from '../api';
 
@@ -38,17 +38,16 @@ const ProjectDetailPage = () => {
     const [members, setMembers] = useState([]);
 
     const roleOptions = [
-        {value: "Team Leader", label: "Team Leader",},
-        {value: "Designer", label: "Designer",},
-        {value: "Developer", label: "Developer",},
-        {value: "Tester", label: "Tester",},
+        { value: 'TEAM_LEADER', label: 'TEAM_LEADER' },
+        { value: 'DESIGNER', label: 'DESIGNER' },
+        { value: 'FE_DEVELOPER', label: 'FE_DEVELOPER' },
+        { value: 'BE_DEVELOPER', label: 'BE_DEVELOPER' },
+        { value: 'AI_ENGINEER', label: 'AI_ENGINEER' },
+        { value: 'TESTER', label: 'TESTER' },
     ];
 
-    // const [pageCount, setPageCount] = useState(1);
-    // const [currentPage, setCurrentPage] = useState(1);
-    // const [pageSize] = useState(10);
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
 
     const accessToken = localStorage.getItem('token');
 
@@ -94,15 +93,15 @@ const ProjectDetailPage = () => {
 
                 setProjectInfo(formattedProjectData);
 
-                const members = response.data.data.employees;
+                const members = response.data.data.employeesInfo;
 
                 const formattedMembersData = members.map(member =>({
-                    Name: member.name,
-                    // Status: member.status,
-                    // "Start Date": member.startDate,
-                    // "End Date": member.endDate,
-                    Email: member.email,
-                    Role: <Select defaultValue={`${member.roleInProject}`} onChange={handleChange} options={roleOptions} />,
+                    Name: member.employeeInfo.name,
+                    Status: member.employeeProjectInfo.joinStatus,
+                    "Start Date": member.employeeProjectInfo.joinDate,
+                    "End Date": member.employeeProjectInfo.exitDate,
+                    Email: member.employeeInfo.email,
+                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={handleChange} options={roleOptions} />,
                     Action: ['Link', 'Delete'],
                     id: member.id,
                 }));
@@ -119,11 +118,11 @@ const ProjectDetailPage = () => {
     useEffect(() => {fetchData();}, []);
 
     const handleCancel = () => {
-        setIsModalOpen(false);
+        setIsUpdateModalOpen(false);
     }
 
     const handleAddEmployee = () => {
-        setIsModalOpen(true); // Open the modal
+        setIsUpdateModalOpen(true); // Open the modal
         formik.setValues({
             title: projectInfo.title,
             description: projectInfo.description,
@@ -167,7 +166,7 @@ const ProjectDetailPage = () => {
 
                 if (response.status === 200) {
                     alert("Project Info Updated successfully!");
-                    setIsModalOpen(false);
+                    setIsUpdateModalOpen(false);
                     fetchData();
                 }
             } catch (error) {
@@ -180,6 +179,115 @@ const ProjectDetailPage = () => {
     const handleChange = (value) => {
         formik.setFieldValue('status', value);
     };
+    
+    const [addMemberId, setAddMemberId] = useState();
+    const [inputValue, setInputValue] = useState('');
+    const [addMemberOptions, setAddMemberOptions] = useState([]);
+    const [allMembers, setAllMembers] = useState([]);
+
+    // 모든 멤버 불러오기: add member의 option으로 제공
+    const fetchAllMember = async () => {
+        setAuthToken(accessToken); // set accessToken
+        const response = await api.get('/employee/all');
+        if (response.status === 200) {
+            const members = response.data.data;
+            console.log("Load Members", members);
+            // { value: 'Asdkj Zasdf', label: 'Asdkj Zasdf' },
+            const formattedData = members.map(employee => (
+                {
+                    value: employee.name,
+                    label: employee.name,
+                    key: employee.employeeId,
+                }
+            ));
+            setAllMembers(formattedData);
+        }
+    }
+
+    // Open AddMember Modal
+    const handleAddMember = () => {
+        setIsAddMemberModalOpen(true);
+        fetchAllMember();
+        formikAddMember.resetForm( { name: ' ', role: ' ' } );
+        setInputValue('');
+    }
+
+    // Close AddMember Modal
+    const handleAddMemberCancel = () => {
+        setIsAddMemberModalOpen(false);
+    }
+
+    // onSelect: 사용자가 옵션을 선택시 호출
+    const handelAddMemberSelect = (value, option) => {
+        setInputValue(value);
+        formikAddMember.setFieldValue('name', value);
+        setAddMemberId(option.key);
+    }
+
+    // onSearch: 입력 필드에서 검색 수행 시 호출
+    const handelAddMemberSearch = (value) => {
+        setInputValue(value);
+        
+        const filtered = allMembers.filter(member =>
+            member.value.toLowerCase().includes(value.toLowerCase())
+        );
+
+        console.log('Filtered Members:', filtered);
+        
+        setAddMemberOptions(filtered);
+
+        console.log(addMemberOptions);
+        // formikAddMember.setFieldValue('name', value);
+    };
+    
+    // onFocus: 입력창 포커스 될 때 호출
+    const handleAddMemberFocus = () => {
+        if (!inputValue) {
+            setAddMemberOptions(allMembers);
+        }
+        console.log("handleAddMemberFocus: ", addMemberOptions);
+    };
+
+    // Add Members Formik settings
+    const formikAddMember = useFormik({
+        initialValues: {
+            name: '',
+            role: '',
+        },
+        validate: (values) => {
+            const errors = {};
+            if (!values.name) {
+                errors.name = 'Name is required';
+            }
+            if (!values.role) {
+                errors.role = 'Role is required';
+            }
+            return errors;
+        },
+        onSubmit: async (values) => {
+            console.log('Form Values:', values);
+            console.log('Selected Member ID:', addMemberId);
+
+            setAuthToken(accessToken); // set accessToken
+            
+            try {
+                const response = await api.post(`/project/${id}/employee`, [{
+                    employeeId: addMemberId,
+                    role: values.role,
+                    contribution: '',
+                }]);
+
+                if (response.status === 200) {
+                    alert("Member Added successfully!");
+                    setIsAddMemberModalOpen(false);
+                    fetchData();
+                }
+            } catch (error) {
+                console.error("Error adding employee:", error);
+                alert("Failed to add employee. Please try again.");
+            }
+        },
+    });
 
     const btnsArray = [
         <Button key="update" onClick={handleAddEmployee}>Update Project</Button>,
@@ -197,13 +305,13 @@ const ProjectDetailPage = () => {
         <Layout user={user} route={`Projects, ${projectInfo.title}`}>
             {/* Update Project  */}
             <CustomModal
-                isModalOpen={isModalOpen}
+                isModalOpen={isUpdateModalOpen}
                 handleOk={formik.handleSubmit} //폼 제출
                 handleCancel={handleCancel}
                 title = {<Title>Update Project</Title>}
                 footer={
                     <div className = "button-container">
-                        <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
+                        <Button className = "btn-gray" onClick={() => setIsUpdateModalOpen(false)}>Close</Button>
                         <Button onClick={formik.handleSubmit}>Update</Button>
                     </div>
                 }
@@ -215,6 +323,35 @@ const ProjectDetailPage = () => {
                         <p>Status</p>
                         <Select id="status" defaultValue={`${projectInfo.status}`} onChange={handleChange} options={projectStatusOptions} />
                     </div>
+                </form>
+            </CustomModal>
+            
+            {/* Add Member  */}
+            <CustomModal
+                isModalOpen={isAddMemberModalOpen}
+                handleOk={formikAddMember.handleSubmit} //폼 제출
+                handleCancel={handleAddMemberCancel}
+                title = {<Title>Add Member</Title>}
+                footer={
+                    <div className = "button-container">
+                        <Button className = "btn-gray" onClick={() => setIsAddMemberModalOpen(false)}>Close</Button>
+                        <Button onClick={formikAddMember.handleSubmit}>Update</Button>
+                    </div>
+                }
+            >
+                <form onSubmit={formikAddMember.handleSubmit}>
+                    <InputField
+                        label="Name"
+                        type="autocomplete"
+                        name="name"
+                        formik={formikAddMember}
+                        options={addMemberOptions}
+                        value={inputValue}
+                        onSearch={handelAddMemberSearch}
+                        onFocus={handleAddMemberFocus}
+                        onSelect={handelAddMemberSelect}
+                    />
+                    <InputField label="Role" type="select" name="role" formik={formikAddMember} options={roleOptions} />
                 </form>
             </CustomModal>
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
@@ -236,7 +373,7 @@ const ProjectDetailPage = () => {
                         <div style={{display: 'flex'}}>
                             <Table columns={columns} data={members} />
                             {/* Add Members Button */}
-                            <ImgButton>
+                            <ImgButton onClick={handleAddMember}>
                                 <IoMdPersonAdd />
                             </ImgButton>
                         </div>
