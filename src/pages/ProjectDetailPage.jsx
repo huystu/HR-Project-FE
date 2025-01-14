@@ -59,6 +59,10 @@ const ProjectDetailPage = () => {
     // Modal - Add Member
     const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
 
+    // Modal - Delete Member
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedMember, setSelectedMember] = useState(null); //선택된 직원 데이터
+
     // Token
     const accessToken = localStorage.getItem('token');
     // Check token
@@ -328,6 +332,38 @@ const ProjectDetailPage = () => {
         }
     }
 
+    // When Click Member Delete Button
+    const handleDeleteClick = (member) => {
+        console.log("delete member: ", member);
+        const status = member.Status.props.defaultValue;
+        console.log(status);
+        if (status === "DOING") {
+            alert('Unable to Delete: Employees currently in the DOING status cannot be deleted.');
+            return;
+        }
+        setSelectedMember(member); //삭제할 직원 설정
+        setIsDeleteModalOpen(true);
+    }
+    // Delete Member
+    const deleteMember = async () => {
+        if (!selectedMember || !selectedMember.id) {
+            alert("Error: Unable to identify the employee to delete.");
+            return;
+        }
+    
+        try {
+            const response = await api.delete(`/project/${id}/employee/${selectedMember.id}`);
+            if (response.status === 200) {
+                fetchData();
+                setIsDeleteModalOpen(false);
+                alert("Member deleted successfully!");
+            }
+        } catch (error) {
+            console.error("Error deleting employee:", error);
+            alert("An error occurred while deleting the employee.");
+        }
+    };
+
     const btnsArray = [
         <Button key="update" onClick={handleUpdateProject}>Update Project</Button>,
         <Button key="delete">Delete Project</Button>,
@@ -393,6 +429,32 @@ const ProjectDetailPage = () => {
                     <InputField label="Role" type="select" name="role" formik={formikAddMember} options={roleOptions} />
                 </form>
             </CustomModal>
+
+            {/* Delete Member */}
+            <DeleteModal    
+                isModalOpen={isDeleteModalOpen}
+                onCancel={() => setIsDeleteModalOpen(false)}
+                onDelete={deleteMember}
+                title = {
+                    <div style={{ textAlign: "center "}}>
+                        <img src="/1.png" alt="Delete Confirmation" style={{ width: "50px", height: "50px", marginBottom: "10px" }} />
+                        <Title>Are you sure?</Title>
+                    </div>
+                }
+                subTitle ={
+                    <p style={{ textAlign: "center" }}>
+                        Do you want to delete the Member? <br></br>
+                        This process cannot be undone.
+                    </p>
+                }
+                footer={
+                    <div className = "button-container">
+                        {/*<img src="/images/1.png" alt="Delete Confirmation" />*/}
+                        <Button className = "btn-gray" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+                        <Button onClick={deleteMember}>Delete</Button>
+                    </div>
+                }
+            />
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
             <DashboardCard
@@ -410,7 +472,7 @@ const ProjectDetailPage = () => {
                 <Tabs defaultActiveKey="1">
                     <Tabs.TabPane tab="Members" key="1">
                         <div style={{display: 'flex'}}>
-                            <Table columns={columns} data={members} />
+                            <Table columns={columns} data={members} onDeleteClick={handleDeleteClick} />
                             {/* Add Members Button */}
                             <ImgButton onClick={handleAddMember}>
                                 <IoMdPersonAdd />
