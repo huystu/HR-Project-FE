@@ -26,7 +26,7 @@ const ProjectDetailPage = () => {
     const navigate = useNavigate();
 
     const { id } = useParams(); // Project ID
-    const user = "Admin"; // User Name
+    const user = localStorage.getItem('loginUser'); // User Name
 
     // Loading
     const [loading, setLoading] = useState(false);

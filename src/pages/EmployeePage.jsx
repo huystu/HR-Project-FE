@@ -21,7 +21,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 
 const EmployeePage = () => {
-  const user = "Admin"; // User Name
+  const user = localStorage.getItem('loginUser'); // User Name
   const columns = ["Date", "Employee", "Role", "Skills", "Email", "Phone Number", "Action"];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
