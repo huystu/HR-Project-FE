@@ -66,8 +66,6 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                       )
                     }
                   </>
-                ) : column === "Status" ? (
-                  <Skill skill={row[column]} />
                 ) : (
                   row[column]
                 )}
