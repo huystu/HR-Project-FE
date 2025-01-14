@@ -79,3 +79,24 @@
     color: #6D6D6D;
     font-size: 10px;
 }
+
+.text-suggest-box {
+    display: flex;
+    overflow-x: auto;
+    background-color: #F3F4F7;
+}
+
+.text-suggest {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 15px;
+    background-color: #6D6D6D;
+    color: white;
+    border-radius: 15px;
+    margin: 5px;
+    padding: 5px;
+}
+
+.text-suggest.selected {
+    background-color: #264BBA; /* 선택된 제안 강조 색상 */
+}
