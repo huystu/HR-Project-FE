@@ -38,13 +38,18 @@ const ProjectDetailPage = () => {
     const columns = ["Name", "Status", "Start Date", "End Date", "Email", "Role", "Action"];
     const [members, setMembers] = useState([]);
     const roleOptions = [ // Member's Roles
-        { value: 'TEAM_LEADER', label: 'TEAM_LEADER' },
-        { value: 'DESIGNER', label: 'DESIGNER' },
-        { value: 'FE_DEVELOPER', label: 'FE_DEVELOPER' },
-        { value: 'BE_DEVELOPER', label: 'BE_DEVELOPER' },
-        { value: 'AI_ENGINEER', label: 'AI_ENGINEER' },
-        { value: 'TESTER', label: 'TESTER' },
+        { value: 'TEAM_LEADER', label: 'Team Leader' },
+        { value: 'DESIGNER', label: 'Designer' },
+        { value: 'FE_DEVELOPER', label: 'FE_Developer' },
+        { value: 'BE_DEVELOPER', label: 'BE_Developer' },
+        { value: 'AI_ENGINEER', label: 'AI_Engineer' },
+        { value: 'TESTER', label: 'Tester' },
     ];
+    const statusOptions = [
+        {value: 'READY', label: <Tag color='green'>Ready</Tag>},
+        {value: 'DOING', label: <Tag color='blue'>Doing</Tag>},
+        {value: 'EXITED', label: <Tag color='red'>Exited</Tag>},
+    ]
 
     // Modal - Update Project
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -99,7 +104,8 @@ const ProjectDetailPage = () => {
                 const members = response.data.data.employeesInfo;
                 const formattedMembersData = members.map(member =>({
                     Name: member.employeeInfo.name,
-                    Status: <Tag color="blue"><div onClick={handleClickMemberStatus}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
+                    // Status: <Tag color="blue"><div onClick={() => handleClickMemberStatus(member.employeeProjectInfo.joinStatus, member.employeeInfo.id)}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
+                    Status: <Select variant="borderless" defaultValue={`${member.employeeProjectInfo.joinStatus}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo.id)} options={statusOptions} />,
                     "Start Date": member.employeeProjectInfo.joinDate,
                     "End Date": member.employeeProjectInfo.exitDate,
                     Email: member.employeeInfo.email,
@@ -303,8 +309,23 @@ const ProjectDetailPage = () => {
     };
 
     // Update Member's Status
-    const handleClickMemberStatus = () => {
-        
+    const handleMemberStatusChange = async (status, employeeId) => {
+        console.log('Selected Status:', status);
+        console.log('Member ID:', employeeId);
+
+        setAuthToken(accessToken); // set accessToken
+        const updatedData = { joinStatus: status, }
+
+        try {
+            const response = await api.put(`/project/${id}/employee/${employeeId}`, updatedData);
+            if (response.status === 200) {
+                alert(`${employeeId}'s status updated successfully!`);
+                fetchData();
+            }
+        } catch (error) {
+            console.error("Error updating member's status:", error);
+            alert("Failed to change member's status. Please try again.");
+        }
     }
 
     const btnsArray = [
