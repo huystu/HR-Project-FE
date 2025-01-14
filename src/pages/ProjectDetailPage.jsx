@@ -99,11 +99,11 @@ const ProjectDetailPage = () => {
                 const members = response.data.data.employeesInfo;
                 const formattedMembersData = members.map(member =>({
                     Name: member.employeeInfo.name,
-                    Status: <Tag color="blue">{member.employeeProjectInfo.joinStatus}</Tag>,
+                    Status: <Tag color="blue"><div onClick={handleClickMemberStatus}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
                     "Start Date": member.employeeProjectInfo.joinDate,
                     "End Date": member.employeeProjectInfo.exitDate,
                     Email: member.employeeInfo.email,
-                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo.id)} options={roleOptions} />,
+                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id)} options={roleOptions} />,
                     Action: ['Link', 'Delete'],
                     id: member.employeeInfo.id,
                 }));
@@ -283,7 +283,7 @@ const ProjectDetailPage = () => {
     });
     
     // Update Member's Role
-    const handleMemberStatusChange = async (value, employeeId) => {
+    const handleMemberRoleChange = async (value, employeeId) => {
         console.log('Selected Role:', value);
         console.log('Member ID:', employeeId);
 
@@ -301,6 +301,11 @@ const ProjectDetailPage = () => {
             alert("Failed to change member's role. Please try again.");
         }
     };
+
+    // Update Member's Status
+    const handleClickMemberStatus = () => {
+        
+    }
 
     const btnsArray = [
         <Button key="update" onClick={handleUpdateProject}>Update Project</Button>,
