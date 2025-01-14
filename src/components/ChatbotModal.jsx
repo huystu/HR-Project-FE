@@ -8,6 +8,8 @@ import { CloseOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import '../styles/ChatbotModal.css';
 
+import api, { setAuthToken } from '../api';
+
 const ChatbotModal = ({ visible, handleClose }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
@@ -20,6 +22,41 @@ const ChatbotModal = ({ visible, handleClose }) => {
             }
         }
     }, [visible]);
+
+    const accessToken = localStorage.getItem('token');
+
+    const [suggestion, setSuggestion] = useState([]);
+
+    const handleInput = async (e) => {
+        const newInput = e.target.value;
+        if (newInput==='') {
+            setSuggestion([]);
+            setInput('');
+            return;
+        }
+        setInput(newInput);
+        console.log(newInput);
+
+        setAuthToken(accessToken);
+
+        try {
+            const response = await api.post("/api/suggest", { input: input });
+
+            if (response.status === 200) {
+                console.log(response);
+
+                const suggest = response.data.data;
+
+                setSuggestion(suggest);
+
+                console.log(suggestion);
+            }
+        }
+        catch (error) {
+            console.error("Error text suggestion:", error);
+            alert("An error occurred while suggesting some text.");
+        }
+    }
     
     const handleSendMessage = () => {
         if (input.trim()) {
@@ -31,12 +68,12 @@ const ChatbotModal = ({ visible, handleClose }) => {
             setInput('');
 
             // 챗봇 응답 추가
-            setTimeout(() => {
-                if (input.toLowerCase() === 'hi') {
-                    const botMessage = { text: 'Hi', isUser: false, time: time };
-                    setMessages(prevMessages => [...prevMessages, botMessage]);
-                }
-            }, 500); // 응답 지연 시간 (선택 사항)
+            // setTimeout(() => {
+            //     if (input.toLowerCase() === 'hi') {
+            //         const botMessage = { text: 'Hi', isUser: false, time: time };
+            //         setMessages(prevMessages => [...prevMessages, botMessage]);
+            //     }
+            // }, 500); // 응답 지연 시간 (선택 사항)
         }
     };
     
@@ -64,10 +101,15 @@ const ChatbotModal = ({ visible, handleClose }) => {
                         </div>
                     ))}
                 </div>
+                <div className="text-suggest-box">
+                    {suggestion.map((msg, index) => (
+                        <span className="text-suggest" key={index}>{msg}</span>
+                    ))}
+                </div>
                 <div className="type-msg">
                     <Input
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={(e) => handleInput(e)}
                         onPressEnter={handleSendMessage}
                         placeholder="Type your message..."
                     />
