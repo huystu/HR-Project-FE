@@ -1,5 +1,5 @@
 // src/components/CharbotModal.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Modal, Input, } from 'antd';
 import { TbSend2 } from "react-icons/tb";
 import ImgButton from './ImgButton';
@@ -13,6 +13,8 @@ import api, { setAuthToken } from '../api';
 const ChatbotModal = ({ visible, handleClose }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
+    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1); // 선택된 제안 인덱스 상태 추가
+    const suggestionRefs = useRef([]); // 제안 요소에 대한 참조 배열
 
     useEffect(() => {
         if (visible) {
@@ -48,6 +50,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 const suggest = response.data.data;
 
                 setSuggestion(suggest);
+                setSelectedSuggestionIndex(-1); // 제안 목록 갱신 시 선택된 인덱스 초기화
 
                 console.log(suggestion);
             }
@@ -99,16 +102,44 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 console.error("Error chatbot process-query:", error);
                 alert("An error occurred during chatbot process-query.");
             }
-
-            // // 챗봇 응답 추가
-            // setTimeout(() => {
-            //     if (input.toLowerCase() === 'hi') {
-            //         const botMessage = { text: 'Hi', isUser: false, time: time };
-            //         setMessages(prevMessages => [...prevMessages, botMessage]);
-            //     }
-            // }, 500); // 응답 지연 시간 (선택 사항)
         }
     };
+
+    const handleSuggestionClick = (suggest) => {
+        setInput(suggest);
+        setSuggestion([]); // 제안 목록을 초기화
+        setSelectedSuggestionIndex(-1); // 선택된 인덱스 초기화
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            if (e.shiftKey) { // Shift + Tab: 역방향으로 이동
+                const prevIndex = (selectedSuggestionIndex - 1 + suggestion.length) % suggestion.length;
+                setSelectedSuggestionIndex(prevIndex);
+                setInput(suggestion[prevIndex]);
+            }
+            else { // Tab: 순방향으로 이동
+                const nextIndex = (selectedSuggestionIndex + 1) % suggestion.length;
+                setSelectedSuggestionIndex(nextIndex);
+                setInput(suggestion[nextIndex]);
+            }
+        }
+        else if (e.key === 'Enter' && selectedSuggestionIndex >= 0) {
+            e.preventDefault();
+            handleSuggestionClick(suggestion[selectedSuggestionIndex]);
+            setInput('');
+        }
+    };
+
+    useEffect(() => {
+        if (selectedSuggestionIndex >= 0 && suggestionRefs.current[selectedSuggestionIndex]) {
+            suggestionRefs.current[selectedSuggestionIndex].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+            });
+        }
+    }, [selectedSuggestionIndex]);
     
     return (
         <Modal visible={visible} onCancel={handleClose} footer={null} width="330px"
@@ -136,7 +167,14 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 </div>
                 <div className="text-suggest-box">
                     {suggestion.map((msg, index) => (
-                        <span className="text-suggest" key={index}>{msg}</span>
+                        <span
+                            className={`text-suggest ${index === selectedSuggestionIndex ? 'selected' : ''}`}
+                            key={index}
+                            onClick={() => handleSuggestionClick(msg)}
+                            ref={el => suggestionRefs.current[index] = el}
+                        >
+                            {msg}
+                        </span>
                     ))}
                 </div>
                 <div className="type-msg">
@@ -144,6 +182,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                         value={input}
                         onChange={(e) => handleInput(e)}
                         onPressEnter={handleSendMessage}
+                        onKeyDown={handleKeyDown}
                         placeholder="Type your message..."
                     />
                     <ImgButton onClick={handleSendMessage}><TbSend2 /></ImgButton>

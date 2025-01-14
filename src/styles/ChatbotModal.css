@@ -96,3 +96,7 @@
     margin: 5px;
     padding: 5px;
 }
+
+.text-suggest.selected {
+    background-color: #264BBA; /* 선택된 제안 강조 색상 */
+}
