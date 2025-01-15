@@ -107,7 +107,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
     
                 if (response.status === 200) {
                     console.log("chatbot process-query: ", response);
-                    const answer = response.data;
+                    const answer = response.data.data;
                     const botMessage = { text: answer, isUser: false, time: time, loading: false };
                     setMessages(prevMessages => 
                         prevMessages.map((msg, index) => 

@@ -18,6 +18,8 @@ import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
+import roleOptions from "../constants/roleOptions";
+
 
 const EmployeePage = () => {
   const user = localStorage.getItem('loginUser'); // User Name
@@ -416,7 +418,8 @@ const updateEmployee = async (id, updatedData) => {
               <InputField className = "-half" label="Date" type="date" name="date" formik={formik} />
               <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
             </div>
-            <InputField label="Role" type="text" name="role" formik={formik} /> {/*드롭다운*/}
+            {/* <InputField label="Role" type="text" name="role" formik={formik} /> */}
+            <InputField label="Role" type="select" name="role" formik={formik} options={roleOptions} defaultValue={modalMode === 'edit' ? formik.values.role : undefined} />
             <InputField label="Skills" type="text" name="skills" formik={formik} /> {/*선택하기*/}
             <InputField label="Email" type="email" name="email" formik={formik} />
             <InputField label="PhoneNumber" type="tel" name="phoneNumber" formik={formik} />
