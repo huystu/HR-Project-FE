@@ -198,10 +198,16 @@ const ProjectDetailPage = () => {
     const [inputValue, setInputValue] = useState('');
     const [addMemberOptions, setAddMemberOptions] = useState([]);
     const [allMembers, setAllMembers] = useState([]);
-    // 모든 멤버 불러오기: add member의 option으로 제공
+    // 멤버 불러오기(할당된 멤버 제외): add member의 option으로 제공
     const fetchAllMember = async () => {
         setAuthToken(accessToken); // set accessToken
-        const response = await api.get('/employee/all');
+        const response = await api.get('/employee/all', 
+            {
+                params: {
+                    projectId: id,
+                }
+            }
+        );
         if (response.status === 200) {
             const members = response.data.data;
             console.log("Load Members", members);
