@@ -72,7 +72,7 @@ const ProjectDetailPage = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/"); 
+            navigate("/");
         }
     }, [navigate]);
 
@@ -406,9 +406,9 @@ const ProjectDetailPage = () => {
     ];
 
     const projectStatusOptions = [
-        {value: "PENDING", label: "PENDING",},
-        {value: "WORKING", label: "WORKING",},
-        {value: "COMPLETE", label: "COMPLETE",},
+        {value: "PENDING", label: "Pending",},
+        {value: "WORKING", label: "Working",},
+        {value: "COMPLETE", label: "Complete",},
     ];
 
     return (
