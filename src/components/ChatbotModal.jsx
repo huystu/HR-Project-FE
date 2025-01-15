@@ -10,12 +10,23 @@ import '../styles/ChatbotModal.css';
 
 import api, { setAuthToken } from '../api';
 
+const WaitingChatbotAnswer = () => {
+    return (
+        <div className="loading-container">
+            <img src="/src/assets/Chatbot.png" width="20px" className="chatbot-loading"/>
+            <img src="/src/assets/Chatbot.png" width="20px" className="chatbot-loading"/>
+            <img src="/src/assets/Chatbot.png" width="20px" className="chatbot-loading"/>
+        </div>
+    )
+};
+
 const ChatbotModal = ({ visible, handleClose }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1); // 선택된 제안 인덱스 상태 추가
     const suggestionRefs = useRef([]); // 제안 요소에 대한 참조 배열
     const chatboxRef = useRef(null); // 대화 상자를 참조
+    const [loading, setLoading] = useState(false); // loading 상태 추가
 
     // 메시지가 업데이트될 때마다 대화 상자의 스크롤 위치를 맨 아래로 조정
     useEffect(() => {
@@ -24,14 +35,14 @@ const ChatbotModal = ({ visible, handleClose }) => {
         }
     }, [messages]);
 
-    // useEffect(() => {
-    //     if (visible) {
-    //         const modalContent = document.querySelector('.ant-modal-content');
-    //         if(modalContent) {
-    //             modalContent.style.padding = '0';
-    //         }
-    //     }
-    // }, [visible]);
+    useEffect(() => {
+        if (visible) {
+            const modalContent = document.querySelector('.ant-modal-content');
+            if(modalContent) {
+                modalContent.style.padding = '0';
+            }
+        }
+    }, [visible]);
 
     const accessToken = localStorage.getItem('token');
 
@@ -68,8 +79,10 @@ const ChatbotModal = ({ visible, handleClose }) => {
             alert("An error occurred while suggesting some text.");
         }
     }
-    
+
     const handleSendMessage = async () => {
+        setLoading(true);
+
         if (input.trim()) {
             const now = new Date();
             const options = { hour: 'numeric', minute: 'numeric', hour12: true };
@@ -97,14 +110,21 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 ]
             };
 
+            const botLoadingMessage = { text: '', isUser: false, time: time, loading: true };
+            setMessages(prevMessages => [...prevMessages, botLoadingMessage]); // 로딩 메시지 추가
+
             try {
                 const response = await api.post("/api/gemini/process-query", data, { headers });
     
                 if (response.status === 200) {
                     console.log("chatbot process-query: ", response);
                     const answer = response.data.data;
-                    const botMessage = { text: answer, isUser: false, time: time };
-                    setMessages(prevMessages => [...prevMessages, botMessage]);
+                    const botMessage = { text: answer, isUser: false, time: time, loading: false };
+                    setMessages(prevMessages => 
+                        prevMessages.map((msg, index) => 
+                            index === prevMessages.length - 1 ? botMessage : msg // 마지막 메시지를 업데이트
+                        )
+                    );
                 }
             }
             catch (error) {
@@ -112,6 +132,8 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 alert("An error occurred during chatbot process-query.");
             }
         }
+
+        setLoading(false);
     };
 
     const handleSuggestionClick = (suggest) => {
@@ -149,9 +171,11 @@ const ChatbotModal = ({ visible, handleClose }) => {
             });
         }
     }, [selectedSuggestionIndex]);
+
+    const userName = localStorage.getItem('loginUser');
     
     return (
-        <Modal visible={visible} onCancel={handleClose} footer={null} width="400px"
+        <Modal visible={visible} onCancel={handleClose} footer={null} width="450px"
         centered
         closeIcon={<CloseOutlined style={{ color: 'white' }} />}
         >
@@ -161,9 +185,10 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 </div>
                 <div className="chatbox" ref={chatboxRef}>
                     {messages.map((msg, index) => (
+                        (msg.loading ? <WaitingChatbotAnswer key={index} className="msg-loading" /> : 
                         <div key={index} className={`message ${msg.isUser ? 'user-msg' : 'bot-msg'}`}>
                             <div className="chat-name">
-                                {msg.isUser ? "USER NAME" : <><img src="src/assets/Chatbot.png" width="20px"/><span> HR Buddy</span></>} 
+                                {msg.isUser ? `${userName}` : <><img src="/src/assets/Chatbot.png" width="20px"/><span> HR Buddy</span></>} 
                             </div>
                             <div className="chat-msg">
                                 {msg.text}
@@ -172,6 +197,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                                 {msg.time}
                             </div>
                         </div>
+                        )
                     ))}
                 </div>
                 <div className="text-suggest-box">

@@ -100,3 +100,33 @@
 .text-suggest.selected {
     background-color: #264BBA; /* 선택된 제안 강조 색상 */
 }
+
+.msg-loading {
+    background-color: transparent;
+}
+
+.chatbot-loading {
+    animation: upDown 1.5s infinite;
+}
+
+.chatbot-loading:nth-child(2) {
+    left: 80px;
+    animation-delay: 0.1s;
+}
+
+.chatbot-loading:nth-child(3) {
+    left: 160px;
+    animation-delay: 0.2s;
+}
+
+@keyframes upDown {
+    0% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(0, 50px);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
