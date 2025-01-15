@@ -37,7 +37,7 @@
     align-items: center;
 }
 
-.chat-name-bot > img, span {
+.chat-name-bot > img, .chat-name-bot > span {
     margin: 0 5px 5px 0;
 }
 

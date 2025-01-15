@@ -208,7 +208,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                         onKeyDown={handleKeyDown}
                         placeholder="Type your message..."
                     />
-                    <ImgButton onClick={handleSendMessage}><SendOutlined style={{ fontSize: '20px', color: '#6d6d6d' }}/></ImgButton>
+                    <ImgButton onClick={handleSendMessage}><SendOutlined style={{ fontSize: '20px', color: '#6d6d6d', textAlign: 'center' }}/></ImgButton>
                 </div>
             </div>
     </Modal>
