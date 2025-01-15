@@ -22,8 +22,9 @@
 .input-field-half-row {
     display: flex;
     /*flex-wrap: wrap; 반응형 줄바꿈*/
-   gap: 10px; /*요소 간 간격*/
-   max-width: 100%;
+    gap: 10px; /*요소 간 간격*/
+    max-width: 100%;
+    justify-content: space-between;
 }
 
 .input-field-half {
@@ -32,17 +33,17 @@
     flex-wrap: wrap; /*부모 요소 크기를 초과하면 줄바꿈*/
     width: 50%; /*부모 요소의 반 크기*/
     /*margin-right: 10px;*/
+    margin: 0;
 }
 
 .input-field-half > label {
     font-family: "Pretenard-Regular";
     font-size: 14px;
     display: flex;
-    width: 50%;
 }
-       
+
 .input-field-half > input {
-    width: 50%; /*입력 필드가 나머지 절반 크기*/
+    width: 80%; /*입력 필드가 나머지 절반 크기*/
     height: 40px;
     background-color: #F7F7F7;
     border: 1px solid transparent;

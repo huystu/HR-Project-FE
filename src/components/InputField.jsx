@@ -5,7 +5,7 @@ import { Select, AutoComplete } from 'antd';
 
 const InputField = ({ label, type, name, formik, className, options, value, onSearch, onFocus, onSelect }) => {
   return (
-    <div className={`input-field ${className ? '-' : className}`.trim()}>
+    <div className={`input-field${className ? className:''}`.trim()}>
       <label htmlFor={name}>{label}</label>
       {type === "select" ? (
         <Select

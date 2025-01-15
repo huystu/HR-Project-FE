@@ -414,8 +414,8 @@ const updateEmployee = async (id, updatedData) => {
         >
           <form onSubmit={formik.handleSubmit}>
             <div className="input-field-half-row">
-              <InputField className = "input-field-half" label="Date" type="date" name="date" formik={formik} />
-              <InputField className = "input-field-half" label="Name" type="text" name="name" formik={formik} />
+              <InputField className = "-half" label="Date" type="date" name="date" formik={formik} />
+              <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} /> {/*드롭다운*/}
             <InputField label="Skills" type="text" name="skills" formik={formik} /> {/*선택하기*/}
