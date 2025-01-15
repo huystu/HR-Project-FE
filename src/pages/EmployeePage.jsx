@@ -211,7 +211,16 @@ const EmployeePage = () => {
     
     setLoading(false);
   };
-  
+
+  // Change Date Type (LocalDate Type in Java)
+  const formatDateForBackend = (date) => {
+    // Convert JS Date to 'YYYY-MM-DD' format
+    const jsDate = new Date(date); // Ensure it's a Date object
+    const year = jsDate.getFullYear();
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
+  };
   
   // Formik settings
   //initialValues는 처음 렌더링할 때만 설정됨
