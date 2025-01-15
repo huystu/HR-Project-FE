@@ -53,6 +53,16 @@ const EmployeePage = () => {
     }); // Initialize form
   };
 
+  const parseDateFromBackend = (dateString) => {
+    //convert 'yyyy-mm-dd' format string to date object
+    const jsDate = new Date(dateString);
+    const year = jsDate.getFullYear();
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
+    
+  };
+
   //직원 수정 모달 열기
   //handleEdiClick 함수가 비동기로 데이터를 가져온 후 selectedEmployee를 업데이트
   const handleEditClick = async (employee) => {
