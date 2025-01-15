@@ -80,8 +80,11 @@ const ProjectDetailPage = () => {
         if (endDate) {
             return `${startDate} - ${endDate}`;
         }
-        else {
+        else if (startDate) {
             return `${startDate} - `;
+        }
+        else {
+            return '';
         }
     };
 
