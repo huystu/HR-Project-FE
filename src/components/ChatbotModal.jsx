@@ -1,9 +1,8 @@
 // src/components/CharbotModal.jsx
 import { useState, useEffect, useRef } from 'react';
 import { Modal, Input, } from 'antd';
-import { TbSend2 } from "react-icons/tb";
 import ImgButton from './ImgButton';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, SendOutlined, } from '@ant-design/icons';
 
 import PropTypes from 'prop-types';
 import '../styles/ChatbotModal.css';
@@ -26,7 +25,11 @@ const ChatbotModal = ({ visible, handleClose }) => {
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1); // 선택된 제안 인덱스 상태 추가
     const suggestionRefs = useRef([]); // 제안 요소에 대한 참조 배열
     const chatboxRef = useRef(null); // 대화 상자를 참조
-    const [loading, setLoading] = useState(false); // loading 상태 추가
+    const [suggestion, setSuggestion] = useState([]); // text-suggest 저장
+
+    const accessToken = localStorage.getItem('token');
+    const userName = localStorage.getItem('loginUser');
+    const loginUserID = localStorage.getItem('loginUserId');
 
     // 메시지가 업데이트될 때마다 대화 상자의 스크롤 위치를 맨 아래로 조정
     useEffect(() => {
@@ -44,10 +47,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
         }
     }, [visible]);
 
-    const accessToken = localStorage.getItem('token');
-
-    const [suggestion, setSuggestion] = useState([]);
-
+    // 채팅 입력
     const handleInput = async (e) => {
         const newInput = e.target.value;
         if (newInput==='') {
@@ -56,10 +56,9 @@ const ChatbotModal = ({ visible, handleClose }) => {
             return;
         }
         setInput(newInput);
-        console.log(newInput);
 
+        // text-suggestion
         setAuthToken(accessToken);
-
         try {
             const response = await api.post("/api/suggest", { input: input });
 
@@ -76,14 +75,14 @@ const ChatbotModal = ({ visible, handleClose }) => {
         }
         catch (error) {
             console.error("Error text suggestion:", error);
-            alert("An error occurred while suggesting some text.");
+            // alert("An error occurred while suggesting some text.");
         }
     }
 
+    // 
     const handleSendMessage = async () => {
-        setLoading(true);
-
         if (input.trim()) {
+            // 시간 설정
             const now = new Date();
             const options = { hour: 'numeric', minute: 'numeric', hour12: true };
             const time = now.toLocaleTimeString('en-US', options);
@@ -94,31 +93,21 @@ const ChatbotModal = ({ visible, handleClose }) => {
             setMessages([...messages, userMessage]);
             setInput('');
 
-            setAuthToken(accessToken);
-            const loginUserID = localStorage.getItem('loginUserId');
-            const headers = { "Session-ID": loginUserID, };
-
-            const data = {
-                contents: [
-                    {
-                        parts: [
-                            {
-                                text: input,
-                            }
-                        ]
-                    }
-                ]
-            };
-
             const botLoadingMessage = { text: '', isUser: false, time: time, loading: true };
             setMessages(prevMessages => [...prevMessages, botLoadingMessage]); // 로딩 메시지 추가
 
+            // 채팅 질문하기
+            setAuthToken(accessToken);
+            const headers = { "Session-ID": loginUserID, };
+            const data = {
+                contents: [{ parts: [{ text: input, }] }]
+            };
             try {
                 const response = await api.post("/api/gemini/process-query", data, { headers });
     
                 if (response.status === 200) {
                     console.log("chatbot process-query: ", response);
-                    const answer = response.data.data;
+                    const answer = response.data;
                     const botMessage = { text: answer, isUser: false, time: time, loading: false };
                     setMessages(prevMessages => 
                         prevMessages.map((msg, index) => 
@@ -129,19 +118,19 @@ const ChatbotModal = ({ visible, handleClose }) => {
             }
             catch (error) {
                 console.error("Error chatbot process-query:", error);
-                alert("An error occurred during chatbot process-query.");
+                // alert("An error occurred during chatbot process-query.");
             }
         }
-
-        setLoading(false);
     };
 
+    // text-suggest 선택
     const handleSuggestionClick = (suggest) => {
         setInput(suggest);
         setSuggestion([]); // 제안 목록을 초기화
         setSelectedSuggestionIndex(-1); // 선택된 인덱스 초기화
     };
 
+    // text-suggest 선택 (키보드 이용)
     const handleKeyDown = (e) => {
         if (e.key === 'Tab') {
             e.preventDefault();
@@ -163,6 +152,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
         }
     };
 
+    // text-suggest tab 키 자연스럽게 이동
     useEffect(() => {
         if (selectedSuggestionIndex >= 0 && suggestionRefs.current[selectedSuggestionIndex]) {
             suggestionRefs.current[selectedSuggestionIndex].scrollIntoView({
@@ -171,8 +161,6 @@ const ChatbotModal = ({ visible, handleClose }) => {
             });
         }
     }, [selectedSuggestionIndex]);
-
-    const userName = localStorage.getItem('loginUser');
     
     return (
         <Modal visible={visible} onCancel={handleClose} footer={null} width="450px"
@@ -188,7 +176,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                         (msg.loading ? <WaitingChatbotAnswer key={index} className="msg-loading" /> : 
                         <div key={index} className={`message ${msg.isUser ? 'user-msg' : 'bot-msg'}`}>
                             <div className="chat-name">
-                                {msg.isUser ? `${userName}` : <><img src="/src/assets/Chatbot.png" width="20px"/><span> HR Buddy</span></>} 
+                                {msg.isUser ? `${userName}` : <div className="chat-name-bot"><img src="/src/assets/Chatbot.png" width="20px"/><span> HR Buddy</span></div>} 
                             </div>
                             <div className="chat-msg">
                                 {msg.text}
@@ -220,7 +208,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                         onKeyDown={handleKeyDown}
                         placeholder="Type your message..."
                     />
-                    <ImgButton onClick={handleSendMessage}><TbSend2 /></ImgButton>
+                    <ImgButton onClick={handleSendMessage}><SendOutlined style={{ fontSize: '20px', color: '#6d6d6d' }}/></ImgButton>
                 </div>
             </div>
     </Modal>
