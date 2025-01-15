@@ -11,7 +11,6 @@ import CustomModal from '../components/Modal';
 import DeleteModal from '../components/DeleteModal';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
-import ImgButton from '../components/ImgButton';
 import Title from '../components/Title';
 import { useFormik } from 'formik';
 import '../styles/global.css';

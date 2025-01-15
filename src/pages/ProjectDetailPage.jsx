@@ -436,8 +436,8 @@ const ProjectDetailPage = () => {
                 <form onSubmit={formik.handleSubmit}>
                     <InputField label="Title" type="text" name="title" formik={formik} />
                     <InputField label="Description" type="textarea" name="description" formik={formik} />
-                    <div>
-                        <p>Status</p>
+                    <div className="input-field-select">
+                        <p style={{fontFamily: "Pretenard-Regular"}}>Status</p>
                         <Select id="status" defaultValue={`${projectInfo.status}`} onChange={handleProjectStatusChange} options={projectStatusOptions} />
                     </div>
                 </form>
@@ -536,18 +536,20 @@ const ProjectDetailPage = () => {
                         {projectInfo.description}
                     </div>
                 </div>
-                <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab="Members" key="1">
-                        <div style={{display: 'flex'}}>
-                            <Table columns={columns} data={members} onDeleteClick={handleDeleteClick} />
-                            {/* Add Members Button */}
-                            <ImgButton onClick={handleAddMember}>
-                                <IoMdPersonAdd />
-                            </ImgButton>
-                        </div>
-                        {/* <Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} /> */}
-                    </Tabs.TabPane>
-                </Tabs>
+                <div className="tabs">
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane tab="Members" key="1">
+                            <div style={{display: 'flex'}}>
+                                <Table columns={columns} data={members} onDeleteClick={handleDeleteClick} />
+                                {/* Add Members Button */}
+                                <ImgButton onClick={handleAddMember}>
+                                    <IoMdPersonAdd />
+                                </ImgButton>
+                            </div>
+                            {/* <Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} /> */}
+                        </Tabs.TabPane>
+                    </Tabs>
+                </div>
             </DashboardCard> )}
         </Layout>
     );

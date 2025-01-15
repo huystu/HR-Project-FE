@@ -79,3 +79,8 @@
     font-size: 14px;
     height: 20px;
 }
+
+.input-field-select .ant-select {
+    width: 50%;
+    justify-items: start;
+}
