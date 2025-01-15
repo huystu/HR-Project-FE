@@ -42,7 +42,7 @@ function Login() {
                 
                 if (response.data.status === 200) {
                     setMessage(response.data.message);
-                    localStorage.setItem('token', response.data.data.accessToken);
+                    localStorage.setItem('token', response.data.data.jwtToken.accessToken);
                     navigate('/employees');
                 }
                 else {

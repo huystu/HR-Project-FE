@@ -38,6 +38,10 @@ const EmployeePage = () => {
     setIsModalOpen(false);
   }
 
+  const handleViewClick = (row) => {
+    navigate(`/employees/${row.id}`); //EmployeePage에서 전달받은 데이터 중 선택된 직원의 고유ID
+};
+
   //모달 열기, 폼 데이터 초기화 후 모달 열기
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
@@ -196,7 +200,7 @@ const EmployeePage = () => {
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
-          Action: ["Edit", "Delete"],
+          Action: ["Edit", "Delete", 'View'],
           id: employee.id,
         }));
 
@@ -210,6 +214,26 @@ const EmployeePage = () => {
     }
     
     setLoading(false);
+  };
+
+  // Change Date Type (LocalDate Type in Java)
+  const formatDateForBackend = (date) => {
+    // Convert JS Date to 'YYYY-MM-DD' format
+    const jsDate = new Date(date); // Ensure it's a Date object
+    const year = jsDate.getFullYear();
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
+  };
+  
+  const parseDateFromBackend = (dateString) => {
+    //convert 'yyyy-mm-dd' format string to date object
+    const jsDate = new Date(dateString);
+    const year = jsDate.getFullYear();
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
+    
   };
   
   
@@ -435,7 +459,7 @@ const updateEmployee = async (id, updatedData) => {
             
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
-        <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} />)
+        <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} />)
         }
 
           {/* 테이블에서 Edit 클릭 시 실행될 함수 전달 */}
