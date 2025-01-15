@@ -2,13 +2,13 @@
 @import url("./global.css");
 
 .input-field > label {
-    display: block; /*레이블을 블록 요소로 설정하여 한 줄에 표시*/
+    display: block; /* 레이블을 블록 요소로 설정하여 한 줄에 표시 */
     font-family: "Pretenard-Regular";
     font-size: 14px;
 }
 
-.input-field input {
-    width: 90%;
+.input-field > input {
+    width: 95%;
     height: 40px;
     background-color: #F7F7F7;
     border: 1px solid transparent;
@@ -43,7 +43,7 @@
 }
 
 .input-field-half > input {
-    width: 80%; /*입력 필드가 나머지 절반 크기*/
+    width: 90%; /*입력 필드가 나머지 절반 크기*/
     height: 40px;
     background-color: #F7F7F7;
     border: 1px solid transparent;
