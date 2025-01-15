@@ -56,50 +56,39 @@ const ProjectsPage = () => {
 
     //console.log(accessToken);
     
-    if (modalMode === "add") {
-        try {
-            const response = await api.get('/project', {
-                params: {
-                page: page,
-                size: size,
-                }
-            });
-            console.log(response.data); //api 응답 확인
-
-            if (response.status === 200) {
-                console.log("Success Pagination: ", response);
-                console.log(response.data.data.content);
-                setPageCount(response.data.data.page.totalPages);
-                
-                //2. 데이터를 화면에 맞게 변환
-                const formattedData = response.data.data.content.map(project => {
-                    if (project.satus === "COMPLEE")
-                    {
-                        console.log("Complete project dates", project.startDate, project.endDate);
-                    }
-                    console.log("Project Dates:", project.startDate, project.endDate); // 디버깅
-                    return {
-                      Period: formatPeriod(project.startDate, project.endDate),
-                      Title: project.name,
-                      Status: project.status,
-                      Action: ["View"],
-                      id: project.id,
-                    };
-                  });
-                //3. 상태 업데이트
-                setData(formattedData);
-                setPageCount(response.data.data.page.totalPages);
+    try {
+        const response = await api.get('/project', {
+            params: {
+            page: page,
+            size: size,
             }
-        }
-        //console.log(response.data); //api 응답 확인
+        });
+        console.log(response.data); //api 응답 확인
 
-        
-    
-      catch (error) {
+        if (response.status === 200) {
+            console.log("Success Pagination: ", response);
+            console.log(response.data.data.content);
+            setPageCount(response.data.data.page.totalPages);
+            
+            //2. 데이터를 화면에 맞게 변환
+            const formattedData = response.data.data.content.map(project => ({
+                Period: formatPeriod(project.startDate, project.endDate),
+                Title: project.name,
+                Status: project.status,
+                Action: ["View"],
+                id: project.id,
+            }));
+            
+            //3. 상태 업데이트
+            setData(formattedData);
+            setPageCount(response.data.data.page.totalPages);
+        }
+    }
+    catch (error) {
         console.error('Error fetching project data:', error);
-      }
+    }
     
-      setLoading(false);
+    setLoading(false);
   };
 
     //모달 열기, 폼 데이터 초기화 후 모달 열기
@@ -112,11 +101,11 @@ const ProjectsPage = () => {
   // Formik settings
   //initialValues는 처음 렌더링할 때만 설정됨
   //selectedEmployee가 바뀔 때마다 폼 값을 업데이트하려면 formik.setValues를 이용해 명시적으로
-    const formik = useFormik({
-      initialValues: {
-          title: "",
-          description: "",
-      },
+  const formik = useFormik({
+    initialValues: {
+        title: "",
+        description: "",
+    },
     //enableReinitialize: true, //selectedEmployee가 변경될 때 초기화
     validate: (values) => {
       const errors = {};
@@ -131,24 +120,21 @@ const ProjectsPage = () => {
         return errors;
     },
     onSubmit: async (values) => {
+      const payload = {
+        name: values.title,
+        description: values.description,
+      };
+
       setAuthToken(accessToken); // accessToken 설정
 
         try {
-            console.log("submitting values:", values); //전송 데이터 확인
-            const response = await api.post("/project", {
-            name: values.title, //백엔드
-            description: values.description,
-            status: values.status,
-            startDate: values.startDate,
-            endDate: values.endDate,
-          });
-
+          console.log("submitting values:", values); //전송 데이터 확인
+          const response = await api.post("/project", payload);
           console.log("Response", response);
 
           if (response.status === 200) {
             fetchData(currentPage - 1, pageSize); //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
 
-            
             console.log(`Success Project Info: ${JSON.stringify(response)}`);
             alert("Project added successfully!");
 
@@ -221,7 +207,6 @@ const ProjectsPage = () => {
             </DashboardCard>
         </Layout>
     );
-};
 };
 
 
