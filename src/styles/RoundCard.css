@@ -37,3 +37,14 @@
     margin-top: 10px;
     margin-bottom: 20px;
 }
+
+.avatar-placeholder {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: right;
+    border-radius: 35%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}

@@ -6,6 +6,7 @@ import { Tabs, Select } from 'antd'
 import api, { setAuthToken } from '../api';
 
 import Layout from "../components/layouts/Layout";
+import Sidebar from "../components/layouts/Sidebar";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
 import CustomModal from '../components/Modal';
@@ -13,14 +14,14 @@ import DeleteModal from '../components/DeleteModal';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
 import ImgButton from '../components/ImgButton';
-import { useFormik } from 'formik';
 import '../styles/global.css';
 import '../styles/deletemodal.css';
-import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
+
 
 import { IoMdPersonAdd } from "react-icons/io";
 import RoundCard from "../components/RoundCard";
+
 
 const EmployeeDetailPage = () =>
 {
@@ -31,13 +32,15 @@ const EmployeeDetailPage = () =>
     const [employeeInfo, setEmployeeInfo] = useState(null);
     const [projectsInfo, setProjectsInfo] = useState([]);
 
+    const [imagePreview, setImagePreview] = useState(null); // 미리보기 이미지 URL
+
     const [loading, setLoading] = useState(false); // 로딩 상태
+
+  
 
     const user = "Admin"; // User Name
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('token');
-
-    //const [data, setData] = useState([]);
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
@@ -50,12 +53,15 @@ const EmployeeDetailPage = () =>
             navigate("/"); 
         }
     }, [navigate]);
+    
 
      // Fetch data from API
      const fetchEmployeeDetail = async () => {
         setAuthToken(accessToken); // set the accessToken
         console.log(accessToken);
         setLoading(true);
+
+
        
         try {
             const response = await api.get(`/employee/${id}/detail`);
@@ -66,7 +72,7 @@ const EmployeeDetailPage = () =>
                 setEmployeeInfo(response.data.data.employeeInfo);
                 setProjectsInfo(response.data.data.projectsInfo);
                 console.log(response.data.data.projectsInfo);
-                
+                //setImagePreview(employeeInfo.imageUrl );
 
             }
             }
@@ -83,15 +89,18 @@ const EmployeeDetailPage = () =>
             fetchEmployeeDetail();
         }, []);
 
-        if (!employeeInfo) {
+        
+          
+    if (!employeeInfo) {
             return <p>Employee details not available.</p>;
-          }
+      }
+      
     
       return (
        <Layout user={user} route="Employees">
              <DashboardCard>
                 <RoundCard 
-                imageUrl="https://example.com/photo.jpg"
+                imageUrl= {imagePreview || "https://st03image.s3.ap-northeast-2.amazonaws.com/d5adfb26-718d-4387-956a-b64174bd34a0-Cute Little Bear Fly Net.png"}
                 details = {{
                     name: employeeInfo.name,
                     firstName: employeeInfo.firstName,
@@ -106,9 +115,14 @@ const EmployeeDetailPage = () =>
                     roleinproject: projectsInfo.length > 0? projectsInfo[1].employeeProjectInfo.contribution : "No project assinged",
                     //imageUrl: null,
                 }}
-            
-                >
 
+                
+                >
+        
+
+                
+      
+                
                 </RoundCard>
             </DashboardCard>
         </Layout>

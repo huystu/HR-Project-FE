@@ -2,13 +2,131 @@ import '../styles/roundcard.css';
 import PropTypes from "prop-types";
 import React from "react";
 import ReactDOM from "react-dom";
+import api, { setAuthToken } from '../api';
+import ImgButton from '../components/ImgButton';
+import { UploadOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
+import InputField from '../components/InputField';
+import LoadingSpinner from "../components/LoadingSpinner";
+
+
+
+import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
 //import styled from "styled-components";
 //import "antd/dist/antd.css";
 
 import { Card, Avatar, Typography, Row, Col } from "antd";
 const { Title, Text } = Typography;
 
-const RoundCard = ({ photoUrl, details }) => {
+const RoundCard = ({ imageUrl, details }) => {
+    const [imagePreview, setImagePreview] = useState(imageUrl || null); // 미리보기 상태
+    const [uploading, setUploading] = useState(false); // 업로드 상태
+    const accessToken = localStorage.getItem('token');
+    const fileInputRef = useRef(null); // 파일 입력 참조
+    const navigate = useNavigate();
+    const { id } = useParams(); //URL에서 ID 가져오기
+    const [loading, setLoading] = useState(false); // 로딩 상태
+
+
+    // Check token
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/"); 
+        }
+
+        // 페이지 로드 시 로컬 스토리지에서 이미지 URL을 가져오기
+        const storedImage = localStorage.getItem(`image_${id}`);
+        if (storedImage) {
+            setImagePreview(storedImage);
+        }
+    }, [navigate, id]);
+
+
+    // 이미지 업로드 처리
+    const handleUpload = async (file) => {
+        setAuthToken(accessToken); // set the accessToken
+        console.log(accessToken);
+        //setLoading(true);
+
+        console.log("File selected." ,file);
+        if (!file) return; //파일이 없는 경우 처리 중단
+
+        const formData = new FormData();
+        formData.append("file", file); //key는 'file'로 설정
+        setUploading(true);
+
+        console.log("Formdata:", formData);
+
+       
+        try {
+            const response = await api.post(`/employee/${id}/image`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+            });
+
+
+            console.log("API URL:", `/employee/${id}/image`);
+
+            if (response.status === 200) {
+
+                const uploadedImageUrl = response.data.data; //업로드 된 이미지 url
+                console.log("Api response:", response.data);
+                console.log("image uploaded successfully", response.data.data);
+                console.log(response.data.message);
+
+                // 업로드된 이미지 URL 설정
+                
+                setImagePreview(uploadedImageUrl); 
+                localStorage.setItem(`image_${id}`, uploadedImageUrl); // 로컬 스토리지에 저장
+                //fetchEmployeeDetail();
+
+                } else {
+                console.error("Image upload failed:", response.data);
+                setImagePreview(employeeInfo.imageUrl || 'defaul-image-url.jpg');
+                }
+            } catch (error) {
+                console.error("Error uploading image:", error.message);
+                console.error("error response data:", error.response?.data);
+            } finally {
+                setUploading(false);
+            }
+            };
+
+            // 파일 입력 열기
+            const openFileInput = () => {
+                if (fileInputRef.current) {
+                    fileInputRef.current.click();
+                }
+            };
+
+
+            // 이미지 삭제 처리 (DELETE 요청)
+    const handleDeleteImage = async () => {
+        setAuthToken(accessToken); // set the accessToken
+
+        try {
+            const response = await api.delete(`/employee/${id}/image`);
+
+            if (response.status === 200) {
+                console.log(response.data);
+                console.log("Image deleted successfully");
+
+                setImagePreview(null); // 이미지 미리보기 초기화 (삭제)
+                localStorage.removeItem(`image_${id}`); 
+            } else {
+                console.error("Image delete failed:", response.data);
+            }
+        } catch (error) {
+            console.error("Error deleting image:", error);
+        }
+    };
+
+
+
+
     return (
         <Row style={{justifyContent: "center"}}>
             {/*왼쪽 칸 사진, 전체 너비의 비율 Col로 조절*/}
@@ -23,22 +141,44 @@ const RoundCard = ({ photoUrl, details }) => {
                 cover={
                     <div className = "round-card-left">
                         
-                        {photoUrl ? (
+                        {imagePreview ? (
                         <Avatar
-                                    size={120}
-                                    src={photoUrl}
+                                    className="avatar-placeholder"
+                                    src={imagePreview} //선택된 이미지 표시
                                     alt="Employee"
-                                    style={{ borderRadius: "50%" }}
+                                    style={{ display: 'block', margin: '0 auto' }} // 중앙 정렬
+                                    
+                                    
                                 />
                             ) : (
                                 <div className="placeholder">No image</div>
+                                
 
                             )}
 
+                            
                                 <div className="detail-item">
+                                
+                                <div className="input-field-half-row">
+                                    <ImgButton onClick={openFileInput}><UploadOutlined /></ImgButton>
+                                    <ImgButton onClick={handleDeleteImage}><DeleteOutlined /></ImgButton>
+                                </div>
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    ref={fileInputRef}
+                                    style={{ display: "none" }} // 파일 입력 숨김
+                                    onChange={(e) => handleUpload(e.target.files[0])}
+                                     // 파일 입력 참조 설정
+                                />
                                 <span><strong><h3>{details.name}</h3></strong></span>
                                 <span>{details.role}</span>
+
+                              
+
                                 </div>
+                                 
                         </div>
                     }
                 />
@@ -97,7 +237,7 @@ const RoundCard = ({ photoUrl, details }) => {
                                 <span>{details.joiningDate}</span>
                                 </div>
 
-                    *
+                    
                     
                             </div>
                     
@@ -115,7 +255,7 @@ const RoundCard = ({ photoUrl, details }) => {
 };
 
 RoundCard.propTypes = {
-   ImageUrl: PropTypes.string, //직원 사진 url
+   imageUrl: PropTypes.string, //직원 사진 url
 details: PropTypes.shape({
         name: PropTypes.string.isRequired,
         firstname: PropTypes.string.isRequired,
@@ -126,7 +266,8 @@ details: PropTypes.shape({
         role: PropTypes.string.isRequired,
         projecttitle: PropTypes.string.isRequired,
         roleinproject: PropTypes.string.isRequired,
-    })
+    }),
+    //onClick: PropTypes.func,
 
     
 
