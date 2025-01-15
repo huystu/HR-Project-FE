@@ -17,6 +17,8 @@ import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
+import {Tag} from 'antd';
+
 const ProjectsPage = () => {
     const user = localStorage.getItem('loginUser'); // User Name
 
@@ -76,7 +78,7 @@ const ProjectsPage = () => {
             const formattedData = response.data.data.content.map(project => ({
                 Period: formatPeriod(project.startDate, project.endDate),
                 Title: project.name,
-                Status: project.status,
+                Status: <Tag color="blue">{project.status}</Tag>,
                 Action: ["View"],
                 id: project.id,
             }));
