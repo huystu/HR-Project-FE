@@ -24,14 +24,14 @@ const ChatbotModal = ({ visible, handleClose }) => {
         }
     }, [messages]);
 
-    useEffect(() => {
-        if (visible) {
-            const modalContent = document.querySelector('.ant-modal-content');
-            if(modalContent) {
-                modalContent.style.padding = '0';
-            }
-        }
-    }, [visible]);
+    // useEffect(() => {
+    //     if (visible) {
+    //         const modalContent = document.querySelector('.ant-modal-content');
+    //         if(modalContent) {
+    //             modalContent.style.padding = '0';
+    //         }
+    //     }
+    // }, [visible]);
 
     const accessToken = localStorage.getItem('token');
 
@@ -82,7 +82,8 @@ const ChatbotModal = ({ visible, handleClose }) => {
             setInput('');
 
             setAuthToken(accessToken);
-            const headers = { "Session-ID": "test", };
+            const loginUserID = localStorage.getItem('loginUserId');
+            const headers = { "Session-ID": loginUserID, };
 
             const data = {
                 contents: [
