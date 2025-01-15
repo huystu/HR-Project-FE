@@ -150,7 +150,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
     }, [selectedSuggestionIndex]);
     
     return (
-        <Modal visible={visible} onCancel={handleClose} footer={null} width="330px"
+        <Modal visible={visible} onCancel={handleClose} footer={null} width="400px"
         centered
         closeIcon={<CloseOutlined style={{ color: 'white' }} />}
         >
