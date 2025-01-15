@@ -452,7 +452,7 @@ const ProjectDetailPage = () => {
                 footer={
                     <div className = "button-container">
                         <Button className = "btn-gray" onClick={() => setIsAddMemberModalOpen(false)}>Close</Button>
-                        <Button onClick={formikAddMember.handleSubmit}>Update</Button>
+                        <Button onClick={formikAddMember.handleSubmit}>Add</Button>
                     </div>
                 }
             >

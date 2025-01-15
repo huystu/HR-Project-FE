@@ -19,6 +19,7 @@ import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 import roleOptions from "../constants/roleOptions";
+import skillOptions from "../constants/skillOptions";
 
 
 const EmployeePage = () => {
@@ -28,6 +29,7 @@ const EmployeePage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null); //선택된 직원 데이터
   const [modalMode, setModalMode] = useState("add"); // Setting of Modal: "add" or "edit" or "delete"
+
 
   const [loading, setLoading] = useState(false); // 로딩 상태
 
@@ -43,15 +45,21 @@ const EmployeePage = () => {
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
     setIsModalOpen(true); // Open the modal
-    formik.resetForm();
-    formik.setValues({
-      date: '',
+    // formik.resetForm();
+    formik.resetForm( { date: '',
       name: '',
       email: '',
       phoneNumber: '',
       role: '',
-      skills: '',
-    }); // Initialize form
+      skills: '', } );
+    // formik.setValues({
+    //   date: '',
+    //   name: '',
+    //   email: '',
+    //   phoneNumber: '',
+    //   role: undefined,
+    //   skills: undefined,
+    // }); // Initialize form
   };
 
   const parseDateFromBackend = (dateString) => {
@@ -409,7 +417,7 @@ const updateEmployee = async (id, updatedData) => {
           footer={
             <div className = "button-container">
               <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
-              <Button onClick={formik.handleSubmit}>Add</Button>
+              <Button onClick={formik.handleSubmit}>{modalMode === "add" ? "Add" : "Update"}</Button>
             </div>
           }
         >
@@ -418,9 +426,21 @@ const updateEmployee = async (id, updatedData) => {
               <InputField className = "-half" label="Date" type="date" name="date" formik={formik} />
               <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
             </div>
-            {/* <InputField label="Role" type="text" name="role" formik={formik} /> */}
-            <InputField label="Role" type="select" name="role" formik={formik} options={roleOptions} defaultValue={modalMode === 'edit' ? formik.values.role : undefined} />
-            <InputField label="Skills" type="text" name="skills" formik={formik} /> {/*선택하기*/}
+            <InputField label="Role" type="text" name="role" formik={formik} />
+            {/* <InputField label="Role" type="select" name="role" formik={formik} options={roleOptions} defaultValue={modalMode === 'edit' ? formik.values.role : undefined} /> */}
+            {/* <InputField
+              label="Role"
+              type="autocomplete"
+              name="role"
+              formik={formik}
+              options={roleOptions}
+              value={inputValue}
+              onSearch={handelAddMemberSearch}
+              onFocus={handleAddMemberFocus}
+              onSelect={handelAddMemberSelect}
+            /> */}
+            <InputField label="Skills" type="text" name="skills" formik={formik} />
+            {/* <InputField label="Skills" type="select" name="skills" formik={formik} options={skillOptions} defaultValue={modalMode === 'edit' ? formik.values.skills : undefined} selectMode="multiple" /> */}
             <InputField label="Email" type="email" name="email" formik={formik} />
             <InputField label="PhoneNumber" type="tel" name="phoneNumber" formik={formik} />
           </form>
