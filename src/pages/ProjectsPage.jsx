@@ -8,20 +8,17 @@ import Layout from "../components/layouts/Layout";
 import DashboardCard from "../components/DashboardCard";
 import Table from "../components/Table";
 import CustomModal from '../components/Modal';
-import DeleteModal from '../components/DeleteModal';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
-import ImgButton from '../components/ImgButton';
 import Title from '../components/Title';
 import { useFormik } from 'formik';
 import '../styles/global.css';
 import '../styles/deletemodal.css';
-import { Select } from "antd";
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProjectsPage = () => {
-    const user = "Admin"; // User Name
+    const user = localStorage.getItem('loginUser'); // User Name
 
     const columns = ["Period", "Title", "Status", "Action"];
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,12 +91,15 @@ const ProjectsPage = () => {
                 setPageCount(response.data.data.page.totalPages);
             }
         }
-        catch (error) {
-            console.error('Error fetching project data:', error);
-        }
-    }
+        //console.log(response.data); //api 응답 확인
+
+        
     
-    setLoading(false);
+      catch (error) {
+        console.error('Error fetching project data:', error);
+      }
+    
+      setLoading(false);
   };
 
     //모달 열기, 폼 데이터 초기화 후 모달 열기
@@ -112,12 +112,11 @@ const ProjectsPage = () => {
   // Formik settings
   //initialValues는 처음 렌더링할 때만 설정됨
   //selectedEmployee가 바뀔 때마다 폼 값을 업데이트하려면 formik.setValues를 이용해 명시적으로
-  const formik = useFormik({
-    initialValues: {
-        title: "",
-        description: "",
-        status: "",
-    },
+    const formik = useFormik({
+      initialValues: {
+          title: "",
+          description: "",
+      },
     //enableReinitialize: true, //selectedEmployee가 변경될 때 초기화
     validate: (values) => {
       const errors = {};
@@ -125,33 +124,14 @@ const ProjectsPage = () => {
       {
         errors.title = 'Title is required';
       }
-      
       if (!values.description)
       {
         errors.description = 'Description is required';
       }
-
-      if (!values.status)
-      {
-        errors.status = 'Status is required';
-      } 
         return errors;
     },
     onSubmit: async (values) => {
-      
-    
-    /*
-     const payload = {
-        name: values.title,
-        description: values.description,
-        status: values.status,
-      };
-      console.log("Submitting payload:", payload); // 요청 전에 확인
-      const response = await api.post("/project", payload);
-      console.log("Response received:", response); // 응답 확인
-      */
-
-     setAuthToken(accessToken); // accessToken 설정
+      setAuthToken(accessToken); // accessToken 설정
 
         try {
             console.log("submitting values:", values); //전송 데이터 확인
@@ -164,12 +144,9 @@ const ProjectsPage = () => {
           });
 
           console.log("Response", response);
-          //setData(formattedData); //상태 업데이트
-          //setPageCount(response.data.data.page.totalPages);
 
           if (response.status === 200) {
-            fetchData(currentPage - 1, pageSize);
-            //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
+            fetchData(currentPage - 1, pageSize); //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
 
             
             console.log(`Success Project Info: ${JSON.stringify(response)}`);
@@ -221,29 +198,21 @@ const ProjectsPage = () => {
                 footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}
             >
                 <CustomModal 
-                    isModalOpen={isModalOpen}
-                    handleOk={formik.handleSubmit} //폼 제출
-                    handleCancel={handleCancel}
-                    title = {<Title>{modalMode === "add" ? "Add Project" : "Update Project"}</Title>}
-                    footer={
-                    <div className = "button-container">
-                        <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
-                        <Button onClick={formik.handleSubmit}>Add</Button>
-                    </div>
-                    }
+                  isModalOpen={isModalOpen}
+                  handleOk={formik.handleSubmit} //폼 제출
+                  handleCancel={handleCancel}
+                  title = {<Title>Add Project</Title>}
+                  footer={
+                  <div className = "button-container">
+                      <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
+                      <Button onClick={formik.handleSubmit}>Add</Button>
+                  </div>
+                  }
                 >
-                    <form onSubmit={formik.handleSubmit}>
+                  <form onSubmit={formik.handleSubmit}>
                     <InputField label="Title" type="text" name="title" formik={formik} />
                     <InputField label="Description" type="text" name="description" formik={formik} />
-                    <InputField label="Status" type="select" name="status" formik={formik} 
-                        options = {[
-                        {label: "WORKING", value: "WORKING"},
-                        {label: "COMPLETE", value: "COMPLETE"},
-                        {label: "PENDING", value: "PENDING"}, ]}
-                    /> 
-                
-                    
-                    </form>
+                  </form>
                 </CustomModal>
                 {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
@@ -253,8 +222,7 @@ const ProjectsPage = () => {
         </Layout>
     );
 };
+};
 
 
 export default ProjectsPage;
-
-
