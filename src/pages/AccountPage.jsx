@@ -27,6 +27,10 @@ function AccountPage() {
     const user = localStorage.getItem('loginUser'); // User Name
     const accessToken = localStorage.getItem('token');
 
+    const [selectedAccount, setSelectedAccount] = useState(null);
+
+    const [newPassword, setNewPassword] = useState(null);
+
     const [pageCount, setPageCount] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
@@ -43,14 +47,44 @@ function AccountPage() {
 
     // Modal - Reset Password
     const [isResetPWModalOpen, setIsResetPWModalOpen] = useState(false);
-    const handleResetPWOpen = () => {
+    const handleResetPWOpen = async (account) => {
+        if (account.id === undefined) {
+            alert('Please select an account');
+            return;
+        }
+        
+        setResetPWLoading(true);
         setIsResetPWModalOpen(true);
+
+        setAuthToken(accessToken);
+        try {
+            const response = await api.patch(`/admin/${account.id}/reset-password`);
+            
+            console.log("reset password: ", response);
+
+            const formattedData = {
+                name: response.data.data.name,
+                email: response.data.data.email,
+                id: response.data.data.id,
+            }
+            setNewPassword(response.data.data.newPassword);
+            setSelectedAccount(formattedData);
+        }
+        catch (error) {
+            console.log('Failed to copy text: ', error);
+            alert('Failed to copy text');
+        }
+
+        setResetPWLoading(false);
     };
     const handleResetPWModealClose = () => {
         setIsResetPWModalOpen(false);
+        setNewPassword(null);
+        setSelectedAccount(null);
     }
     
     const [loading, setLoading] = useState(false); // 로딩 상태
+    const [resetPWLoading, setResetPWLoading] = useState(false); // 로딩 상태
 
     const columns = ['Name', 'Email', 'Role', 'Action'];
 
@@ -156,6 +190,10 @@ function AccountPage() {
         },
     });
 
+    const hanldeCopy = () => {
+        alert('Text copied to clipboard!');
+    }
+
     // Check token
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -195,11 +233,14 @@ function AccountPage() {
             <Modal
                 title={ <h2><Title>Reset Password</Title></h2> }
                 open={isResetPWModalOpen}
-                onOk={handleResetPWModealClose}
+                onCancel={handleResetPWModealClose}
+                footer={null} // 이 부분이 모달 하단의 버튼을 없앱니다
+                loading={resetPWLoading}
+                centered
             >
                 <div style={{fontFamily: 'Pretendard-Regular', fontSize:"15px"}}>
-                    The password for @.com has been reset to []
-                    <CopyToClipboard text={"hello"} onCopy={()=> alert("Text copied to clipboard!")}>
+                    The password for <span style={{fontFamily: 'Pretendard-SemiBold'}}>{selectedAccount?.name}({selectedAccount?.email})</span> has been reset to <span style={{color: 'red'}}>{newPassword}</span>
+                    <CopyToClipboard text={newPassword} onCopy={hanldeCopy}>
                         <CopyOutlined style={{fontSize: "15px", color: '#6d6d6d', margin: "5px"}}/>
                     </CopyToClipboard>
                 </div>
