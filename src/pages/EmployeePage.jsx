@@ -41,6 +41,10 @@ const EmployeePage = () => {
     setIsModalOpen(false);
   }
 
+  const handleViewClick = (row) => {
+    navigate(`/employees/${row.id}`); //EmployeePage에서 전달받은 데이터 중 선택된 직원의 고유ID
+};
+
   //모달 열기, 폼 데이터 초기화 후 모달 열기
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
@@ -215,7 +219,7 @@ const EmployeePage = () => {
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
-          Action: ["Edit", "Delete"],
+          Action: ["Edit", "Delete", 'View'],
           id: employee.id,
         }));
 
@@ -476,7 +480,7 @@ const updateEmployee = async (id, updatedData) => {
             
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
-        <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} />)
+        <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} />)
         }
 
           {/* 테이블에서 Edit 클릭 시 실행될 함수 전달 */}
