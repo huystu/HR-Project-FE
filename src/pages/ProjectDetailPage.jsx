@@ -72,7 +72,7 @@ const ProjectDetailPage = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            navigate("/"); 
+            navigate("/");
         }
     }, [navigate]);
 
@@ -80,8 +80,11 @@ const ProjectDetailPage = () => {
         if (endDate) {
             return `${startDate} - ${endDate}`;
         }
-        else {
+        else if (startDate) {
             return `${startDate} - `;
+        }
+        else {
+            return '';
         }
     };
 
@@ -195,10 +198,16 @@ const ProjectDetailPage = () => {
     const [inputValue, setInputValue] = useState('');
     const [addMemberOptions, setAddMemberOptions] = useState([]);
     const [allMembers, setAllMembers] = useState([]);
-    // 모든 멤버 불러오기: add member의 option으로 제공
+    // 멤버 불러오기(할당된 멤버 제외): add member의 option으로 제공
     const fetchAllMember = async () => {
         setAuthToken(accessToken); // set accessToken
-        const response = await api.get('/employee/all');
+        const response = await api.get('/employee/all', 
+            {
+                params: {
+                    projectId: id,
+                }
+            }
+        );
         if (response.status === 200) {
             const members = response.data.data;
             console.log("Load Members", members);
@@ -403,9 +412,9 @@ const ProjectDetailPage = () => {
     ];
 
     const projectStatusOptions = [
-        {value: "PENDING", label: "PENDING",},
-        {value: "WORKING", label: "WORKING",},
-        {value: "COMPLETE", label: "COMPLETE",},
+        {value: "PENDING", label: "Pending",},
+        {value: "WORKING", label: "Working",},
+        {value: "COMPLETE", label: "Complete",},
     ];
 
     return (
@@ -427,8 +436,8 @@ const ProjectDetailPage = () => {
                 <form onSubmit={formik.handleSubmit}>
                     <InputField label="Title" type="text" name="title" formik={formik} />
                     <InputField label="Description" type="textarea" name="description" formik={formik} />
-                    <div>
-                        <p>Status</p>
+                    <div className="input-field-select">
+                        <p style={{fontFamily: "Pretenard-Regular"}}>Status</p>
                         <Select id="status" defaultValue={`${projectInfo.status}`} onChange={handleProjectStatusChange} options={projectStatusOptions} />
                     </div>
                 </form>
@@ -443,7 +452,7 @@ const ProjectDetailPage = () => {
                 footer={
                     <div className = "button-container">
                         <Button className = "btn-gray" onClick={() => setIsAddMemberModalOpen(false)}>Close</Button>
-                        <Button onClick={formikAddMember.handleSubmit}>Update</Button>
+                        <Button onClick={formikAddMember.handleSubmit}>Add</Button>
                     </div>
                 }
             >
@@ -527,18 +536,20 @@ const ProjectDetailPage = () => {
                         {projectInfo.description}
                     </div>
                 </div>
-                <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab="Members" key="1">
-                        <div style={{display: 'flex'}}>
-                            <Table columns={columns} data={members} onDeleteClick={handleDeleteClick} />
-                            {/* Add Members Button */}
-                            <ImgButton onClick={handleAddMember}>
-                                <IoMdPersonAdd />
-                            </ImgButton>
-                        </div>
-                        {/* <Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} /> */}
-                    </Tabs.TabPane>
-                </Tabs>
+                <div className="tabs">
+                    <Tabs defaultActiveKey="1">
+                        <Tabs.TabPane tab="Members" key="1">
+                            <div style={{display: 'flex'}}>
+                                <Table columns={columns} data={members} onDeleteClick={handleDeleteClick} />
+                                {/* Add Members Button */}
+                                <ImgButton onClick={handleAddMember}>
+                                    <IoMdPersonAdd />
+                                </ImgButton>
+                            </div>
+                            {/* <Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} /> */}
+                        </Tabs.TabPane>
+                    </Tabs>
+                </div>
             </DashboardCard> )}
         </Layout>
     );

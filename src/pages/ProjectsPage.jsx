@@ -17,12 +17,13 @@ import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
+import {Tag} from 'antd';
+
 const ProjectsPage = () => {
     const user = localStorage.getItem('loginUser'); // User Name
 
     const columns = ["Period", "Title", "Status", "Action"];
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState("add");
     const [loading, setLoading] = useState(false); // 로딩 상태
     
       const handleCancel = () => {
@@ -43,8 +44,11 @@ const ProjectsPage = () => {
         if (endDate) {
             return `${startDate} - ${endDate}`;
         }
-        else {
+        else if (startDate) {
             return `${startDate} - `;
+        }
+        else {
+          return '';
         }
     };
 
@@ -74,7 +78,7 @@ const ProjectsPage = () => {
             const formattedData = response.data.data.content.map(project => ({
                 Period: formatPeriod(project.startDate, project.endDate),
                 Title: project.name,
-                Status: project.status,
+                Status: <Tag color="blue">{project.status}</Tag>,
                 Action: ["View"],
                 id: project.id,
             }));
@@ -93,7 +97,6 @@ const ProjectsPage = () => {
 
     //모달 열기, 폼 데이터 초기화 후 모달 열기
     const handleAddProject = () => {
-        setModalMode("add"); // Set Mode
         setIsModalOpen(true); // Open the modal
         formik.resetForm(); // Initialize form
       };
