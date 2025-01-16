@@ -11,6 +11,7 @@ const Sidebar = ({user})=> {
                     <p><a className="menu" href="/dashboard">Dashboard</a></p>
                     <p>&gt; <a className="menu" href="/employees">Employees</a></p>
                     <p>&gt; <a className="menu" href="/projects">Projects</a></p>
+                    <p>&gt; <a className="menu" href="/account">Account</a></p>
                 </nav>
             </aside>
         </>
