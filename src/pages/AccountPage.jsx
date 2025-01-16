@@ -16,6 +16,11 @@ import '../styles/global.css';
 import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import { CopyOutlined, } from '@ant-design/icons';
+
+import { Modal } from 'antd';
 
 function AccountPage() {
     const navigate = useNavigate();
@@ -27,13 +32,22 @@ function AccountPage() {
     const [pageSize] = useState(10);
 
     // Modal - Add User
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const handleOpen = () => {
-        setIsModalOpen(true); // Open the modal
+    const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+    const handleAddUserOpen = () => {
+        setIsAddUserModalOpen(true); // Open the modal
     };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        formik.resetForm({ name: ' ', email: ' ', password: ' ', checkPassword: ' ' }); // Initialize form
+    const handleAddUserCancel = () => {
+        setIsAddUserModalOpen(false);
+        formikAddUser.resetForm({ name: ' ', email: ' ', password: ' ', checkPassword: ' ' }); // Initialize form
+    }
+
+    // Modal - Reset Password
+    const [isResetPWModalOpen, setIsResetPWModalOpen] = useState(false);
+    const handleResetPWOpen = () => {
+        setIsResetPWModalOpen(true);
+    };
+    const handleResetPWModealClose = () => {
+        setIsResetPWModalOpen(false);
     }
     
     const [loading, setLoading] = useState(false); // 로딩 상태
@@ -79,7 +93,7 @@ function AccountPage() {
         setLoading(false);
     };
 
-    const formik = useFormik({
+    const formikAddUser = useFormik({
         initialValues: {
             name: "",
             email: "",
@@ -125,7 +139,7 @@ function AccountPage() {
                 console.log(`Success Project Info: ${JSON.stringify(response)}`);
                 alert("Account added successfully!");
 
-                setIsModalOpen(false);
+                setIsAddUserModalOpen(false);
             }
             catch (error) {
                 const errorMsg = error.response.data.message;
@@ -135,7 +149,7 @@ function AccountPage() {
                     setErrors({ email: 'This email is already in use' });
                 }
                 else {
-                    setIsModalOpen(false);
+                    setIsAddUserModalOpen(false);
                 }
                 console.log('Error adding user: ', error);
             }
@@ -156,36 +170,50 @@ function AccountPage() {
 
     return (
         <Layout user={user} route={`Account`}>
+            {/* Add User */}
             <CustomModal 
-                isModalOpen={isModalOpen}
-                handleOk={formik.handleSubmit} //폼 제출
-                handleCancel={handleCancel}
+                isModalOpen={isAddUserModalOpen}
+                handleOk={formikAddUser.handleSubmit} //폼 제출
+                handleCancel={handleAddUserCancel}
                 title = {<Title>Add User</Title>}
                 footer={
                 <div className = "button-container">
-                    <Button className = "btn-gray" onClick={() => setIsModalOpen(false)}>Close</Button>
-                    <Button onClick={formik.handleSubmit}>Add</Button>
+                    <Button className = "btn-gray" onClick={() => setIsAddUserModalOpen(false)}>Close</Button>
+                    <Button onClick={formikAddUser.handleSubmit}>Add</Button>
                 </div>
                 }
             >
-                <form onSubmit={formik.handleSubmit}>
-                    <InputField label="Name" type="text" name="name" formik={formik} />
-                    <InputField label="Email" type="text" name="email" formik={formik} />
-                    <InputField label="Password" type="password" name="password" formik={formik} />
-                    <InputField label="Check Password" type="password" name="checkPassword" formik={formik} />
+                <form onSubmit={formikAddUser.handleSubmit}>
+                    <InputField label="Name" type="text" name="name" formik={formikAddUser} />
+                    <InputField label="Email" type="text" name="email" formik={formikAddUser} />
+                    <InputField label="Password" type="password" name="password" formik={formikAddUser} />
+                    <InputField label="Check Password" type="password" name="checkPassword" formik={formikAddUser} />
                 </form>
             </CustomModal>
+
+            {/* Reset PW */}
+            <Modal
+                title={ <h2><Title>Reset Password</Title></h2> }
+                open={isResetPWModalOpen}
+                onOk={handleResetPWModealClose}
+            >
+                <div style={{fontFamily: 'Pretendard-Regular', fontSize:"15px"}}>
+                    The password for @.com has been reset to []
+                    <CopyToClipboard text={"hello"} onCopy={()=> alert("Text copied to clipboard!")}>
+                        <CopyOutlined style={{fontSize: "15px", color: '#6d6d6d', margin: "5px"}}/>
+                    </CopyToClipboard>
+                </div>
+            </Modal>
+
             <DashboardCard
                 header="Account"
                 btn="Add User"
-                btnClick={handleOpen}
+                btnClick={handleAddUserOpen}
                 footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}
             >
                 {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
-                   <Table columns={columns} data={data}
-                    // onViewClick={}
-                    />
+                    <Table columns={columns} data={data} onResetClick={handleResetPWOpen} />
                 )}
             </DashboardCard>
         </Layout>
