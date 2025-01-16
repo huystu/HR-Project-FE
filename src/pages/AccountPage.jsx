@@ -33,23 +33,51 @@ function AccountPage() {
     };
     const handleCancel = () => {
         setIsModalOpen(false);
-        formik.resetForm(
-            { name: ' ', email: ' ', password: ' ', checkPassword: ' ' }
-        ); // Initialize form
+        formik.resetForm({ name: ' ', email: ' ', password: ' ', checkPassword: ' ' }); // Initialize form
     }
     
     const [loading, setLoading] = useState(false); // 로딩 상태
 
     const columns = ['Name', 'Email', 'Role', 'Action'];
 
-    const data = [
-        {
-            Name: 'Jihyeon Lee',
-            Email: 'gee9328@gmail.com',
-            Role: 'Admin',
-            Action: ["Reset"],
+    const [data, setData] = useState([]);
+
+    const fetchData = async (page = 0, size = 10) => {
+        setLoading(true);
+
+        setAuthToken(accessToken); // 인증 토큰 설정
+        try {
+            const response = await api.get('/admin', {
+                params: {
+                    page: page,
+                    size: size,
+                }
+            });
+            console.log(response.data); //api 응답 확인
+
+            if (response.status === 200) {
+                console.log("Success Account Pagination: ", response);
+                console.log(response.data.data.content);
+                setPageCount(response.data.data.page.totalPages);
+                
+                //2. 데이터를 화면에 맞게 변환
+                const formattedData = response.data.data.content.map(account => ({
+                    Name: account.name,
+                    Email: account.email,
+                    Role: account.role,
+                    Action: ["Reset"],
+                    id: account.id,
+                }));
+                //3. 상태 업데이트
+                setData(formattedData);
+                setPageCount(response.data.data.page.totalPages);
+            }
         }
-    ];
+        catch (error) {
+            console.error('Error fetching account data:', error);
+        }
+        setLoading(false);
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -77,12 +105,40 @@ function AccountPage() {
             }
             return errors;
         },
-        onSubmit: async (values) => {
+        onSubmit: async (values, { setErrors }) => {
             const payload = {
                 email: values.email,
                 password: values.password,
                 name: values.name,
             };
+
+            setAuthToken(accessToken);
+            try {
+                const response = await api.post('/signup', payload);
+
+                console.log(response.data)
+
+                if (response.status === 200) {
+                    fetchData(currentPage - 1, pageSize);
+                }
+
+                console.log(`Success Project Info: ${JSON.stringify(response)}`);
+                alert("Account added successfully!");
+
+                setIsModalOpen(false);
+            }
+            catch (error) {
+                const errorMsg = error.response.data.message;
+
+                if (errorMsg === 'This is a duplicate email.') {
+                    // 중복 이메일 오류 설정
+                    setErrors({ email: 'This email is already in use' });
+                }
+                else {
+                    setIsModalOpen(false);
+                }
+                console.log('Error adding user: ', error);
+            }
         },
     });
 
@@ -93,6 +149,10 @@ function AccountPage() {
             navigate("/"); 
         }
     }, [navigate]);
+
+    useEffect(() => {
+        fetchData(currentPage - 1, pageSize);
+    }, [currentPage]);
 
     return (
         <Layout user={user} route={`Account`}>
@@ -109,10 +169,10 @@ function AccountPage() {
                 }
             >
                 <form onSubmit={formik.handleSubmit}>
-                    <InputField label="Name" type="text" name="Name" formik={formik} />
-                    <InputField label="Email" type="text" name="Email" formik={formik} />
-                    <InputField label="Password" type="text" name="Password" formik={formik} />
-                    <InputField label="Check Password" type="text" name="Check Password" formik={formik} />
+                    <InputField label="Name" type="text" name="name" formik={formik} />
+                    <InputField label="Email" type="text" name="email" formik={formik} />
+                    <InputField label="Password" type="password" name="password" formik={formik} />
+                    <InputField label="Check Password" type="password" name="checkPassword" formik={formik} />
                 </form>
             </CustomModal>
             <DashboardCard
