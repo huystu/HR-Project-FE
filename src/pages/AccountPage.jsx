@@ -52,6 +52,8 @@ function AccountPage() {
             alert('Please select an account');
             return;
         }
+
+        console.log("before reset: ", account.id);
         
         setResetPWLoading(true);
         setIsResetPWModalOpen(true);
@@ -61,11 +63,13 @@ function AccountPage() {
             const response = await api.patch(`/admin/${account.id}/reset-password`);
             
             console.log("reset password: ", response);
+            console.log("after reset: ", response.data.data.memeberId);
+            console.log('비교: ', response.data.data.memeberId === account.id);
 
             const formattedData = {
                 name: response.data.data.name,
                 email: response.data.data.email,
-                id: response.data.data.id,
+                id: response.data.data.memeberId,
             }
             setNewPassword(response.data.data.newPassword);
             setSelectedAccount(formattedData);
