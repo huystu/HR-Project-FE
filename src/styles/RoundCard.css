@@ -1,0 +1,50 @@
+@import url("./global.css");
+.detail-item {
+    display: flex;
+    flex-direction: column; /*수직 정렬*/
+    margin-bottom: 40px; /*항목 간격*/
+    
+}
+.detail-item label{
+    font-weight: bold; /*볼드체*/
+    margin-bottom: 5px; /*레이블과 값 간격*/
+    color: 545050;
+    font-family: "Pretenard-Regular";
+    font-size: 20px;
+    color: #545050;
+}
+
+.detail-item span{
+    color: #545050;
+    font-family: "Pretenard-Regular";
+    font-size: 16px;
+}
+
+.details-container{
+    margin: 10px 20px;
+}
+
+.placeholder {
+    width: 150px;
+    height: 150px;
+    background-color: #cfcfcf;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 16px;
+    border-radius: 35%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.avatar-placeholder {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: right;
+    border-radius: 35%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
