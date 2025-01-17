@@ -334,7 +334,7 @@ const handleSaveClick = async (row) => {
 
       if (!values.phoneNumber)
       {
-        errors.phoneNumber = 'phoneNumber is required';
+        errors.phoneNumber = 'Phone number is required';
       } else if (!/^\d{10}$/.test(values.phoneNumber)) {
         errors.phoneNumber = 'Phone number must be 10 digits';
       }
@@ -487,8 +487,8 @@ const updateEmployee = async (id, updatedData) => {
         >
           <form onSubmit={formik.handleSubmit}>
             <div className="input-field-half-row">
-              <InputField className = "-half" label="Date *" type="date" name="date" formik={formik} />
-              <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
+              <InputField className = "-half" label= {<span>Date <span className = "red-asterisk">*</span></span>} type="date" name="date" formik={formik} />
+              <InputField className = "-half" label= {<span>Name <span className = "red-asterisk">*</span></span>} type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} />
             {/* <InputField label="Role" type="select" name="role" formik={formik} options={roleOptions} defaultValue={modalMode === 'edit' ? formik.values.role : undefined} /> */}
@@ -504,9 +504,8 @@ const updateEmployee = async (id, updatedData) => {
               onSelect={handelAddMemberSelect}
             /> */}
             <InputField label="Skills" type="text" name="skills" formik={formik} />
-            {/* <InputField label="Skills" type="select" name="skills" formik={formik} options={skillOptions} defaultValue={modalMode === 'edit' ? formik.values.skills : undefined} selectMode="multiple" /> */}
-            <InputField label="Email" type="email" name="email" formik={formik} />
-            <InputField label="Phone Number" type="tel" name="phoneNumber" formik={formik} />
+            <InputField label={<span> Email <span className = "red-asterisk">*</span></span>} type="email" name="email" formik={formik} />
+            <InputField label={<span>Phone number <span className = "red-asterisk">*</span></span>} type="tel" name="phoneNumber" formik={formik} />
           </form>
         </CustomModal>        
 

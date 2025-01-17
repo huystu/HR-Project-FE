@@ -28,18 +28,17 @@
 }
 
 .input-field-half {
-    /*display: inline-block; 한 줄에 나란히 표시*/
-    /* display: flex; */
     flex-wrap: wrap; /*부모 요소 크기를 초과하면 줄바꿈*/
     width: 50%; /*부모 요소의 반 크기*/
-    /*margin-right: 10px;*/
     margin: 0;
 }
 
 .input-field-half > label {
     font-family: "Pretenard-Regular";
     font-size: 14px;
-    display: flex;
+    display: block;
+    width: 100%;
+    text-align: left;
 }
 
 .input-field-half > input {
@@ -71,6 +70,10 @@
 }
 .input-field {
     margin-bottom: 10px;
+}
+
+.red-asterisk {
+    color: red;
 }
 
 .msg {
