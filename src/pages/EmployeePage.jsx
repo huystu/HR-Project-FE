@@ -21,8 +21,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import roleOptions from "../constants/roleOptions";
 import skillOptions from "../constants/skillOptions";
 
-import { Input } from 'antd';
-const { Search } = Input;
+
 
 const EmployeePage = () => {
   const user = localStorage.getItem('loginUser'); // User Name
@@ -165,10 +164,11 @@ const handleSaveClick = async (row) => {
              email: employeeData.email,
              phoneNumber: employeeData.contact, 
              role: employeeData.role, 
-             skills: employeeData.skills, 
+             skills: employeeData.skills?.join(", "),
              date: parseDateFromBackend(employeeData.joiningDate)
           });
 
+          console.log("skills array: ", employeeData.skills);
           console.log("selected employee: ", selectedEmployee);
           //console.log("Raw date from backend:", employeeData.date);
           const employeeDate = employeeData.date || employeeData.joiningDate || "unknown";
@@ -316,7 +316,7 @@ const handleSaveClick = async (row) => {
       email: selectedEmployee?.email || '',
       phoneNumber: selectedEmployee?.phoneNumber || '',
       role: selectedEmployee?.role || '',
-      skills: selectedEmployee?.skills || [],
+      skills: selectedEmployee?.skills?.join(", "),
     },
     enableReinitialize: true, //selectedEmployee가 변경될 때 초기화
     validate: (values) => {
@@ -390,7 +390,7 @@ const handleSaveClick = async (row) => {
           name: values.name,
           email: values.email,
           contact: values.phoneNumber,
-          skills: values.skills,
+          skills: values.skills.join(", "),
           role: values.role,
           joiningDate: formattedDate,
           };
@@ -419,7 +419,7 @@ useEffect(() => {
       email: selectedEmployee?.email ||'',
       phoneNumber: selectedEmployee.phoneNumber ||'',
       role: selectedEmployee?.role ||'',
-      skills: selectedEmployee?.skills ||'',
+      skills: selectedEmployee?.skills?.join(", "),
     });
   }
 }, [selectedEmployee]);  // selectedEmployee가 변경될 때마다 실행
@@ -468,44 +468,6 @@ const updateEmployee = async (id, updatedData) => {
     fetchData(currentPage - 1, pageSize);
   }, [currentPage]);
  
-  const onSearch = async (value, ) => {
-    console.log(value);
-
-    if (value === '') {
-      fetchData(0, pageSize);
-    }
-
-    setAuthToken(accessToken);
-    try {
-      const response = await api.get('/employee/search', {
-        params: {
-          keyword: value,
-          page: 0,
-          size: pageSize,
-        }
-      });
-
-      console.log(response);
-
-      const formattedData = response.data.data.content.map(employee => ({
-        Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
-        Employee: employee.name, 
-        Role: employee.role || 'N/A',
-        Skills: employee.skills,
-        Email: employee.email,
-        "Phone Number": employee.contact,
-        Action: ["Edit", "Delete", "View", "Save"],
-        id: employee.id,
-      }));
-
-      //3. 상태 업데이트
-      setData(formattedData);
-      setPageCount(response.data.data.page.totalPages);
-    }
-    catch (error) {
-      console.log('Failed Project Search : ', error);
-    }
-  }
 
   return (
     <Layout user={user} route="Employees">
@@ -528,18 +490,6 @@ const updateEmployee = async (id, updatedData) => {
               <InputField className = "-half" label= {<span>Name <span className = "red-asterisk">*</span></span>} type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} />
-            {/* <InputField label="Role" type="select" name="role" formik={formik} options={roleOptions} defaultValue={modalMode === 'edit' ? formik.values.role : undefined} /> */}
-            {/* <InputField
-              label="Role"
-              type="autocomplete"
-              name="role"
-              formik={formik}
-              options={roleOptions}
-              value={inputValue}
-              onSearch={handelAddMemberSearch}
-              onFocus={handleAddMemberFocus}
-              onSelect={handelAddMemberSelect}
-            /> */}
             <InputField label="Skills" type="text" name="skills" formik={formik} />
             <InputField label={<span> Email <span className = "red-asterisk">*</span></span>} type="email" name="email" formik={formik} />
             <InputField label={<span>Phone number <span className = "red-asterisk">*</span></span>} type="tel" name="phoneNumber" formik={formik} />
@@ -573,7 +523,7 @@ const updateEmployee = async (id, updatedData) => {
                   </div>
                 }
               />
-            <Search placeholder="input search employee" onSearch={onSearch} style={{ width: 500, margin: 10, }} />
+            
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
         <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} onSaveClick = {handleSaveClick} />)

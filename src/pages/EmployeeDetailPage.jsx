@@ -95,7 +95,9 @@ const EmployeeDetailPage = () =>
                 //API 응답에서 이름 가져오기
 
                 const employeeName = response.data.data.employeeInfo.name;
+                const skillsArray = response.data.data.employeeInfo.skills;
                 console.log("Employee name: ", employeeName);
+                console.log("skills array: ", skillsArray);
 
                 const [first, last] = employeeName.split(" ");
                 setFirstName(first || '');
@@ -107,7 +109,8 @@ const EmployeeDetailPage = () =>
                 setEmployeeInfo({
                     ...response.data.data.employeeInfo,
                     firstName: first || '',
-                    lastName: last || ''
+                    lastName: last || '',
+                    skills: skillsArray.join(", ")
                 });
                 setProjectsInfo(response.data.data.projectsInfo);
 
@@ -152,7 +155,7 @@ const EmployeeDetailPage = () =>
                     lastName: employeeInfo.lastName || lastName,
                     email: employeeInfo.email,
                     contact: employeeInfo.contact,
-                    skills: employeeInfo.skills,
+                    skills: employeeInfo.skills, 
                     joiningDate: employeeInfo.joiningDate,
                     role: employeeInfo.role,
                     //projectsInfo 데이터는 배열임
