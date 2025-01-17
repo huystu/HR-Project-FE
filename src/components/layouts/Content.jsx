@@ -11,6 +11,8 @@ const Content = ({route, children}) => {
         localStorage.removeItem('token');
         localStorage.removeItem('loginUser');
         localStorage.removeItem('loginUserId');
+        localStorage.removeItem('loginUserEmial');
+        localStorage.removeItem('loginUserRole');
         navigate('/'); // redirect to login page
     };
 
@@ -20,7 +22,8 @@ const Content = ({route, children}) => {
         <main>
             <header className="main-header">
                 <p>
-                    <a className="head-menu" href="/dashboard">Dashboard</a>
+                    {/* <a className="head-menu" href="/dashboard">Dashboard</a> */}
+                    <a className="head-menu">Dashboard</a>
                     {routeParts.map((part, index) => (
                         <span key={index}> {" / "}
                             <a className={`head-menu ${index === routeParts.length - 1 ? "menu-active" : ""}`} href={`/${part.trim()}`} >
