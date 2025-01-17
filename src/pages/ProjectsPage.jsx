@@ -17,7 +17,8 @@ import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-import {Tag} from 'antd';
+import {Tag, Input} from 'antd';
+const { Search } = Input;
 
 const ProjectsPage = () => {
     const user = localStorage.getItem('loginUser'); // User Name
@@ -168,8 +169,6 @@ const ProjectsPage = () => {
         fetchData(currentPage - 1, pageSize);
       }, [currentPage]);
 
-
-
     // Check token
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -178,6 +177,42 @@ const ProjectsPage = () => {
         }
       }, [navigate]);
 
+
+    const onSearch = async (value, ) => {
+      console.log(value);
+
+      if (value === '') {
+        fetchData(currentPage-1, pageSize);
+      }
+
+      setAuthToken(accessToken);
+      try {
+        const response = await api.get('/project/search', {
+          params: {
+            keyword: value,
+            page: currentPage-1,
+            size: pageSize,
+          }
+        });
+
+        console.log(response);
+
+        const formattedData = response.data.data.content.map(project => ({
+          Period: formatPeriod(project.startDate, project.endDate),
+          Title: project.name,
+          Status: <Tag color="blue">{project.status}</Tag>,
+          Action: ["View"],
+          id: project.id,
+        }));
+
+        //3. 상태 업데이트
+        setData(formattedData);
+        setPageCount(response.data.data.page.totalPages);
+      }
+      catch (error) {
+        console.log('Failed Project Search : ', error);
+      }
+    }
 
     return (
         <Layout user={user} route="Projects">
@@ -203,6 +238,7 @@ const ProjectsPage = () => {
                     <InputField label="Description" type="text" name="description" formik={formik} />
                   </form>
                 </CustomModal>
+                <Search placeholder="input search project" onSearch={onSearch} style={{ width: 500, margin: 10, }} />
                 {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
                     <Table columns={columns} data={data} onViewClick={handleViewClick} />

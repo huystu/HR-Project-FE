@@ -25,6 +25,8 @@ const CustomModal = ({
         </div>
       }
       footer={footer} // 기본 버튼 제거 또는 사용자 정의
+
+      centered
     >
       {children}
     </Modal>
