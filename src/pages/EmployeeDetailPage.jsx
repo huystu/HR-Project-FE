@@ -92,13 +92,23 @@ const EmployeeDetailPage = () =>
             if(response.status === 200){
                 console.log("Api response:", response.data);
                 //이름을 분리해서 상태에 저장
-                console.log("employeeInfo name: ", response.data.data.employeeInfo.name);
-                const [first, last] = employeeInfo.name.split(" ");
+                //API 응답에서 이름 가져오기
+
+                const employeeName = response.data.data.employeeInfo.name;
+                console.log("Employee name: ", employeeName);
+
+                const [first, last] = employeeName.split(" ");
                 setFirstName(first || '');
                 setLastName(last || '');
-                console.log(setFirstName);
+                //console.log("first name:", first);
+                //console.log("last name:", last);
 
-                setEmployeeInfo(response.data.data.employeeInfo);
+                // 직원 정보를 상태에 저장하면서 firstName과 lastName 포함
+                setEmployeeInfo({
+                    ...response.data.data.employeeInfo,
+                    firstName: first || '',
+                    lastName: last || ''
+                });
                 setProjectsInfo(response.data.data.projectsInfo);
 
             
@@ -138,8 +148,8 @@ const EmployeeDetailPage = () =>
                 imageUrl= {imagePreview || "https://st03image.s3.ap-northeast-2.amazonaws.com/d5adfb26-718d-4387-956a-b64174bd34a0-Cute Little Bear Fly Net.png"}
                 details = {{
                     name: employeeInfo.name,
-                    firstName: employeeInfo.firstName,
-                    lastName: employeeInfo.lastName,
+                    firstName: employeeInfo.firstName || firstName,
+                    lastName: employeeInfo.lastName || lastName,
                     email: employeeInfo.email,
                     contact: employeeInfo.contact,
                     skills: employeeInfo.skills,
