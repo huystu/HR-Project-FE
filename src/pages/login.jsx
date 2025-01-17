@@ -53,7 +53,12 @@ function Login() {
                     setMessage('Login failed. Please try again.');
                 }
             } catch (error) {
-                console.error('Error Login:', error.message);
+                const errorMsg = error.response.data.message;
+
+                if (errorMsg === '로그인에 실패했습니다. email or password is incorrect.') {
+                    formik.resetForm();
+                    alert('Email or password is incorrect');
+                }
                 setMessage(error.response?.data?.message || 'An error occurred during login.');
             }
         },
