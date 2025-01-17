@@ -474,7 +474,7 @@ const updateEmployee = async (id, updatedData) => {
     console.log(value);
 
     if (value === '') {
-      fetchData(currentPage-1, pageSize);
+      fetchData(0, pageSize);
     }
 
     setAuthToken(accessToken);
