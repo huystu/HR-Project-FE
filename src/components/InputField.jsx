@@ -9,14 +9,14 @@ const InputField = ({ label, type, name, formik, className, options, value, onSe
       <label htmlFor={name}>{label}</label>
       {type === "select" ? (
         <Select
-        allowClear
+          allowClear
           mode={selectMode}
           name={name}
           id={name}
           onChange={(value) => formik.setFieldValue(name, value)}  // Formik의 setFieldValue로 값 설정
           onBlur={formik.handleBlur}
           placeholder={`Select ${label}`}
-          defaultValue={defaultValue}
+          defaultValue={formik.values.skills}
         >
           {options && options.map((option, index) => (
             <Select.Option key={index} value={option.value}>

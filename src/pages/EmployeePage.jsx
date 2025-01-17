@@ -18,7 +18,6 @@ import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-import roleOptions from "../constants/roleOptions";
 import skillOptions from "../constants/skillOptions";
 
 import { Input } from 'antd';
@@ -42,7 +41,10 @@ const EmployeePage = () => {
   }
 
   const handleCancel = () => {
+    setSelectedEmployee(null);
+    formik.resetForm({});
     setIsModalOpen(false);
+    console.log(selectedEmployee);
   }
 
   const handleViewClick = (row) => {
@@ -119,12 +121,7 @@ const handleSaveClick = async (row) => {
     setModalMode("add"); // Set Mode
     setIsModalOpen(true); // Open the modal
     // formik.resetForm();
-    formik.resetForm( { date: '',
-      name: '',
-      email: '',
-      phoneNumber: '',
-      role: '',
-      skills: '', } );
+    formik.resetForm( {} );
   };
 
   const parseDateFromBackend = (dateString) => {
@@ -421,7 +418,7 @@ useEffect(() => {
       email: selectedEmployee?.email ||'',
       phoneNumber: selectedEmployee.phoneNumber ||'',
       role: selectedEmployee?.role ||'',
-      skills: selectedEmployee?.skills ||'',
+      skills: selectedEmployee?.skills ||[],
     });
   }
 }, [selectedEmployee]);  // selectedEmployee가 변경될 때마다 실행
@@ -507,7 +504,12 @@ const updateEmployee = async (id, updatedData) => {
     catch (error) {
       console.log('Failed Project Search : ', error);
     }
-  }
+  };
+
+
+  useEffect(() => {
+    console.log(formik.values.skills);
+  }, [formik.values.skills]);
 
   return (
     <Layout user={user} route="Employees">
@@ -530,20 +532,11 @@ const updateEmployee = async (id, updatedData) => {
               <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} />
-            {/* <InputField label="Role" type="select" name="role" formik={formik} options={roleOptions} defaultValue={modalMode === 'edit' ? formik.values.role : undefined} /> */}
-            {/* <InputField
-              label="Role"
-              type="autocomplete"
-              name="role"
-              formik={formik}
-              options={roleOptions}
-              value={inputValue}
-              onSearch={handelAddMemberSearch}
-              onFocus={handleAddMemberFocus}
-              onSelect={handelAddMemberSelect}
-            /> */}
-            <InputField label="Skills" type="text" name="skills" formik={formik} />
-            {/* <InputField label="Skills" type="select" name="skills" formik={formik} options={skillOptions} defaultValue={modalMode === 'edit' ? formik.values.skills : undefined} selectMode="multiple" /> */}
+            <InputField label="Skills" type="select" name="skills" formik={formik} selectMode="multiple" options={skillOptions}
+            // defaultValue={selectedEmployee === null ? [] : selectedEmployee?.skills}
+            // defaultValue={[]}
+            />
+            {/* <InputField label="Skills" type="text" name="skills" formik={formik} /> */}
             <InputField label="Email" type="email" name="email" formik={formik} />
             <InputField label="Phone Number" type="tel" name="phoneNumber" formik={formik} />
           </form>
