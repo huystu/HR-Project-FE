@@ -11,6 +11,8 @@ const Content = ({route, children}) => {
         localStorage.removeItem('token');
         localStorage.removeItem('loginUser');
         localStorage.removeItem('loginUserId');
+        localStorage.removeItem('loginUserEmial');
+        localStorage.removeItem('loginUserRole');
         navigate('/'); // redirect to login page
     };
 
