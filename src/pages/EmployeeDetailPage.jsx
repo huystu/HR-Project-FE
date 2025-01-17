@@ -25,18 +25,32 @@ import RoundCard from "../components/RoundCard";
 
 const EmployeeDetailPage = () =>
 {
+    const initialInfo = {
+        name: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        contact: '',
+        skills: '',
+        joiningDate: '',
+        role: '',
+        projecttitle: '',
+        roleinproject: '',
+    };
 
     const { id } = useParams(); //URL에서 ID 가져오기
         
     //info
-    const [employeeInfo, setEmployeeInfo] = useState(null);
-    const [projectsInfo, setProjectsInfo] = useState([]);
+    const [employeeInfo, setEmployeeInfo] = useState(initialInfo);
+    const [projectsInfo, setProjectsInfo] = useState(initialInfo);
 
     const [imagePreview, setImagePreview] = useState(null); // 미리보기 이미지 URL
 
     const [loading, setLoading] = useState(false); // 로딩 상태
+    const [imageloading, setimageLoading] = useState(false); //이미지 로딩 상태
 
-  
+
+    
 
     const user = "Admin"; // User Name
     const navigate = useNavigate();
@@ -95,9 +109,14 @@ const EmployeeDetailPage = () =>
             return <p>Employee details not available.</p>;
       }
       
-    
+      if (loading) return <p>Loading...</p>; // 데이터 로드 중 표시
+      //if (!employeeData) return <p>Employee not found</p>; // 데이터가 없는 경우
+      
+
       return (
        <Layout user={user} route="Employees">
+        {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
+                : (
              <DashboardCard>
                 <RoundCard 
                 imageUrl= {imagePreview || "https://st03image.s3.ap-northeast-2.amazonaws.com/d5adfb26-718d-4387-956a-b64174bd34a0-Cute Little Bear Fly Net.png"}
@@ -112,7 +131,7 @@ const EmployeeDetailPage = () =>
                     role: employeeInfo.role,
                     //projectsInfo 데이터는 배열임
                     projecttitle: projectsInfo.length > 0 ? projectsInfo[0].projectInfo.name : "No project assigned",
-                    roleinproject: projectsInfo.length > 0? projectsInfo[1].employeeProjectInfo.contribution : "No project assinged",
+                    roleinproject: projectsInfo.length > 0? projectsInfo[0].employeeProjectInfo.roleInProject : "No project assinged",
                     //imageUrl: null,
                 }}
 
@@ -124,7 +143,7 @@ const EmployeeDetailPage = () =>
       
                 
                 </RoundCard>
-            </DashboardCard>
+            </DashboardCard>)}
         </Layout>
         
       );

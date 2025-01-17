@@ -22,6 +22,7 @@ import roleOptions from "../constants/roleOptions";
 import skillOptions from "../constants/skillOptions";
 
 
+
 const EmployeePage = () => {
   const user = localStorage.getItem('loginUser'); // User Name
   const columns = ["Date", "Employee", "Role", "Skills", "Email", "Phone Number", "Action"];
@@ -29,9 +30,11 @@ const EmployeePage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null); //선택된 직원 데이터
   const [modalMode, setModalMode] = useState("add"); // Setting of Modal: "add" or "edit" or "delete"
-
+  
 
   const [loading, setLoading] = useState(false); // 로딩 상태
+
+  
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -45,6 +48,71 @@ const EmployeePage = () => {
     navigate(`/employees/${row.id}`); //EmployeePage에서 전달받은 데이터 중 선택된 직원의 고유ID
 };
 
+const navigate = useNavigate();
+const accessToken = localStorage.getItem('token');
+
+// Check token
+
+// Check token
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+      navigate("/"); // Redirect to login if no token
+  } else {
+      setAuthToken(token); // Set token in Axios headers
+  }
+}, [navigate]);
+
+
+const handleSaveClick = async (row) => {
+  const employeeId = row.id; // 직원 ID 가져오기
+  console.log('Employee ID', employeeId);
+        
+
+  try {
+    const response = await api.get(`/employee/${employeeId}/cv`, {
+      responseType: "blob", // Handle binary data
+  });
+
+
+      console.log("response status:", response.status);
+      console.log("response:", response);
+      if (response.status !== 200) {
+          const errorResponse = await response.clone().text(); // 복제된 객체에서 텍스트 읽기
+          console.error('Error response:', errorResponse);
+          throw new Error('Failed to fetch CV. HTTP Status: ${response.status');
+          
+      }
+
+       // 응답이 PDF인지 확인
+       const contentType = response.headers.get('Content-Type');
+       if (!contentType || !contentType.includes('application/pdf')) {
+           const errorResponse = await response.clone().text(); // 복제된 객체에서 텍스트 읽기
+           console.error('Unexpected Response Body:', errorResponse);
+           throw new Error('The server did not return a PDF file.');
+       }
+
+       // Create a Blob URL and download the file
+       const blob = new Blob([response.data], { type: "application/pdf" });
+       const url = window.URL.createObjectURL(blob);
+
+
+        // 파일 다운로드 처리
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `employee_${employeeId}_cv.pdf`; // 다운로드 파일 이름 지정
+        document.body.appendChild(link);
+        link.click();
+        link.remove(); // 사용 후 링크 제거
+
+        // URL 해제
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error downloading CV:', error);
+        alert('Failed to download CV. Please try again.');
+  }
+};
+
   //모달 열기, 폼 데이터 초기화 후 모달 열기
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
@@ -56,14 +124,6 @@ const EmployeePage = () => {
       phoneNumber: '',
       role: '',
       skills: '', } );
-    // formik.setValues({
-    //   date: '',
-    //   name: '',
-    //   email: '',
-    //   phoneNumber: '',
-    //   role: undefined,
-    //   skills: undefined,
-    // }); // Initialize form
   };
 
   const parseDateFromBackend = (dateString) => {
@@ -179,12 +239,12 @@ const EmployeePage = () => {
     }
   };
 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
 
-  const accessToken = localStorage.getItem('token');
+  //const accessToken = localStorage.getItem('token');
 
   const [data, setData] = useState([]);
 
@@ -219,7 +279,7 @@ const EmployeePage = () => {
           Skills: employee.skills.split(',').map(skill => skill.trim()),
           Email: employee.email,
           "Phone Number": employee.contact,
-          Action: ["Edit", "Delete", 'View'],
+          Action: ["Edit", "Delete", "View", "Save"],
           id: employee.id,
         }));
 
@@ -446,7 +506,7 @@ const updateEmployee = async (id, updatedData) => {
             <InputField label="Skills" type="text" name="skills" formik={formik} />
             {/* <InputField label="Skills" type="select" name="skills" formik={formik} options={skillOptions} defaultValue={modalMode === 'edit' ? formik.values.skills : undefined} selectMode="multiple" /> */}
             <InputField label="Email" type="email" name="email" formik={formik} />
-            <InputField label="PhoneNumber" type="tel" name="phoneNumber" formik={formik} />
+            <InputField label="Phone Number" type="tel" name="phoneNumber" formik={formik} />
           </form>
         </CustomModal>        
 
@@ -480,7 +540,7 @@ const updateEmployee = async (id, updatedData) => {
             
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
-        <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} />)
+        <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} onSaveClick = {handleSaveClick} />)
         }
 
           {/* 테이블에서 Edit 클릭 시 실행될 함수 전달 */}

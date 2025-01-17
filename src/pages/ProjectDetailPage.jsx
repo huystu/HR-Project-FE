@@ -145,6 +145,12 @@ const ProjectDetailPage = () => {
             status: projectInfo.status,
         }); // Initialize form
       };
+
+      
+    const handleLinkClick = (row) => {
+        navigate(`/employees/${row.id}`);
+    };
+
     // Update Formik settings
     const formik = useFormik({
         initialValues: {
@@ -540,7 +546,7 @@ const ProjectDetailPage = () => {
                     <Tabs defaultActiveKey="1">
                         <Tabs.TabPane tab="Members" key="1">
                             <div style={{display: 'flex'}}>
-                                <Table columns={columns} data={members} onDeleteClick={handleDeleteClick} />
+                                <Table columns={columns} data={members} onLinkClick={handleLinkClick} onDeleteClick={handleDeleteClick} />
                                 {/* Add Members Button */}
                                 <ImgButton onClick={handleAddMember}>
                                     <IoMdPersonAdd />

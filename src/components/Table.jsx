@@ -6,12 +6,13 @@ import ImgButton from "./ImgButton";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"; //테이블에서 사용하는 편집 및 삭제 아이콘
 import { GrView } from "react-icons/gr";
 import { CiLink } from "react-icons/ci";
+import { MdOutlineSaveAlt } from "react-icons/md";
 
 import { Tag } from 'antd';
 
 //columns, data 기반으로 테이블 동적 렌더링
 //action 열의 편집 및 삭제 버튼, 사용자가 데이터 수정하거나 삭제
-const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkClick  }) => {
+const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkClick, onSaveClick  }) => {
   return (
     <table className="table">
       <thead>
@@ -53,6 +54,13 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                       )
                     }
                     {
+                      row[column].includes("Save") && (
+                        <ImgButton onClick={() => onSaveClick(row)}>
+                          <MdOutlineSaveAlt />
+                        </ImgButton>
+                      )
+                    }
+                    {
                       row[column].includes("Edit") && (
                         <ImgButton onClick={() => onEditClick(row)}> 
                           <AiOutlineEdit />
@@ -85,6 +93,7 @@ Table.propTypes = {
   onEditClick: PropTypes.func, //onEditClick을 prop으로 전달
   onDeleteClick: PropTypes.func,
   onViewClick: PropTypes.func,
+  onSaveClick: PropTypes.func,
   onLinkClick: PropTypes.func,
 };
 
