@@ -13,11 +13,8 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-//import styled from "styled-components";
-//import "antd/dist/antd.css";
-
 import { Card, Avatar, Typography, Row, Col } from "antd";
-const { Title, Text } = Typography;
+
 
 const RoundCard = ({ imageUrl, details }) => {
     const [imagePreview, setImagePreview] = useState(imageUrl || null); // 미리보기 상태
@@ -26,7 +23,7 @@ const RoundCard = ({ imageUrl, details }) => {
     const fileInputRef = useRef(null); // 파일 입력 참조
     const navigate = useNavigate();
     const { id } = useParams(); //URL에서 ID 가져오기
-    const [loading, setLoading] = useState(false); // 로딩 상태
+    const [imageloading, setimageLoading] = useState(true); // 로딩 상태
 
 
     // Check token
@@ -37,6 +34,7 @@ const RoundCard = ({ imageUrl, details }) => {
         }
 
         // 페이지 로드 시 로컬 스토리지에서 이미지 URL을 가져오기
+        //if (loading? {<LoadingSpinn})
         const storedImage = localStorage.getItem(`image_${id}`);
         if (storedImage) {
             setImagePreview(storedImage);
@@ -46,9 +44,9 @@ const RoundCard = ({ imageUrl, details }) => {
 
     // 이미지 업로드 처리
     const handleUpload = async (file) => {
+        //setimageLoading(false);
         setAuthToken(accessToken); // set the accessToken
         console.log(accessToken);
-        //setLoading(true);
 
         console.log("File selected." ,file);
         if (!file) return; //파일이 없는 경우 처리 중단
@@ -164,11 +162,12 @@ const RoundCard = ({ imageUrl, details }) => {
                                     <ImgButton onClick={handleDeleteImage}><DeleteOutlined /></ImgButton>
                                 </div>
 
+                                {/*{imageloading && <LoadingSpinner />} {/* 이미지 로딩 중일 때 스피너 표시 */}
                                 <input
                                     type="file"
                                     accept="image/*"
                                     ref={fileInputRef}
-                                    style={{ display: "none" }} // 파일 입력 숨김
+                                    style={{ display:"none"}} // 파일 입력 숨김
                                     onChange={(e) => handleUpload(e.target.files[0])}
                                      // 파일 입력 참조 설정
                                 />
