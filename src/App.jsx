@@ -21,6 +21,8 @@ function App() {
         <Route path="/account" element={<AccountPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/error" element={<PageNotFound />} />
+        {/* 매칭되지 않는 모든 경로를 처리 */}
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );
