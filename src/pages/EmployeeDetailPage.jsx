@@ -23,8 +23,10 @@ import { IoMdPersonAdd } from "react-icons/io";
 import RoundCard from "../components/RoundCard";
 
 
+
 const EmployeeDetailPage = () =>
 {
+    
     const initialInfo = {
         name: '',
         firstName: '',
@@ -39,6 +41,10 @@ const EmployeeDetailPage = () =>
     };
 
     const { id } = useParams(); //URL에서 ID 가져오기
+    
+    //성과 이름을 분리하기 위한 코드
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
         
     //info
     const [employeeInfo, setEmployeeInfo] = useState(initialInfo);
@@ -81,14 +87,22 @@ const EmployeeDetailPage = () =>
         try {
             const response = await api.get(`/employee/${id}/detail`);
 
+
             
             if(response.status === 200){
                 console.log("Api response:", response.data);
+                //이름을 분리해서 상태에 저장
+                console.log("employeeInfo name: ", response.data.data.employeeInfo.name);
+                const [first, last] = employeeInfo.name.split(" ");
+                setFirstName(first || '');
+                setLastName(last || '');
+                console.log(setFirstName);
+
                 setEmployeeInfo(response.data.data.employeeInfo);
                 setProjectsInfo(response.data.data.projectsInfo);
-                console.log(response.data.data.projectsInfo);
-                //setImagePreview(employeeInfo.imageUrl );
 
+            
+                console.log(response.data.data.projectsInfo);
             }
             }
         catch (error) {
@@ -102,7 +116,8 @@ const EmployeeDetailPage = () =>
     useEffect(() => 
         {
             fetchEmployeeDetail();
-        }, []);
+        }, [id]); // URL의 id가 변경될 때마다 데이터를 새로 불러옴
+
 
         
           

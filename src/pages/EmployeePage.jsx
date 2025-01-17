@@ -168,7 +168,7 @@ const handleSaveClick = async (row) => {
              date: parseDateFromBackend(employeeData.joiningDate)
           });
 
-          console.log("seleced employee: ", selectedEmployee);
+          console.log("selected employee: ", selectedEmployee);
           //console.log("Raw date from backend:", employeeData.date);
           const employeeDate = employeeData.date || employeeData.joiningDate || "unknown";
           console.log("Extracted employee date:", employeeDate);
@@ -184,10 +184,8 @@ const handleSaveClick = async (row) => {
           date: parseDateFromBackend(employeeData.date),
         });
         
-         //const employeeData = getResponse.data;
-
-        //  console.log("selected employee state:", selectedEmployee);
-        //console.log("formik iniia")
+        // 수정된 ID를 URL에 전달
+        navigate(`/employee/${id}/detail`);
 
 
     }
