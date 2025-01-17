@@ -115,7 +115,7 @@ const EmployeeDetailPage = () =>
       
 
       return (
-       <Layout user={user} route="Employees">
+       <Layout user={user} route= {`Employees, ${employeeInfo?.name || "Employee"}`}>
         {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
              <DashboardCard >
