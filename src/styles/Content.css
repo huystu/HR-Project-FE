@@ -27,19 +27,6 @@ main {
 .main-header > p {
     margin: 0; /* p 태그의 기본 마진 제거 */
 }
-  
-.main-header > button {
-    margin: 0; /* p 태그의 기본 마진 제거 */
-
-    font-family: 'Pretendard-Light';
-
-    background-color: transparent;
-    border: transparent;
-}
-
-.main-header > button:hover {
-    color: #6d6d6d;
-}
 
 .main-content {
     margin: 0;

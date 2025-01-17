@@ -5,9 +5,16 @@
     padding: 20px;
     font-family: 'Pretendard-Regular';
     font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.user {
+.sidebar-upper, .sidebar-bottom {
+    margin: 0;
+}
+
+.logo {
     margin-bottom: 20px;
 }
 
@@ -18,4 +25,43 @@
 
 nav > p {
     padding: 10px 0;
+}
+
+.access-profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.username {
+    margin: 0;
+    margin-left: 5px;
+}
+
+.username > button {
+    background-color: transparent;
+    border: transparent;
+    color: white;
+    width: 100px;
+    text-align: start;
+    white-space: normal; /* 줄바꿈 허용 */
+    word-break: break-word; /* 단어 단위 줄바꿈 */
+}
+
+.logout {
+    margin: 0; /* p 태그의 기본 마진 제거 */
+}
+
+.logout > button {
+    color: white;
+}
+
+.logout > button:hover {
+    color: #d6d6d6;
+}
+
+.sidebar-hr {
+    border: none;
+    border-top: 0.7px solid white;
+    margin-bottom: 10px;
 }

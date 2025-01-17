@@ -21,7 +21,8 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import roleOptions from "../constants/roleOptions";
 import skillOptions from "../constants/skillOptions";
 
-
+import { Input } from 'antd';
+const { Search } = Input;
 
 const EmployeePage = () => {
   const user = localStorage.getItem('loginUser'); // User Name
@@ -467,6 +468,44 @@ const updateEmployee = async (id, updatedData) => {
     fetchData(currentPage - 1, pageSize);
   }, [currentPage]);
  
+  const onSearch = async (value, ) => {
+    console.log(value);
+
+    if (value === '') {
+      fetchData(0, pageSize);
+    }
+
+    setAuthToken(accessToken);
+    try {
+      const response = await api.get('/employee/search', {
+        params: {
+          keyword: value,
+          page: 0,
+          size: pageSize,
+        }
+      });
+
+      console.log(response);
+
+      const formattedData = response.data.data.content.map(employee => ({
+        Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
+        Employee: employee.name, 
+        Role: employee.role || 'N/A',
+        Skills: employee.skills,
+        Email: employee.email,
+        "Phone Number": employee.contact,
+        Action: ["Edit", "Delete", "View", "Save"],
+        id: employee.id,
+      }));
+
+      //3. 상태 업데이트
+      setData(formattedData);
+      setPageCount(response.data.data.page.totalPages);
+    }
+    catch (error) {
+      console.log('Failed Project Search : ', error);
+    }
+  }
 
   return (
     <Layout user={user} route="Employees">
@@ -534,7 +573,7 @@ const updateEmployee = async (id, updatedData) => {
                   </div>
                 }
               />
-            
+            <Search placeholder="input search employee" onSearch={onSearch} style={{ width: 500, margin: 10, }} />
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
         <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} onSaveClick = {handleSaveClick} />)

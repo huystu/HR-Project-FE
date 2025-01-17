@@ -45,7 +45,7 @@ function Login() {
                     localStorage.setItem('token', response.data.data.jwtToken.accessToken);
                     localStorage.setItem('loginUser', response.data.data.name);
                     localStorage.setItem('loginUserId', response.data.data.memberId);
-                    localStorage.setItem('loginUserEmial', response.data.data.email);
+                    localStorage.setItem('loginUserEmail', response.data.data.email);
                     localStorage.setItem('loginUserRole', response.data.data.role);
                     navigate('/employees');
                 }

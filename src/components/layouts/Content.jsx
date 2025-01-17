@@ -1,22 +1,10 @@
 // src/components/Content.jsx
-import { useNavigate } from 'react-router-dom';
-
 import PropTypes from 'prop-types';
 import '../../styles/Content.css';
 
 const Content = ({route, children}) => {
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('loginUser');
-        localStorage.removeItem('loginUserId');
-        localStorage.removeItem('loginUserEmial');
-        localStorage.removeItem('loginUserRole');
-        navigate('/'); // redirect to login page
-    };
-
     const routeParts = route.trim().split(',');
+    const loginUser = localStorage.getItem('loginUser');
 
     return (
         <main>
@@ -32,7 +20,7 @@ const Content = ({route, children}) => {
                         </span>
                     ))}
                 </p>
-                <button onClick={handleLogout}>logout</button>
+                <p style={{color: 'black'}}>Hi, {loginUser} 👋</p>
             </header>
             <div className="main-content">
                 {children}
