@@ -276,7 +276,7 @@ const handleSaveClick = async (row) => {
           Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
           Employee: employee.name, 
           Role: employee.role || 'N/A',
-          Skills: employee.skills.split(',').map(skill => skill.trim()),
+          Skills: employee.skills,
           Email: employee.email,
           "Phone Number": employee.contact,
           Action: ["Edit", "Delete", "View", "Save"],
@@ -317,7 +317,7 @@ const handleSaveClick = async (row) => {
       email: selectedEmployee?.email || '',
       phoneNumber: selectedEmployee?.phoneNumber || '',
       role: selectedEmployee?.role || '',
-      skills: selectedEmployee?.skills || '',
+      skills: selectedEmployee?.skills || [],
     },
     enableReinitialize: true, //selectedEmployee가 변경될 때 초기화
     validate: (values) => {
@@ -487,7 +487,7 @@ const updateEmployee = async (id, updatedData) => {
         >
           <form onSubmit={formik.handleSubmit}>
             <div className="input-field-half-row">
-              <InputField className = "-half" label="Date" type="date" name="date" formik={formik} />
+              <InputField className = "-half" label="Date *" type="date" name="date" formik={formik} />
               <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} />

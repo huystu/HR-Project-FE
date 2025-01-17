@@ -49,12 +49,12 @@ const EmployeeDetailPage = () =>
     const [loading, setLoading] = useState(false); // 로딩 상태
     const [imageloading, setimageLoading] = useState(false); //이미지 로딩 상태
 
-
+    const accessToken = localStorage.getItem("token");
     
 
     const user = "Admin"; // User Name
     const navigate = useNavigate();
-    const accessToken = localStorage.getItem('token');
+    
 
     const handleChange = (value) => {
         console.log(`selected ${value}`);
@@ -67,6 +67,7 @@ const EmployeeDetailPage = () =>
             navigate("/"); 
         }
     }, [navigate]);
+    
     
 
      // Fetch data from API
@@ -117,7 +118,7 @@ const EmployeeDetailPage = () =>
        <Layout user={user} route="Employees">
         {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
-             <DashboardCard>
+             <DashboardCard >
                 <RoundCard 
                 imageUrl= {imagePreview || "https://st03image.s3.ap-northeast-2.amazonaws.com/d5adfb26-718d-4387-956a-b64174bd34a0-Cute Little Bear Fly Net.png"}
                 details = {{
