@@ -182,7 +182,7 @@ const ProjectsPage = () => {
       console.log(value);
 
       if (value === '') {
-        fetchData(currentPage-1, pageSize);
+        fetchData(0, pageSize);
       }
 
       setAuthToken(accessToken);
@@ -190,7 +190,7 @@ const ProjectsPage = () => {
         const response = await api.get('/project/search', {
           params: {
             keyword: value,
-            page: currentPage-1,
+            page: 0,
             size: pageSize,
           }
         });
