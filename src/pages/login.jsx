@@ -1,5 +1,5 @@
 // src/pages/login.jsx
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { validationSchema } from '../validationSchema';
@@ -19,7 +19,6 @@ import InputField from '../components/InputField';
 
 function Login() {
     const navigate = useNavigate();
-    const [message, setMessage] = useState("");
 
     const formik = useFormik({
         initialValues: {
@@ -41,7 +40,6 @@ function Login() {
                 console.log('Success Login:', response.data);
                 
                 if (response.data.status === 200) {
-                    setMessage(response.data.message);
                     localStorage.setItem('token', response.data.data.jwtToken.accessToken);
                     localStorage.setItem('loginUser', response.data.data.name);
                     localStorage.setItem('loginUserId', response.data.data.memberId);
@@ -50,7 +48,7 @@ function Login() {
                     navigate('/employees');
                 }
                 else {
-                    setMessage('Login failed. Please try again.');
+                    console.log('Login failed. Please try again.');
                 }
             } catch (error) {
                 const errorMsg = error.response.data.message;
@@ -59,7 +57,7 @@ function Login() {
                     formik.resetForm();
                     alert('Email or password is incorrect');
                 }
-                setMessage(error.response?.data?.message || 'An error occurred during login.');
+                console.log(error.response?.data?.message || 'An error occurred during login.');
             }
         },
     });
@@ -73,13 +71,22 @@ function Login() {
                 // localStorage.setItem('memberId', res.data.data.memberId);
                 navigate('/employees');
             } else {
-                setMessage('Google login failed');
+                console.log('Google login failed');
             }
         } catch (error) {
             console.error('Error with Google login:', error);
-            setMessage('An error occurred during Google login.');
+            console.log('An error occurred during Google login.');
         }
     };
+
+    // 뒤로 가기 키를 통해서 로그인 페이지로 이동하게 되면 LocalStorage에 담을 많은 요소 제거
+    useEffect(()=> {
+        localStorage.removeItem('token');
+        localStorage.removeItem('loginUser');
+        localStorage.removeItem('loginUserId');
+        localStorage.removeItem('loginUserEmail');
+        localStorage.removeItem('loginUserRole');
+    }, []);
 
     return (
         <>
