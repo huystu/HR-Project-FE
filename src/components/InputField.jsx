@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import '../styles/InputField.css';
 import { Select, AutoComplete } from 'antd';
 
-const InputField = ({ label, type, name, formik, className, options, value, onSearch, onFocus, onSelect, defaultValue, selectMode }) => {
+const InputField = ({ label, type, name, formik, className, options, value, onSearch, onFocus, onSelect, selectMode }) => {
   return (
     <div className={`input-field${className ? className:''} input-field-${type}`.trim()}>
       <label htmlFor={name}>{label}</label>
@@ -16,7 +16,7 @@ const InputField = ({ label, type, name, formik, className, options, value, onSe
           onChange={(value) => formik.setFieldValue(name, value)}  // Formik의 setFieldValue로 값 설정
           onBlur={formik.handleBlur}
           placeholder={`Select ${label}`}
-          defaultValue={formik.values.skills}
+          value={formik.values[name]}
         >
           {options && options.map((option, index) => (
             <Select.Option key={index} value={option.value}>
@@ -71,7 +71,6 @@ InputField.propTypes = {
   onSearch: PropTypes.func, // 상태 변경 핸들러
   onFocus: PropTypes.func, // 포커스 핸들러
   onSelect: PropTypes.func, // 필드 선택
-  defaultValue: PropTypes.string,
   selectMode: PropTypes.string,
 };
 

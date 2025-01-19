@@ -34,12 +34,6 @@ const EmployeePage = () => {
 
   const [loading, setLoading] = useState(false); // 로딩 상태
 
-  
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  }
-
   const handleCancel = () => {
     setSelectedEmployee(null);
     formik.resetForm({});
@@ -532,11 +526,7 @@ const updateEmployee = async (id, updatedData) => {
               <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} />
-            <InputField label="Skills" type="select" name="skills" formik={formik} selectMode="multiple" options={skillOptions}
-            // defaultValue={selectedEmployee === null ? [] : selectedEmployee?.skills}
-            // defaultValue={[]}
-            />
-            {/* <InputField label="Skills" type="text" name="skills" formik={formik} /> */}
+            <InputField label="Skills" type="select" name="skills" formik={formik} selectMode="multiple" options={skillOptions} />
             <InputField label="Email" type="email" name="email" formik={formik} />
             <InputField label="Phone Number" type="tel" name="phoneNumber" formik={formik} />
           </form>
