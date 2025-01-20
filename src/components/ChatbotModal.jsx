@@ -12,9 +12,9 @@ import api, { setAuthToken } from '../api';
 const WaitingChatbotAnswer = () => {
     return (
         <div className="loading-container">
-            <img src="/src/assets/Chatbot.png" width="20px" className="chatbot-loading"/>
-            <img src="/src/assets/Chatbot.png" width="20px" className="chatbot-loading"/>
-            <img src="/src/assets/Chatbot.png" width="20px" className="chatbot-loading"/>
+            <img src="/Chatbot.png" width="20px" className="chatbot-loading"/>
+            <img src="/Chatbot.png" width="20px" className="chatbot-loading"/>
+            <img src="/Chatbot.png" width="20px" className="chatbot-loading"/>
         </div>
     )
 };
@@ -176,7 +176,7 @@ const ChatbotModal = ({ visible, handleClose }) => {
                         (msg.loading ? <WaitingChatbotAnswer key={index} className="msg-loading" /> : 
                         <div key={index} className={`message ${msg.isUser ? 'user-msg' : 'bot-msg'}`}>
                             <div className="chat-name">
-                                {msg.isUser ? `${userName}` : <div className="chat-name-bot"><img src="/src/assets/Chatbot.png" width="20px"/><span> HR Buddy</span></div>} 
+                                {msg.isUser ? `${userName}` : <div className="chat-name-bot"><img src="/Chatbot.png" width="20px"/><span> HR Buddy</span></div>} 
                             </div>
                             <div className="chat-msg">
                                 {msg.text}
