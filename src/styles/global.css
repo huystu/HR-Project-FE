@@ -47,3 +47,17 @@ body {
 .ant-tabs-content-holder {
     margin: 0;
 }
+
+.dashboard-cards, .ant-statistic-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dashboard-card {
+    flex: 1;
+    margin: 10px;
+}
+
+.ant-statistic-content-value, .ant-statistic-content-suffix {
+    margin: 0;
+}

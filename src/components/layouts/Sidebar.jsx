@@ -29,8 +29,8 @@ const Sidebar = ({user})=> {
                 <div className="sidebar-upper">
                     <div className="logo">LOGO</div>
                     <nav>
-                        {/* <p><a className="menu" href="/dashboard">Dashboard</a></p> */}
-                        <p><a className="menu">Dashboard</a></p>
+                        <p><a className="menu" href="/dashboard">Dashboard</a></p>
+                        {/* <p><a className="menu">Dashboard</a></p> */}
                         <p>&gt; <a className="menu" href="/employees">Employees</a></p>
                         <p>&gt; <a className="menu" href="/projects">Projects</a></p>
                         {isSuperAdmin ? (<p>&gt; <a className="menu" href="/account">Account</a></p>) : <></>}
