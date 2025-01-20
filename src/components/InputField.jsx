@@ -1,22 +1,31 @@
 // src/components/Input.jsx
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import '../styles/InputField.css';
 import { Select, AutoComplete } from 'antd';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+
 
 const InputField = ({ label, type, name, formik, className, options, value, onSearch, onFocus, onSelect, defaultValue, selectMode }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className={`input-field${className ? className:''} input-field-${type}`.trim()}>
       <label htmlFor={name}>{label}</label>
       {type === "select" ? (
         <Select
-        allowClear
+          allowClear
           mode={selectMode}
           name={name}
           id={name}
           onChange={(value) => formik.setFieldValue(name, value)}  // Formik의 setFieldValue로 값 설정
           onBlur={formik.handleBlur}
           placeholder={`Select ${label}`}
-          defaultValue={defaultValue}
+          value={formik.values[name]}
         >
           {options && options.map((option, index) => (
             <Select.Option key={index} value={option.value}>
@@ -37,7 +46,25 @@ const InputField = ({ label, type, name, formik, className, options, value, onSe
         >
           <input type="text" name={name} id={name} />
         </AutoComplete>
-      ) : (
+      ) : type === "password" ? (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name={name}
+            id={name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values[name]}
+            style={{ flex: 1 }}
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            style={{ marginLeft: '10px', background: 'none', border: 'none', cursor: 'pointer' }} >
+            {showPassword ?  <EyeOutlined /> : <EyeInvisibleOutlined />}
+          </button>
+        </div>
+      ):(
         <input
           type={type}
           name={name}
@@ -71,7 +98,6 @@ InputField.propTypes = {
   onSearch: PropTypes.func, // 상태 변경 핸들러
   onFocus: PropTypes.func, // 포커스 핸들러
   onSelect: PropTypes.func, // 필드 선택
-  defaultValue: PropTypes.string,
   selectMode: PropTypes.string,
 };
 

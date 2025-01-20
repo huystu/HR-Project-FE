@@ -442,10 +442,7 @@ const ProjectDetailPage = () => {
                 <form onSubmit={formik.handleSubmit}>
                     <InputField label="Title" type="text" name="title" formik={formik} />
                     <InputField label="Description" type="textarea" name="description" formik={formik} />
-                    <div className="input-field-select">
-                        <p style={{fontFamily: "Pretenard-Regular"}}>Status</p>
-                        <Select id="status" defaultValue={`${projectInfo.status}`} onChange={handleProjectStatusChange} options={projectStatusOptions} />
-                    </div>
+                    <InputField label="Status" type="select" name="status" formik={formik} options={projectStatusOptions} />
                 </form>
             </CustomModal>
             

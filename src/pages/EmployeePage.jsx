@@ -18,7 +18,6 @@ import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-import roleOptions from "../constants/roleOptions";
 import skillOptions from "../constants/skillOptions";
 
 
@@ -34,14 +33,11 @@ const EmployeePage = () => {
 
   const [loading, setLoading] = useState(false); // 로딩 상태
 
-  
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  }
-
   const handleCancel = () => {
+    setSelectedEmployee(null);
+    formik.resetForm({});
     setIsModalOpen(false);
+    console.log(selectedEmployee);
   }
 
   const handleViewClick = (row) => {
@@ -118,12 +114,7 @@ const handleSaveClick = async (row) => {
     setModalMode("add"); // Set Mode
     setIsModalOpen(true); // Open the modal
     // formik.resetForm();
-    formik.resetForm( { date: '',
-      name: '',
-      email: '',
-      phoneNumber: '',
-      role: '',
-      skills: '', } );
+    formik.resetForm( {} );
   };
 
   const parseDateFromBackend = (dateString) => {
@@ -419,7 +410,7 @@ useEffect(() => {
       email: selectedEmployee?.email ||'',
       phoneNumber: selectedEmployee.phoneNumber ||'',
       role: selectedEmployee?.role ||'',
-      skills: selectedEmployee?.skills?.join(", "),
+      skills: selectedEmployee?.skills ||[],
     });
   }
 }, [selectedEmployee]);  // selectedEmployee가 변경될 때마다 실행
@@ -468,6 +459,49 @@ const updateEmployee = async (id, updatedData) => {
     fetchData(currentPage - 1, pageSize);
   }, [currentPage]);
  
+  const onSearch = async (value, ) => {
+    console.log(value);
+
+    if (value === '') {
+      fetchData(0, pageSize);
+    }
+
+    setAuthToken(accessToken);
+    try {
+      const response = await api.get('/employee/search', {
+        params: {
+          keyword: value,
+          page: 0,
+          size: pageSize,
+        }
+      });
+
+      console.log(response);
+
+      const formattedData = response.data.data.content.map(employee => ({
+        Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
+        Employee: employee.name, 
+        Role: employee.role || 'N/A',
+        Skills: employee.skills,
+        Email: employee.email,
+        "Phone Number": employee.contact,
+        Action: ["Edit", "Delete", "View", "Save"],
+        id: employee.id,
+      }));
+
+      //3. 상태 업데이트
+      setData(formattedData);
+      setPageCount(response.data.data.page.totalPages);
+    }
+    catch (error) {
+      console.log('Failed Project Search : ', error);
+    }
+  };
+
+
+  useEffect(() => {
+    console.log(formik.values.skills);
+  }, [formik.values.skills]);
 
   return (
     <Layout user={user} route="Employees">
