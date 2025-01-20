@@ -13,7 +13,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Avatar, Typography, Row, Col } from "antd";
+import { Card, Avatar, Row, Col, Spin } from "antd";
 
 
 const RoundCard = ({ imageUrl, details }) => {
@@ -23,8 +23,7 @@ const RoundCard = ({ imageUrl, details }) => {
     const fileInputRef = useRef(null); // 파일 입력 참조
     const navigate = useNavigate();
     const { id } = useParams(); //URL에서 ID 가져오기
-    const [imageloading, setimageLoading] = useState(true); // 로딩 상태
-
+    const [loading, setLoading] = useState(true);
 
     // Check token
     useEffect(() => {
@@ -34,22 +33,34 @@ const RoundCard = ({ imageUrl, details }) => {
         }
 
         // 페이지 로드 시 로컬 스토리지에서 이미지 URL을 가져오기
-        //if (loading? {<LoadingSpinn})
         const storedImage = localStorage.getItem(`image_${id}`);
         if (storedImage) {
+            //setLoading(true); //로딩 시작
             setImagePreview(storedImage);
         }
     }, [navigate, id]);
 
+    useEffect(() => {
+        if (imagePreview !== null){
+            setLoading(false); //이미지가 로드되었으면 로딩 종료
+            console.log("loading state changed:", loading);
+        }
+        
+    }, [imagePreview]);
+
 
     // 이미지 업로드 처리
     const handleUpload = async (file) => {
-        //setimageLoading(false);
+        setLoading(true);
+        console.log("loading state changed to: ", true);
         setAuthToken(accessToken); // set the accessToken
         console.log(accessToken);
 
+        //setLoading(false);
         console.log("File selected." ,file);
         if (!file) return; //파일이 없는 경우 처리 중단
+
+       
 
         const formData = new FormData();
         formData.append("file", file); //key는 'file'로 설정
@@ -80,14 +91,20 @@ const RoundCard = ({ imageUrl, details }) => {
                 setImagePreview(uploadedImageUrl); 
                 localStorage.setItem(`image_${id}`, uploadedImageUrl); // 로컬 스토리지에 저장
                 //fetchEmployeeDetail();
+                setLoading(false); //로딩 종료
+                console.log("loading state changed to: ", false);
 
                 } else {
                 console.error("Image upload failed:", response.data);
                 setImagePreview(employeeInfo.imageUrl || 'defaul-image-url.jpg');
+                setLoading(false); //에러 발생 시에도 로딩
+                console.log("loading state changed to: ", false);
                 }
             } catch (error) {
                 console.error("Error uploading image:", error.message);
                 console.error("error response data:", error.response?.data);
+                setLoading(false);
+                console.log("loading state changed to: ", false);
             } finally {
                 setUploading(false);
             }
@@ -123,12 +140,15 @@ const RoundCard = ({ imageUrl, details }) => {
     };
 
 
-
+    if (loading) {
+        return <LoadingSpinner />;
+       }
 
     return (
         <Row style={{justifyContent: "center"}}>
             {/*왼쪽 칸 사진, 전체 너비의 비율 Col로 조절*/}
             <Col style={{ width: "25%", marginRight:"1px"}}> 
+            
             <Card
                 style={{ width:"100%", //두 카드 사이의 간격
                     height: "350px", 
@@ -138,8 +158,7 @@ const RoundCard = ({ imageUrl, details }) => {
                 hoverable
                 cover={
                     <div className = "round-card-left">
-                        
-                        {imagePreview ? (
+                         { imagePreview ? (
                         <Avatar
                                     className="avatar-placeholder"
                                     src={imagePreview} //선택된 이미지 표시
@@ -151,7 +170,6 @@ const RoundCard = ({ imageUrl, details }) => {
                             ) : (
                                 <div className="placeholder">No image</div>
                                 
-
                             )}
 
                             
@@ -162,7 +180,6 @@ const RoundCard = ({ imageUrl, details }) => {
                                     <ImgButton onClick={handleDeleteImage}><DeleteOutlined /></ImgButton>
                                 </div>
 
-                                {/*{imageloading && <LoadingSpinner />} {/* 이미지 로딩 중일 때 스피너 표시 */}
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -181,6 +198,7 @@ const RoundCard = ({ imageUrl, details }) => {
                         </div>
                     }
                 />
+                    
             </Col>
 
             {/*상세정보 카드*/}
@@ -245,7 +263,7 @@ const RoundCard = ({ imageUrl, details }) => {
                 )}
 
             </div>
-            </Card>
+            </Card> 
             </Col>
             </Row>
 

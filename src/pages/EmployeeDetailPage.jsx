@@ -133,6 +133,7 @@ const EmployeeDetailPage = () =>
     //페이지 로드 시 데이터 불러오기
     useEffect(() => 
         {
+            //setLoading(true);
             fetchEmployeeDetail();
         }, [id]); // URL의 id가 변경될 때마다 데이터를 새로 불러옴
 
@@ -143,14 +144,12 @@ const EmployeeDetailPage = () =>
             return <p>Employee details not available.</p>;
       }
       
-      if (loading) return <p>Loading...</p>; // 데이터 로드 중 표시
+      //if (loading) return <p>Loading...</p>; // 데이터 로드 중 표시
       //if (!employeeData) return <p>Employee not found</p>; // 데이터가 없는 경우
       
 
-      return (
+        return (
        <Layout user={user} route= {`Employees, ${employeeInfo?.name || "Employee"}`}>
-        {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
-                : (
              <DashboardCard >
                 <RoundCard 
                 imageUrl= {imagePreview || "https://st03image.s3.ap-northeast-2.amazonaws.com/d5adfb26-718d-4387-956a-b64174bd34a0-Cute Little Bear Fly Net.png"}
@@ -177,7 +176,7 @@ const EmployeeDetailPage = () =>
       
                 
                 </RoundCard>
-            </DashboardCard>)}
+            </DashboardCard>
         </Layout>
         
       );
