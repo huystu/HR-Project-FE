@@ -13,7 +13,7 @@ const ChatbotIcon = () => {
   return (
     <>
       <div className="chatbot-icon" onClick={showModal}>
-        <img src="/Chatbot.png" width="50px"/>
+        {visible ? <img src="/Chatbot.png" width="50px"/> : <img src="/ChatbotClose.png" width="50px"/>}
       </div>
       <ChatbotModal visible={visible} handleClose={handleClose} />
     </>
