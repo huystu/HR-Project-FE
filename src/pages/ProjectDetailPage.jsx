@@ -533,11 +533,11 @@ const ProjectDetailPage = () => {
                 progress_tag={`${projectInfo.status}`}
                 date_tag={`${projectInfo.period}`}
             >
-                <div className="project-description">
+                <div className="project-description-title">
                     Description
-                    <div>
-                        {projectInfo.description}
-                    </div>
+                </div>
+                <div>
+                    {projectInfo.description}
                 </div>
                 <div className="tabs">
                     <Tabs defaultActiveKey="1">

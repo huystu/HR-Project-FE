@@ -81,3 +81,8 @@ body {
 .page-height-2 {
     flex: 2;
 }
+
+.project-description-title {
+    font-family: 'Pretendard-SemiBold';
+    font-weight: 600;
+}
