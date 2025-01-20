@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 
 const LineGraph = ({ title, data, height }) => {
     
-    const primaryAxis = React.useMemo( () => (
-        { getValue: (datum) => datum.primary, }
-    ), [] );
+    const primaryAxis = React.useMemo( () => ( {
+        getValue: (datum) => datum.primary,
+    }), [] );
     
     const secondaryAxes = React.useMemo( () => [
         { getValue: (datum) => datum.secondary,

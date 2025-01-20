@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const BarGraph = ({ title, data, height=400, }) => {
     
     const primaryAxis = React.useMemo( () => (
-        { getValue: (datum) => datum.primary, }
+        { getValue: (datum) => datum.primary,  }
     ), [] );
     
     const secondaryAxes = React.useMemo( () => [
