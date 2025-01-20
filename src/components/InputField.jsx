@@ -5,6 +5,7 @@ import '../styles/InputField.css';
 import { Select, AutoComplete } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
+
 const InputField = ({ label, type, name, formik, className, options, value, onSearch, onFocus, onSelect, defaultValue, selectMode }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -17,14 +18,14 @@ const InputField = ({ label, type, name, formik, className, options, value, onSe
       <label htmlFor={name}>{label}</label>
       {type === "select" ? (
         <Select
-        allowClear
+          allowClear
           mode={selectMode}
           name={name}
           id={name}
           onChange={(value) => formik.setFieldValue(name, value)}  // Formik의 setFieldValue로 값 설정
           onBlur={formik.handleBlur}
           placeholder={`Select ${label}`}
-          defaultValue={defaultValue}
+          value={formik.values[name]}
         >
           {options && options.map((option, index) => (
             <Select.Option key={index} value={option.value}>
@@ -97,7 +98,6 @@ InputField.propTypes = {
   onSearch: PropTypes.func, // 상태 변경 핸들러
   onFocus: PropTypes.func, // 포커스 핸들러
   onSelect: PropTypes.func, // 필드 선택
-  defaultValue: PropTypes.string,
   selectMode: PropTypes.string,
 };
 

@@ -19,7 +19,7 @@ const Layout = ({ children, user, route }) => {
 Layout.propTypes = {
     children: PropTypes.node.isRequired,
     user: PropTypes.string.isRequired,
-    route: PropTypes.string.isRequired,
+    route: PropTypes.string,
   };
 
 export default Layout;

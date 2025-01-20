@@ -43,7 +43,7 @@ function Login() {
                     localStorage.setItem('loginUserId', response.data.data.memberId);
                     localStorage.setItem('loginUserEmail', response.data.data.email);
                     localStorage.setItem('loginUserRole', response.data.data.role);
-                    navigate('/employees');
+                    navigate('/dashboard');
                 }
                 else {
                     console.log('Login failed. Please try again.');

@@ -18,7 +18,6 @@ import '../styles/deletemodal.css';
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-import roleOptions from "../constants/roleOptions";
 import skillOptions from "../constants/skillOptions";
 
 import { Input } from 'antd';
@@ -35,14 +34,11 @@ const EmployeePage = () => {
 
   const [loading, setLoading] = useState(false); // 로딩 상태
 
-  
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  }
-
   const handleCancel = () => {
+    setSelectedEmployee(null);
     setIsModalOpen(false);
+    formik.resetForm({}); //modal 닫을 때 폼 초기화
+    console.log(selectedEmployee);
   }
 
   const handleViewClick = (row) => {
@@ -52,7 +48,6 @@ const EmployeePage = () => {
 const navigate = useNavigate();
 const accessToken = localStorage.getItem('token');
 
-// Check token
 
 // Check token
 useEffect(() => {
@@ -117,14 +112,9 @@ const handleSaveClick = async (row) => {
   //모달 열기, 폼 데이터 초기화 후 모달 열기
   const handleAddEmployee = () => {
     setModalMode("add"); // Set Mode
+    formik.resetForm();
+    setSelectedEmployee(null); //선택된 직원 초기화
     setIsModalOpen(true); // Open the modal
-    // formik.resetForm();
-    formik.resetForm( { date: '',
-      name: '',
-      email: '',
-      phoneNumber: '',
-      role: '',
-      skills: '', } );
   };
 
   const parseDateFromBackend = (dateString) => {
@@ -141,11 +131,6 @@ const handleSaveClick = async (row) => {
   //handleEdiClick 함수가 비동기로 데이터를 가져온 후 selectedEmployee를 업데이트
   const handleEditClick = async (employee) => {
     setModalMode("edit");
-    // console.log("click edit: ", employee);
-
-    // setSelectedEmployee(employee); //클릭한 직원 데이터 api에서 불러와 selectedEmployee 상태로 저장
-
-    // console.log("click edit: ", selectedEmployee);
 
     try {
          //선택된 직원 데이터 GET 요청
@@ -185,10 +170,6 @@ const handleSaveClick = async (row) => {
           date: parseDateFromBackend(employeeData.date),
         });
         
-         //const employeeData = getResponse.data;
-
-        //  console.log("selected employee state:", selectedEmployee);
-        //console.log("formik iniia")
 
 
     }
@@ -372,7 +353,9 @@ const handleSaveClick = async (row) => {
             console.log(`Success Employee Info: ${JSON.stringify(response)}`);
             alert("Employee added successfully!");
 
-            setIsModalOpen(false);
+            setIsModalOpen(false); //modal 닫기
+            formik.resetForm(); //폼 초기화
+
           }
         } catch (error) {
           console.error("Error adding employee:", error);
@@ -400,6 +383,7 @@ const handleSaveClick = async (row) => {
         
 
         console.log("selectedEmployee: ", selectedEmployee);
+        formik.resetForm(); //폼 초기화
 
         await updateEmployee(selectedEmployee.id, updatedEmployeeData);
         } catch (error) {
@@ -415,13 +399,14 @@ const handleSaveClick = async (row) => {
 useEffect(() => {
   console.log("useEffect when chaning selectedEmployee: ", selectedEmployee);
   if (selectedEmployee) {
+    //값 설정 후 폼을 리셋
     formik.setValues({
       date: selectedEmployee?.date ||'',
       name: selectedEmployee?.name ||'',
       email: selectedEmployee?.email ||'',
       phoneNumber: selectedEmployee.phoneNumber ||'',
       role: selectedEmployee?.role ||'',
-      skills: selectedEmployee?.skills ||'',
+      skills: selectedEmployee?.skills ||[],
     });
   }
 }, [selectedEmployee]);  // selectedEmployee가 변경될 때마다 실행
@@ -450,6 +435,7 @@ const updateEmployee = async (id, updatedData) => {
 
       alert("Employee updated successfully!");
       setIsModalOpen(false); 
+      formik.resetForm();
     }
 
   } catch (error) {
@@ -507,7 +493,12 @@ const updateEmployee = async (id, updatedData) => {
     catch (error) {
       console.log('Failed Project Search : ', error);
     }
-  }
+  };
+
+
+  useEffect(() => {
+    console.log(formik.values.skills);
+  }, [formik.values.skills]);
 
   return (
     <Layout user={user} route="Employees">
@@ -526,26 +517,13 @@ const updateEmployee = async (id, updatedData) => {
         >
           <form onSubmit={formik.handleSubmit}>
             <div className="input-field-half-row">
-              <InputField className = "-half" label="Date *" type="date" name="date" formik={formik} />
-              <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
+            <InputField className = "-half" label= {<span>Date <span className = "red-asterisk">*</span></span>} type="date" name="date" formik={formik} />
+              <InputField className = "-half" label= {<span>Name <span className = "red-asterisk">*</span></span>} type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} />
-            {/* <InputField label="Role" type="select" name="role" formik={formik} options={roleOptions} defaultValue={modalMode === 'edit' ? formik.values.role : undefined} /> */}
-            {/* <InputField
-              label="Role"
-              type="autocomplete"
-              name="role"
-              formik={formik}
-              options={roleOptions}
-              value={inputValue}
-              onSearch={handelAddMemberSearch}
-              onFocus={handleAddMemberFocus}
-              onSelect={handelAddMemberSelect}
-            /> */}
-            <InputField label="Skills" type="text" name="skills" formik={formik} />
-            {/* <InputField label="Skills" type="select" name="skills" formik={formik} options={skillOptions} defaultValue={modalMode === 'edit' ? formik.values.skills : undefined} selectMode="multiple" /> */}
-            <InputField label="Email" type="email" name="email" formik={formik} />
-            <InputField label="Phone Number" type="tel" name="phoneNumber" formik={formik} />
+            <InputField label="Skills" type="select" name="skills" formik={formik} selectMode="multiple" options={skillOptions} />
+            <InputField label={<span> Email <span className = "red-asterisk">*</span></span>} type="email" name="email" formik={formik} />
+            <InputField label={<span>Phone number <span className = "red-asterisk">*</span></span>} type="tel" name="phoneNumber" formik={formik} />
           </form>
         </CustomModal>        
 
