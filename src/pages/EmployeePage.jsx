@@ -20,8 +20,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 import skillOptions from "../constants/skillOptions";
 
-import { Input } from 'antd';
-const { Search } = Input;
+
 
 const EmployeePage = () => {
   const user = localStorage.getItem('loginUser'); // User Name
@@ -156,11 +155,12 @@ const handleSaveClick = async (row) => {
              email: employeeData.email,
              phoneNumber: employeeData.contact, 
              role: employeeData.role, 
-             skills: employeeData.skills, 
+             skills: employeeData.skills?.join(", "),
              date: parseDateFromBackend(employeeData.joiningDate)
           });
 
-          console.log("seleced employee: ", selectedEmployee);
+          console.log("skills array: ", employeeData.skills);
+          console.log("selected employee: ", selectedEmployee);
           //console.log("Raw date from backend:", employeeData.date);
           const employeeDate = employeeData.date || employeeData.joiningDate || "unknown";
           console.log("Extracted employee date:", employeeDate);
@@ -176,10 +176,8 @@ const handleSaveClick = async (row) => {
           date: parseDateFromBackend(employeeData.date),
         });
         
-         //const employeeData = getResponse.data;
-
-        //  console.log("selected employee state:", selectedEmployee);
-        //console.log("formik iniia")
+        // 수정된 ID를 URL에 전달
+        navigate(`/employee/${id}/detail`);
 
 
     }
@@ -309,7 +307,7 @@ const handleSaveClick = async (row) => {
       email: selectedEmployee?.email || '',
       phoneNumber: selectedEmployee?.phoneNumber || '',
       role: selectedEmployee?.role || '',
-      skills: selectedEmployee?.skills || [],
+      skills: selectedEmployee?.skills?.join(", "),
     },
     enableReinitialize: true, //selectedEmployee가 변경될 때 초기화
     validate: (values) => {
@@ -326,7 +324,7 @@ const handleSaveClick = async (row) => {
 
       if (!values.phoneNumber)
       {
-        errors.phoneNumber = 'phoneNumber is required';
+        errors.phoneNumber = 'Phone number is required';
       } else if (!/^\d{10}$/.test(values.phoneNumber)) {
         errors.phoneNumber = 'Phone number must be 10 digits';
       }
@@ -383,7 +381,7 @@ const handleSaveClick = async (row) => {
           name: values.name,
           email: values.email,
           contact: values.phoneNumber,
-          skills: values.skills,
+          skills: values.skills.join(", "),
           role: values.role,
           joiningDate: formattedDate,
           };
@@ -522,13 +520,13 @@ const updateEmployee = async (id, updatedData) => {
         >
           <form onSubmit={formik.handleSubmit}>
             <div className="input-field-half-row">
-              <InputField className = "-half" label="Date *" type="date" name="date" formik={formik} />
-              <InputField className = "-half" label="Name" type="text" name="name" formik={formik} />
+              <InputField className = "-half" label= {<span>Date <span className = "red-asterisk">*</span></span>} type="date" name="date" formik={formik} />
+              <InputField className = "-half" label= {<span>Name <span className = "red-asterisk">*</span></span>} type="text" name="name" formik={formik} />
             </div>
             <InputField label="Role" type="text" name="role" formik={formik} />
-            <InputField label="Skills" type="select" name="skills" formik={formik} selectMode="multiple" options={skillOptions} />
-            <InputField label="Email" type="email" name="email" formik={formik} />
-            <InputField label="Phone Number" type="tel" name="phoneNumber" formik={formik} />
+            <InputField label="Skills" type="text" name="skills" formik={formik} />
+            <InputField label={<span> Email <span className = "red-asterisk">*</span></span>} type="email" name="email" formik={formik} />
+            <InputField label={<span>Phone number <span className = "red-asterisk">*</span></span>} type="tel" name="phoneNumber" formik={formik} />
           </form>
         </CustomModal>        
 
@@ -559,7 +557,7 @@ const updateEmployee = async (id, updatedData) => {
                   </div>
                 }
               />
-            <Search placeholder="input search employee" onSearch={onSearch} style={{ width: 500, margin: 10, }} />
+            
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
         <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} onSaveClick = {handleSaveClick} />)
