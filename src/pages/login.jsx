@@ -45,7 +45,7 @@ function Login() {
                     localStorage.setItem('loginUserId', response.data.data.memberId);
                     localStorage.setItem('loginUserEmail', response.data.data.email);
                     localStorage.setItem('loginUserRole', response.data.data.role);
-                    navigate('/employees');
+                    navigate('/dashboard');
                 }
                 else {
                     console.log('Login failed. Please try again.');
@@ -69,7 +69,7 @@ function Login() {
             const res = await api.post('/oauth2/authorization/google', { token: googleToken });
             if (res.data.status === 200) {
                 // localStorage.setItem('memberId', res.data.data.memberId);
-                navigate('/employees');
+                navigate('/dashboard');
             } else {
                 console.log('Google login failed');
             }

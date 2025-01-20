@@ -8,12 +8,14 @@ import AccountPage from './pages/AccountPage';
 import EmployeeDetailPage from './pages/EmployeeDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import PageNotFound from './pages/PageNotFound';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="dashboard" element={<DashboardPage />} />
         <Route path="/employees" element={<EmployeePage />} />
         <Route path="/employees/:id" element={<EmployeeDetailPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
