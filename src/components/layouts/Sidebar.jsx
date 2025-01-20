@@ -40,7 +40,7 @@ const Sidebar = ({user})=> {
                     <hr className="sidebar-hr"/>
                     <div className='access-profile'>
                         <div className='username'>
-                            <button onClick={handleProfileClick}>
+                            <button onClick={handleProfileClick} style={{cursor: "pointer"}}>
                                 {user}
                             </button>
                         </div>
