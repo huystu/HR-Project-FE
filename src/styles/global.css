@@ -51,6 +51,8 @@ body {
 .dashboard-cards, .ant-statistic-content {
     display: flex;
     justify-content: space-between;
+
+    margin: 0;
 }
 
 .dashboard-card {
@@ -60,4 +62,22 @@ body {
 
 .ant-statistic-content-value, .ant-statistic-content-suffix {
     margin: 0;
+}
+
+.dashboard-card-2 {
+    flex: 2;
+    margin: 10px;
+}
+
+.dashboard-card-3 {
+    flex: 3;
+    margin: 10px;
+}
+
+.page-height-1 {
+    flex: 1;
+}
+
+.page-height-2 {
+    flex: 2;
 }
