@@ -163,7 +163,7 @@ const RoundCard = ({ imageUrl, details }) => {
                                     className="avatar-placeholder"
                                     src={imagePreview} //선택된 이미지 표시
                                     alt="Employee"
-                                    style={{ display: 'block', margin: '0 auto' }} // 중앙 정렬
+                                    style={{ display: 'block', margin: 'auto', marginTop: '30px', marginBottom: '20px'}} // 중앙 정렬
                                     
                                     
                                 />

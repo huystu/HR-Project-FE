@@ -39,7 +39,7 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                     )}
                   </>
                 ) : column === "Action" ? (
-                  <>
+                  <div style={{ display: "flex",  gap:"10px"}}>
                     {
                       row[column].includes("View") && (
                         <ImgButton onClick={() => onViewClick(row)}>
@@ -82,7 +82,7 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                         </ImgButton>
                       )
                     }
-                  </>
+                  </div>
                 ) : (
                   row[column]
                 )}
