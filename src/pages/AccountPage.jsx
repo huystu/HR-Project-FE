@@ -26,6 +26,7 @@ function AccountPage() {
     const navigate = useNavigate();
     const user = localStorage.getItem('loginUser'); // User Name
     const accessToken = localStorage.getItem('token');
+    const userRole = localStorage.getItem('loginUserRole');
 
     const [selectedAccount, setSelectedAccount] = useState(null);
 
@@ -198,11 +199,14 @@ function AccountPage() {
         alert('Text copied to clipboard!');
     }
 
-    // Check token
+    // Check token and userRole
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
             navigate("/"); 
+        }
+        if (userRole !== 'SUPER_ADMIN') {
+            navigate("/error");
         }
     }, [navigate]);
 
