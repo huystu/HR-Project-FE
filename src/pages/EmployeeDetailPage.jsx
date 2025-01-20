@@ -135,7 +135,30 @@ const EmployeeDetailPage = () =>
         {
             fetchEmployeeDetail();
         }, [id]); // URL의 id가 변경될 때마다 데이터를 새로 불러옴
+    
+    const chatHistoryDel = async () => {
+        const accessToken = localStorage.getItem('token');
+        const loginUserID = localStorage.getItem('loginUserId');
 
+        setAuthToken(accessToken);
+        const headers = { "Session-ID": loginUserID, };
+
+        try {
+            const response = await api.delete('/api/gemini/session-history', { headers });
+
+            if (response.status === 200) {
+                console.log("delete session: ", response);
+            }
+        }
+        catch (error) {
+            console.log("refresh error: ", error);
+        }
+    }
+
+    useEffect(() => {
+        chatHistoryDel();
+    }, []);
+    
 
         
           

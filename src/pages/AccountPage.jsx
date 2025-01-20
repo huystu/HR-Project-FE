@@ -22,6 +22,8 @@ import { CopyOutlined, } from '@ant-design/icons';
 
 import { Modal } from 'antd';
 
+// import ChatHistoryDel from '../../ChatHistoryDel';
+
 function AccountPage() {
     const navigate = useNavigate();
     const user = localStorage.getItem('loginUser'); // User Name
@@ -213,6 +215,29 @@ function AccountPage() {
     useEffect(() => {
         fetchData(currentPage - 1, pageSize);
     }, [currentPage]);
+
+    const chatHistoryDel = async () => {
+        const accessToken = localStorage.getItem('token');
+        const loginUserID = localStorage.getItem('loginUserId');
+
+        setAuthToken(accessToken);
+        const headers = { "Session-ID": loginUserID, };
+
+        try {
+            const response = await api.delete('/api/gemini/session-history', { headers });
+
+            if (response.status === 200) {
+                console.log("delete session: ", response);
+            }
+        }
+        catch (error) {
+            console.log("refresh error: ", error);
+        }
+    }
+
+    useEffect(() => {
+        chatHistoryDel();
+    }, []);
 
     return (
         <Layout user={user} route={`Account`}>
