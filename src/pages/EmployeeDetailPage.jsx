@@ -23,8 +23,10 @@ import { IoMdPersonAdd } from "react-icons/io";
 import RoundCard from "../components/RoundCard";
 
 
+
 const EmployeeDetailPage = () =>
 {
+    
     const initialInfo = {
         name: '',
         firstName: '',
@@ -36,9 +38,15 @@ const EmployeeDetailPage = () =>
         role: '',
         projecttitle: '',
         roleinproject: '',
+        //startDate:'',
+        //endDate:'',
     };
 
     const { id } = useParams(); //URL에서 ID 가져오기
+    
+    //성과 이름을 분리하기 위한 코드
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
         
     //info
     const [employeeInfo, setEmployeeInfo] = useState(initialInfo);
@@ -81,14 +89,38 @@ const EmployeeDetailPage = () =>
         try {
             const response = await api.get(`/employee/${id}/detail`);
 
+
             
             if(response.status === 200){
                 console.log("Api response:", response.data);
-                setEmployeeInfo(response.data.data.employeeInfo);
-                setProjectsInfo(response.data.data.projectsInfo);
-                console.log(response.data.data.projectsInfo);
-                //setImagePreview(employeeInfo.imageUrl );
+                //이름을 분리해서 상태에 저장
+                //API 응답에서 이름 가져오기
 
+                const employeeName = response.data.data.employeeInfo.name;
+                const skillsArray = response.data.data.employeeInfo.skills;
+                console.log("Employee name: ", employeeName);
+                console.log("skills array: ", skillsArray);
+
+                const [first, last] = employeeName.split(" ");
+                setFirstName(first || '');
+                setLastName(last || '');
+                //console.log("first name:", first);
+                //console.log("last name:", last);
+
+                // 직원 정보를 상태에 저장하면서 firstName과 lastName 포함
+                setEmployeeInfo({
+                    ...response.data.data.employeeInfo,
+                    firstName: first || '',
+                    lastName: last || '',
+                    skills: skillsArray.join(", ")
+                });
+                setProjectsInfo(response.data.data.projectsInfo);
+
+                //const startDate = response.data.data.projectsInfo.
+            
+                console.log(response.data.data.projectsInfo);
+                //console.log("start date:" ,response.data.data.projectsInfo.startDate);
+                //console.log("end date:" ,response.data.data.projectsInfo.endDate);
             }
             }
         catch (error) {
@@ -102,7 +134,8 @@ const EmployeeDetailPage = () =>
     useEffect(() => 
         {
             fetchEmployeeDetail();
-        }, []);
+        }, [id]); // URL의 id가 변경될 때마다 데이터를 새로 불러옴
+
 
         
           
@@ -115,7 +148,7 @@ const EmployeeDetailPage = () =>
       
 
       return (
-       <Layout user={user} route="Employees">
+       <Layout user={user} route= {`Employees, ${employeeInfo?.name || "Employee"}`}>
         {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
              <DashboardCard >
@@ -123,11 +156,11 @@ const EmployeeDetailPage = () =>
                 imageUrl= {imagePreview || "https://st03image.s3.ap-northeast-2.amazonaws.com/d5adfb26-718d-4387-956a-b64174bd34a0-Cute Little Bear Fly Net.png"}
                 details = {{
                     name: employeeInfo.name,
-                    firstName: employeeInfo.firstName,
-                    lastName: employeeInfo.lastName,
+                    firstName: employeeInfo.firstName || firstName,
+                    lastName: employeeInfo.lastName || lastName,
                     email: employeeInfo.email,
                     contact: employeeInfo.contact,
-                    skills: employeeInfo.skills,
+                    skills: employeeInfo.skills, 
                     joiningDate: employeeInfo.joiningDate,
                     role: employeeInfo.role,
                     //projectsInfo 데이터는 배열임
