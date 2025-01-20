@@ -82,6 +82,9 @@ const ChatbotModal = ({ visible, handleClose }) => {
     // 
     const handleSendMessage = async () => {
         if (input.trim()) {
+            // text-suggestion 초기화
+            setSuggestion([]);
+
             // 시간 설정
             const now = new Date();
             const options = { hour: 'numeric', minute: 'numeric', hour12: true };
