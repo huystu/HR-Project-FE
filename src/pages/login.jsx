@@ -6,8 +6,6 @@ import { validationSchema } from '../validationSchema';
 
 import api from '../api';
 
-import { GoogleLogin } from '@react-oauth/google';
-
 import '../styles/global.css';
 import '../styles/Login.css';
 
@@ -62,21 +60,8 @@ function Login() {
         },
     });
 
-    const handleGoogleLogin = async (response) => {
-        try {
-            const googleToken = response.credential;
-
-            const res = await api.post('/oauth2/authorization/google', { token: googleToken });
-            if (res.data.status === 200) {
-                // localStorage.setItem('memberId', res.data.data.memberId);
-                navigate('/employees');
-            } else {
-                console.log('Google login failed');
-            }
-        } catch (error) {
-            console.error('Error with Google login:', error);
-            console.log('An error occurred during Google login.');
-        }
+    const handleGoogleLogin = () => {
+        alert("Do it later!");
     };
 
     // 뒤로 가기 키를 통해서 로그인 페이지로 이동하게 되면 LocalStorage에 담을 많은 요소 제거
@@ -94,7 +79,7 @@ function Login() {
                 <div>
                     <Card
                         header={
-                            <Title desc={<Descript left="Don’t have an account? " link="Sign Up" />}>
+                            <Title>
                                 Login
                             </Title>}
                     >
@@ -133,7 +118,6 @@ function Login() {
                             </form>
                         </div>
                     </Card>
-                    <Descript link="Forgot password?" align="right" />
                 </div>
             </main>
         </>
