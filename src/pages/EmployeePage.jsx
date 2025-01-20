@@ -42,8 +42,8 @@ const EmployeePage = () => {
   }
 
   const handleViewClick = (row) => {
-    setLoading(true);
-    console.log("loading state changed to: ", true);
+    //setLoading(true);
+    //console.log("loading state changed to: ", true);
     navigate(`/employees/${row.id}`); //EmployeePage에서 전달받은 데이터 중 선택된 직원의 고유ID
     
 };
@@ -111,6 +111,8 @@ const handleSaveClick = async (row) => {
         alert('Failed to download CV. Please try again.');
   }
 };
+
+
 
   //모달 열기, 폼 데이터 초기화 후 모달 열기
   const handleAddEmployee = () => {

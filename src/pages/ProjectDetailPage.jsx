@@ -51,6 +51,19 @@ const ProjectDetailPage = () => {
         {value: 'EXITED', label: <Tag color='red'>Exited</Tag>},
     ]
 
+    const categoryOptions = [
+        { value: 'WEB_APPLICATION', label: 'Web Application' },
+        { value: 'MOBILE_APPLICATION', label: 'Mobile Application' },
+        { value: 'DESKTOP_APPLICATION', label: 'Desktop Application' },
+        { value: 'GAME_DEVELOPMENT', label: 'Game Development' },
+        { value: 'AI_MACHINE_LEARNING', label: 'AI/Machine Learning' },
+        { value: 'BLOCKCHAIN_DAPP', label: 'Blockchain/Dapp' },
+        { value: 'OPEN_SOURCE', label: 'Open Source Project' },
+        { value: 'AUTOMATION_SCRIPT', label: 'Automation/Script' },
+        { value: 'DATABASE_BACKEND', label: 'Database/Backend' }
+    ];
+    
+
     // Modal - Update Project
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const handleUpdateCancel = () => {
@@ -106,6 +119,7 @@ const ProjectDetailPage = () => {
                     description: projectInfo.description,
                     period: formatPeriod(projectInfo.startDate, projectInfo.endDate),
                     status: projectInfo.status,
+                    category: projectInfo.category,
                     id: projectInfo.id,
                     cnt_members: response.data.data.employeesInfo.length, 
                 }
@@ -122,6 +136,7 @@ const ProjectDetailPage = () => {
                     Email: member.employeeInfo.email,
                     Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id)} options={roleOptions} />,
                     Action: ['Link', 'Delete'],
+                    Category: <Select defaultValue={`${member.employeeProjectInfo.category}`} onChange={(value) => handleCategoryChange(value, member.employeeInfo.id)} options={categoryOptions} />,
                     id: member.employeeInfo.id,
                 }));
                 setMembers(formattedMembersData);
@@ -143,6 +158,7 @@ const ProjectDetailPage = () => {
             title: projectInfo.title,
             description: projectInfo.description,
             status: projectInfo.status,
+            category: projectInfo.category,
         }); // Initialize form
       };
 
@@ -157,6 +173,7 @@ const ProjectDetailPage = () => {
             title: projectInfo.title || '',
             description: projectInfo.description || '',
             status: projectInfo.status || '',
+            category: projectInfo.category || '',
         },
         validate: (values) => {
             const errors = {};
@@ -169,6 +186,9 @@ const ProjectDetailPage = () => {
             if (!values.status) {
                 errors.status = 'Status is required';
             }
+            if (!values.category) {
+                errors.category = 'category is required';
+            }
             return errors;
         },
         onSubmit: async (values) => {
@@ -179,10 +199,12 @@ const ProjectDetailPage = () => {
                 name: values.title,
                 description: values.description,
                 status: values.status,
+                category: values.category,
             }
 
             try {
                 const response = await api.put(`/project/${id}`, updatedData);
+                console.log(response.data.data);
                 if (response.status === 200) {
                     alert("Project Info Updated successfully!");
                     setIsUpdateModalOpen(false);
@@ -351,6 +373,26 @@ const ProjectDetailPage = () => {
         }
     }
 
+    // Update Project Category
+    const handleCategoryChange = async (value, employeeId) => {
+    console.log('Selected Category:', value);
+    console.log('employee ID:', employeeId);
+
+    setAuthToken(accessToken); // set accessToken
+    const updatedData = { category: value };
+
+    try {
+        const response = await api.put(`/project/${id}/category`, updatedData);
+        if (response.status === 200) {
+            alert(`Project category updated to ${value} successfully!`);
+            fetchData(); // Re-fetch data to reflect the updated category
+        }
+    } catch (error) {
+        console.error("Error updating project category:", error);
+        alert("Failed to change project category. Please try again.");
+    }
+};
+
     // When Click Member Delete Button
     const handleDeleteClick = (member) => {
         console.log("delete member: ", member);
@@ -443,6 +485,7 @@ const ProjectDetailPage = () => {
                     <InputField label="Title" type="text" name="title" formik={formik} />
                     <InputField label="Description" type="textarea" name="description" formik={formik} />
                     <InputField label="Status" type="select" name="status" formik={formik} options={projectStatusOptions} />
+                    <InputField label="Category" type="select" name="category" formik={formik} options={categoryOptions} />
                 </form>
             </CustomModal>
             

@@ -54,13 +54,7 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                         </ImgButton>
                       )
                     }
-                    {
-                      row[column].includes("Save") && (
-                        <ImgButton onClick={() => onSaveClick(row)}>
-                          <MdOutlineSaveAlt />
-                        </ImgButton>
-                      )
-                    }
+                    
                     {
                       row[column].includes("Edit") && (
                         <ImgButton onClick={() => onEditClick(row)}> 
@@ -72,6 +66,13 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                       row[column].includes("Delete") && (
                         <ImgButton onClick={() => onDeleteClick(row)}>
                           <AiOutlineDelete />
+                        </ImgButton>
+                      )
+                    }
+                    {
+                      row[column].includes("Save") && (
+                        <ImgButton onClick={() => onSaveClick(row)}>
+                          <MdOutlineSaveAlt />
                         </ImgButton>
                       )
                     }
