@@ -38,6 +38,8 @@ const EmployeeDetailPage = () =>
         role: '',
         projecttitle: '',
         roleinproject: '',
+        //startDate:'',
+        //endDate:'',
     };
 
     const { id } = useParams(); //URL에서 ID 가져오기
@@ -114,8 +116,11 @@ const EmployeeDetailPage = () =>
                 });
                 setProjectsInfo(response.data.data.projectsInfo);
 
+                //const startDate = response.data.data.projectsInfo.
             
                 console.log(response.data.data.projectsInfo);
+                //console.log("start date:" ,response.data.data.projectsInfo.startDate);
+                //console.log("end date:" ,response.data.data.projectsInfo.endDate);
             }
             }
         catch (error) {
