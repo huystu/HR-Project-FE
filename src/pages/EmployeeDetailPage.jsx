@@ -173,7 +173,8 @@ const EmployeeDetailPage = () =>
 
         return (
        <Layout user={user} route= {`Employees, ${employeeInfo?.name || "Employee"}`}>
-             <DashboardCard >
+        {loading? <LoadingSpinner /> :
+             (<DashboardCard>
                 <RoundCard 
                 imageUrl= {imagePreview || "https://st03image.s3.ap-northeast-2.amazonaws.com/d5adfb26-718d-4387-956a-b64174bd34a0-Cute Little Bear Fly Net.png"}
                 details = {{
@@ -190,16 +191,9 @@ const EmployeeDetailPage = () =>
                     roleinproject: projectsInfo.length > 0? projectsInfo[0].employeeProjectInfo.roleInProject : "No project assinged",
                     //imageUrl: null,
                 }}
-
-                
                 >
-        
-
-                
-      
-                
                 </RoundCard>
-            </DashboardCard>
+            </DashboardCard>)}
         </Layout>
         
       );
