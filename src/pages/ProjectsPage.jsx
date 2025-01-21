@@ -191,9 +191,11 @@ const ProjectsPage = () => {
         }
       }, [navigate]);
 
+    const [searchValue, setSearchValue] = useState('');
 
     useEffect(() => {
-        fetchData(currentPage - 1, pageSize);
+      if (searchValue === '') fetchData(currentPage - 1, pageSize);
+      else onSearch(searchValue, currentPage-1, pageSize);
       }, [currentPage]);
 
     // Check token
@@ -205,20 +207,26 @@ const ProjectsPage = () => {
       }, [navigate]);
 
 
-    const onSearch = async (value, ) => {
+    const onSearch = async (value,  currentPage=0, size=10 ) => {
       console.log(value);
+      setSearchValue(value);
+
+      setLoading(true);
 
       if (value === '') {
         fetchData(0, pageSize);
       }
+
+      const currentPageSend = Number(currentPage) || 0;
+      const sizeSend = Number(size) || 10;  
 
       setAuthToken(accessToken);
       try {
         const response = await api.get('/project/search', {
           params: {
             keyword: value,
-            page: 0,
-            size: pageSize,
+            page: currentPageSend,
+            size: sizeSend,
           }
         });
 
@@ -236,6 +244,9 @@ const ProjectsPage = () => {
         //3. 상태 업데이트
         setData(formattedData);
         setPageCount(response.data.data.page.totalPages);
+        setCurrentPage(currentPageSend + 1);
+
+        setLoading(false);
       }
       catch (error) {
         console.log('Failed Project Search : ', error);
