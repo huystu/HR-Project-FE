@@ -249,7 +249,7 @@ function AccountPage() {
                 title = {<Title>Add User</Title>}
                 footer={
                 <div className = "button-container">
-                    <Button className = "btn-gray" onClick={() => setIsAddUserModalOpen(false)}>Close</Button>
+                    <Button className = "btn-gray" onClick={handleAddUserCancel}>Close</Button>
                     <Button onClick={formikAddUser.handleSubmit}>Add</Button>
                 </div>
                 }
