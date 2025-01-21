@@ -505,6 +505,30 @@ const updateEmployee = async (id, updatedData) => {
     console.log(formik.values.skills);
   }, [formik.values.skills]);
 
+  const chatHistoryDel = async () => {
+    const accessToken = localStorage.getItem('token');
+    const loginUserID = localStorage.getItem('loginUserId');
+
+    setAuthToken(accessToken);
+    const headers = { "Session-ID": loginUserID, };
+
+    try {
+        const response = await api.delete('/api/gemini/session-history', { headers });
+
+        if (response.status === 200) {
+            console.log("delete session: ", response);
+        }
+    }
+    catch (error) {
+        console.log("refresh error: ", error);
+    }
+  }
+
+  useEffect(() => {
+      chatHistoryDel();
+  }, []);
+
+
   return (
     <Layout user={user} route="Employees">
       <DashboardCard header="Employees" btn="Add Employee" btnClick={handleAddEmployee} footer={<Pagination currentPage={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} pageSize={pageSize} />}>
