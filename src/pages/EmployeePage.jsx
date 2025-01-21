@@ -128,7 +128,7 @@ const handleSaveClick = async (row) => {
     const year = jsDate.getFullYear();
     const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const day = String(jsDate.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`; // Return 'YYYY-MM-DD' format
+    return `${year}/${month}/${day}`; // Return 'YYYY-MM-DD' format
     
   };
 
