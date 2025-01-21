@@ -1,5 +1,4 @@
 // src/pages/DashboardPage.jsx
-import React from "react";
 import { useState, useEffect,  } from "react";
 import { useNavigate } from 'react-router-dom';
 
@@ -31,12 +30,12 @@ const DashboardPage = () => {
     // 2번째 줄 그래프
     const [totalUsers, setTotalUsers] = useState([ {
         label: 'tmp',
-        data: [ { primary: 'Jan', secondary: 65 } ],
+        data: [ { primary: 'tmp', secondary: 65 } ],
     },]);
     const [totalProjects, setTotalProjects] = useState([
         {
             label: 'tmp',
-            data: [ { primary: 'Jan', secondary: 65 } ],
+            data: [ { primary: 'tmp', secondary: 65 } ],
         },
     ]);
 
@@ -186,7 +185,7 @@ const DashboardPage = () => {
     return (
         <Layout user={user}>
             {loading ? <LoadingSpinner /> :
-            (<>
+            (<div style={{overflowY: "scroll", width:"100%"}}>
             <div className="dashboard-cards page-height-1">
                 {smallCardData.map((card, index) => (
                     <Card className="dashboard-card" bordered={false} key={index}>
@@ -207,11 +206,9 @@ const DashboardPage = () => {
                     <Tabs defaultActiveKey="1" onChange={handleTabChange}>
                         <Tabs.TabPane tab="Total Users" key="1">
                             <LineGraph data={totalUsers} height={400}/>
-                            {/* <LineGraph data={totalUserLineData} height={400}/> */}
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Total Projects" key="2">
                             <LineGraph data={totalProjects} height={400}/>
-                            {/* <LineGraph data={totalUserLineData} height={400}/> */}
                         </Tabs.TabPane>
                     </Tabs>
                 </Card>
@@ -222,10 +219,9 @@ const DashboardPage = () => {
             <div className="dashboard-cards page-height-2">
                 <Card className="dashboard-card">
                     <BarGraph title="Project Categories" data={projectCategory} height={400} />
-                    {/* <BarGraph title="Project Categories" data={totalUserLineData} height={400} /> */}
                 </Card>
             </div>
-            </>)}
+            </div>)}
         </Layout>
     );
 };
