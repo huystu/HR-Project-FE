@@ -40,9 +40,9 @@ const ProjectDetailPage = () => {
     const roleOptions = [ // Member's Roles
         { value: 'TEAM_LEADER', label: 'Team Leader' },
         { value: 'DESIGNER', label: 'Designer' },
-        { value: 'FE_DEVELOPER', label: 'FE_Developer' },
-        { value: 'BE_DEVELOPER', label: 'BE_Developer' },
-        { value: 'AI_ENGINEER', label: 'AI_Engineer' },
+        { value: 'FE_DEVELOPER', label: 'FE Developer' },
+        { value: 'BE_DEVELOPER', label: 'BE Developer' },
+        { value: 'AI_ENGINEER', label: 'AI Engineer' },
         { value: 'TESTER', label: 'Tester' },
     ];
     const statusOptions = [
@@ -127,19 +127,38 @@ const ProjectDetailPage = () => {
 
                 // 프로젝트 참여 멤버 정보
                 const members = response.data.data.employeesInfo;
-                const formattedMembersData = members.map(member =>({
-                    Name: member.employeeInfo.name,
-                    // Status: <Tag color="blue"><div onClick={() => handleClickMemberStatus(member.employeeProjectInfo.joinStatus, member.employeeInfo.id)}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
-                    Status: <Select variant="borderless" defaultValue={`${member.employeeProjectInfo.joinStatus}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo.id, member.employeeInfo.name)} options={statusOptions} />,
-                    "Start Date": member.employeeProjectInfo.joinDate,
-                    "End Date": member.employeeProjectInfo.exitDate,
-                    Email: member.employeeInfo.email,
-                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id, member.employeeInfo.name)} options={roleOptions} />,
-                    Action: ['Link', 'Delete'],
-                    Category: <Select defaultValue={`${member.employeeProjectInfo.category}`} onChange={(value) => handleCategoryChange(value, member.employeeInfo.id)} options={categoryOptions} />,
-                    id: member.employeeInfo.id,
-                }));
-                setMembers(formattedMembersData);
+                if (projectInfo.status != "PENDING") {
+                    const formattedMembersData = members.map(member =>({
+                        Name: member.employeeInfo.name,
+                        // Status: <Tag color="blue"><div onClick={() => handleClickMemberStatus(member.employeeProjectInfo.joinStatus, member.employeeInfo.id)}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
+                        Status: <Select variant="borderless" defaultValue={`${member.employeeProjectInfo.joinStatus}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo.id, member.employeeInfo.name)} options={statusOptions} />,
+                        "Start Date": member.employeeProjectInfo.joinDate,
+                        "End Date": member.employeeProjectInfo.exitDate,
+                        Email: member.employeeInfo.email,
+                        Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id, member.employeeInfo.name)} options={roleOptions} />,
+                        Action: ['Link', 'Delete'],
+                        Category: <Select defaultValue={`${member.employeeProjectInfo.category}`} onChange={(value) => handleCategoryChange(value, member.employeeInfo.id)} options={categoryOptions} />,
+                        id: member.employeeInfo.id,
+                    }));
+
+                    setMembers(formattedMembersData);
+                }
+                else {
+                    const formattedMembersData = members.map(member =>({
+                        Name: member.employeeInfo.name,
+                        // Status: <Tag color="blue"><div onClick={() => handleClickMemberStatus(member.employeeProjectInfo.joinStatus, member.employeeInfo.id)}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
+                        Status: <span><Tag color="green">{member.employeeProjectInfo.joinStatus}</Tag></span>,
+                        "Start Date": member.employeeProjectInfo.joinDate,
+                        "End Date": member.employeeProjectInfo.exitDate,
+                        Email: member.employeeInfo.email,
+                        Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id, member.employeeInfo.name)} options={roleOptions} />,
+                        Action: ['Link', 'Delete'],
+                        Category: <Select defaultValue={`${member.employeeProjectInfo.category}`} onChange={(value) => handleCategoryChange(value, member.employeeInfo.id)} options={categoryOptions} />,
+                        id: member.employeeInfo.id,
+                    }));
+
+                    setMembers(formattedMembersData);
+                }
             }
         }
         catch (error) {
