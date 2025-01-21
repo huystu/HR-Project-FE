@@ -39,7 +39,7 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                     )}
                   </>
                 ) : column === "Action" ? (
-                  <>
+                  <div style={{ display: "flex",  gap:"10px"}}>
                     {
                       row[column].includes("View") && (
                         <ImgButton onClick={() => onViewClick(row)}>
@@ -54,13 +54,7 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                         </ImgButton>
                       )
                     }
-                    {
-                      row[column].includes("Save") && (
-                        <ImgButton onClick={() => onSaveClick(row)}>
-                          <MdOutlineSaveAlt />
-                        </ImgButton>
-                      )
-                    }
+                    
                     {
                       row[column].includes("Edit") && (
                         <ImgButton onClick={() => onEditClick(row)}> 
@@ -76,13 +70,20 @@ const Table = ({ columns, data, onEditClick, onDeleteClick, onViewClick, onLinkC
                       )
                     }
                     {
+                      row[column].includes("Save") && (
+                        <ImgButton onClick={() => onSaveClick(row)}>
+                          <MdOutlineSaveAlt />
+                        </ImgButton>
+                      )
+                    }
+                    {
                       row[column].includes("Reset") && (
                         <ImgButton onClick={() => onResetClick(row)}>
                           <RiResetRightLine />
                         </ImgButton>
                       )
                     }
-                  </>
+                  </div>
                 ) : (
                   row[column]
                 )}
