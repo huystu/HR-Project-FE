@@ -27,7 +27,7 @@ const Sidebar = ({user})=> {
         <>
             <aside className="sidebar">
                 <div className="sidebar-upper">
-                    <div className="logo">LOGO</div>
+                    <img className="logo" src="/logo.png" height="45px"/>
                     <nav>
                         <p><a className="menu" href="/dashboard">Dashboard</a></p>
                         {/* <p><a className="menu">Dashboard</a></p> */}

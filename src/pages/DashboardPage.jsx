@@ -243,7 +243,7 @@ const DashboardPage = () => {
             </div>
             <div className="dashboard-cards page-height-2">
                 <Card className="dashboard-card">
-                    <BarGraph title="Project Categories" data={projectCategory} height={400} />
+                    <BarGraph title="Project Categories" data={projectCategory} height={300} />
                 </Card>
             </div>
             </div>)}
