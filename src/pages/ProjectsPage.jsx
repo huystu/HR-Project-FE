@@ -42,16 +42,34 @@ const ProjectsPage = () => {
     //const [data, setData] = useState([]);
 
     const formatPeriod = (startDate, endDate) => {
-        if (endDate) {
-            return `${startDate} - ${endDate}`;
-        }
-        else if (startDate) {
-            return `${startDate} - `;
-        }
-        else {
+      const formatDate = (date) => {
+          const d = new Date(date);
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0'); // 2자리 월
+          const day = String(d.getDate()).padStart(2, '0'); // 2자리 일
+          return `${year}/${month}/${day}`;
+      };
+  
+      if (endDate) {
+          return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+      } else if (startDate) {
+          return `${formatDate(startDate)} - Not declared `;
+      } else {
           return '';
-        }
-    };
+      }
+  };
+
+    const categoryOptions = [
+      { value: 'WEB_APPLICATION', label: 'Web Application' },
+      { value: 'MOBILE_APPLICATION', label: 'Mobile Application' },
+      { value: 'DESKTOP_APPLICATION', label: 'Desktop Application' },
+      { value: 'GAME_DEVELOPMENT', label: 'Game Development' },
+      { value: 'AI_MACHINE_LEARNING', label: 'AI/Machine Learning' },
+      { value: 'BLOCKCHAIN_DAPP', label: 'Blockchain/Dapp' },
+      { value: 'OPEN_SOURCE', label: 'Open Source Project' },
+      { value: 'AUTOMATION_SCRIPT', label: 'Automation/Script' },
+      { value: 'DATABASE_BACKEND', label: 'Database/Backend' }
+  ];
 
     //formik 폼데이터를 api.post로 서버에 전송하고, 저장된 데이터를 다시 가져와 UI에 반영
   // 1. API에서 데이터 가져오기
@@ -81,8 +99,10 @@ const ProjectsPage = () => {
                 Title: project.name,
                 Status: <Tag color="blue">{project.status}</Tag>,
                 Action: ["View"],
+                Category: project.category,
                 id: project.id,
             }));
+            
             
             //3. 상태 업데이트
             setData(formattedData);
@@ -109,6 +129,7 @@ const ProjectsPage = () => {
     initialValues: {
         title: "",
         description: "",
+        category: "",
     },
     //enableReinitialize: true, //selectedEmployee가 변경될 때 초기화
     validate: (values) => {
@@ -121,12 +142,18 @@ const ProjectsPage = () => {
       {
         errors.description = 'Description is required';
       }
-        return errors;
+        
+      if (!values.category)
+      {
+        errors.category = "Category is required";
+      }
+      return errors;
     },
     onSubmit: async (values) => {
       const payload = {
         name: values.title,
         description: values.description,
+        category: values.category,
       };
 
       setAuthToken(accessToken); // accessToken 설정
@@ -202,6 +229,7 @@ const ProjectsPage = () => {
           Title: project.name,
           Status: <Tag color="blue">{project.status}</Tag>,
           Action: ["View"],
+          Category: project.category,
           id: project.id,
         }));
 
@@ -213,30 +241,6 @@ const ProjectsPage = () => {
         console.log('Failed Project Search : ', error);
       }
     }
-
-    const chatHistoryDel = async () => {
-      const accessToken = localStorage.getItem('token');
-      const loginUserID = localStorage.getItem('loginUserId');
-
-      setAuthToken(accessToken);
-      const headers = { "Session-ID": loginUserID, };
-
-      try {
-          const response = await api.delete('/api/gemini/session-history', { headers });
-
-          if (response.status === 200) {
-              console.log("delete session: ", response);
-          }
-      }
-      catch (error) {
-          console.log("refresh error: ", error);
-      }
-  }
-
-  useEffect(() => {
-      chatHistoryDel();
-  }, []);
-
 
     return (
         <Layout user={user} route="Projects">
@@ -260,6 +264,7 @@ const ProjectsPage = () => {
                   <form onSubmit={formik.handleSubmit}>
                     <InputField label="Title" type="text" name="title" formik={formik} />
                     <InputField label="Description" type="text" name="description" formik={formik} />
+                    <InputField label="Category" type="select" name="category" formik={formik} options={categoryOptions}/>
                   </form>
                 </CustomModal>
                 <Search placeholder="input search project" onSearch={onSearch} style={{ width: 500, margin: 10, }} />

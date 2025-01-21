@@ -130,11 +130,11 @@ const ProjectDetailPage = () => {
                 const formattedMembersData = members.map(member =>({
                     Name: member.employeeInfo.name,
                     // Status: <Tag color="blue"><div onClick={() => handleClickMemberStatus(member.employeeProjectInfo.joinStatus, member.employeeInfo.id)}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
-                    Status: <Select variant="borderless" defaultValue={`${member.employeeProjectInfo.joinStatus}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo)} options={statusOptions} />,
+                    Status: <Select variant="borderless" defaultValue={`${member.employeeProjectInfo.joinStatus}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo.id)} options={statusOptions} />,
                     "Start Date": member.employeeProjectInfo.joinDate,
                     "End Date": member.employeeProjectInfo.exitDate,
                     Email: member.employeeInfo.email,
-                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo)} options={roleOptions} />,
+                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id)} options={roleOptions} />,
                     Action: ['Link', 'Delete'],
                     Category: <Select defaultValue={`${member.employeeProjectInfo.category}`} onChange={(value) => handleCategoryChange(value, member.employeeInfo.id)} options={categoryOptions} />,
                     id: member.employeeInfo.id,
@@ -206,13 +206,14 @@ const ProjectDetailPage = () => {
                 const response = await api.put(`/project/${id}`, updatedData);
                 console.log(response.data.data);
                 if (response.status === 200) {
+                    console.log(status);
                     alert("Project Info Updated successfully!");
                     setIsUpdateModalOpen(false);
                     fetchData();
                 }
             } catch (error) {
-                console.error("Error adding employee:", error);
-                alert("Failed to add employee. Please try again.");
+                console.error("Error updating project:", error);
+                alert("Failed to update project. Please try again.");
             }
         },
     });
@@ -334,17 +335,17 @@ const ProjectDetailPage = () => {
     });
     
     // Update Member's Role
-    const handleMemberRoleChange = async (value, employeeInfo) => {
+    const handleMemberRoleChange = async (value, employeeId) => {
         console.log('Selected Role:', value);
-        console.log('Member ID:', employeeInfo.id);
+        console.log('Member ID:', employeeId);
 
         setAuthToken(accessToken); // set accessToken
         const updatedData = { role: value, }
 
         try {
-            const response = await api.put(`/project/${id}/employee/${employeeInfo.id}/role`, updatedData);
+            const response = await api.put(`/project/${id}/employee/${employeeId}/role`, updatedData);
             if (response.status === 200) {
-                alert(`${employeeInfo.name}'s role updated successfully!`);
+                alert(`${employeeId}'s role updated successfully!`);
                 fetchData();
             }
         } catch (error) {
@@ -354,17 +355,17 @@ const ProjectDetailPage = () => {
     };
 
     // Update Member's Status
-    const handleMemberStatusChange = async (status, employeeInfo) => {
+    const handleMemberStatusChange = async (status, employeeId) => {
         console.log('Selected Status:', status);
-        console.log('Member ID:', employeeInfo.id);
+        console.log('Member ID:', employeeId);
 
         setAuthToken(accessToken); // set accessToken
         const updatedData = { joinStatus: status, }
 
         try {
-            const response = await api.put(`/project/${id}/employee/${employeeInfo.id}`, updatedData);
+            const response = await api.put(`/project/${id}/employee/${employeeId}`, updatedData);
             if (response.status === 200) {
-                alert(`${employeeInfo.name}'s status updated successfully!`);
+                alert(`${employeeId}'s status updated successfully!`);
                 fetchData();
             }
         } catch (error) {
@@ -464,30 +465,6 @@ const ProjectDetailPage = () => {
         {value: "WORKING", label: "Working",},
         {value: "COMPLETE", label: "Complete",},
     ];
-
-    const chatHistoryDel = async () => {
-        const accessToken = localStorage.getItem('token');
-        const loginUserID = localStorage.getItem('loginUserId');
-
-        setAuthToken(accessToken);
-        const headers = { "Session-ID": loginUserID, };
-
-        try {
-            const response = await api.delete('/api/gemini/session-history', { headers });
-
-            if (response.status === 200) {
-                console.log("delete session: ", response);
-            }
-        }
-        catch (error) {
-            console.log("refresh error: ", error);
-        }
-    }
-
-    useEffect(() => {
-        chatHistoryDel();
-    }, []);
-
 
     return (
         // turn in into Project title
@@ -600,11 +577,11 @@ const ProjectDetailPage = () => {
                 progress_tag={`${projectInfo.status}`}
                 date_tag={`${projectInfo.period}`}
             >
-                <div className="project-description-title">
+                <div className="project-description">
                     Description
-                </div>
-                <div>
-                    {projectInfo.description}
+                    <div>
+                        {projectInfo.description}
+                    </div>
                 </div>
                 <div className="tabs">
                     <Tabs defaultActiveKey="1">
@@ -627,5 +604,4 @@ const ProjectDetailPage = () => {
 
 
 export default ProjectDetailPage;
-
 
