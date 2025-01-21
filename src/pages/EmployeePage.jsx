@@ -321,7 +321,7 @@ const handleSaveClick = async (row) => {
 
       if (!values.phoneNumber)
       {
-        errors.phoneNumber = 'phoneNumber is required';
+        errors.phoneNumber = 'Phone number is required';
       } else if (!/^\d{10}$/.test(values.phoneNumber)) {
         errors.phoneNumber = 'Phone number must be 10 digits';
       }

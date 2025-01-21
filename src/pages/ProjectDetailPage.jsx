@@ -206,13 +206,14 @@ const ProjectDetailPage = () => {
                 const response = await api.put(`/project/${id}`, updatedData);
                 console.log(response.data.data);
                 if (response.status === 200) {
+                    console.log(status);
                     alert("Project Info Updated successfully!");
                     setIsUpdateModalOpen(false);
                     fetchData();
                 }
             } catch (error) {
-                console.error("Error adding employee:", error);
-                alert("Failed to add employee. Please try again.");
+                console.error("Error updating project:", error);
+                alert("Failed to update project. Please try again.");
             }
         },
     });
