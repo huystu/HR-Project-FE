@@ -42,6 +42,16 @@ const EmployeeDetailPage = () =>
         //endDate:'',
     };
 
+    const formatDate = (date) => {
+        if (!date) return "Not available"; // 날짜 값이 없는 경우 처리
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // 월을 2자리로 변환
+        const day = String(d.getDate()).padStart(2, '0'); // 일을 2자리로 변환
+        return `${year}/${month}/${day}`; // YYYY/MM/DD 포맷
+      };
+      
+      
     const { id } = useParams(); //URL에서 ID 가져오기
     
     //성과 이름을 분리하기 위한 코드
@@ -98,8 +108,27 @@ const EmployeeDetailPage = () =>
 
                 const employeeName = response.data.data.employeeInfo.name;
                 const skillsArray = response.data.data.employeeInfo.skills;
+               
+                const projectArray = response.data.data.projectsInfo.map(
+                    project => project.projectInfo.name
+                  );
+                console.log("Project Names:", projectArray);
+
+                const roleArray = response.data.data.projectsInfo.map(
+                    project => project.employeeProjectInfo.roleInProject
+                );
+                console.log("role array:", roleArray);
+                  
+                
+                // 사용 예시
+                const formattedJoiningDate = formatDate(employeeInfo.joiningDate);
+                console.log("Formatted Joining Date:", formattedJoiningDate);
+      
+                
+                //console.log("projecttitle array: ", projectsArray);
                 console.log("Employee name: ", employeeName);
                 console.log("skills array: ", skillsArray);
+                
 
                 const [first, last] = employeeName.split(" ");
                 setFirstName(first || '');
@@ -112,9 +141,17 @@ const EmployeeDetailPage = () =>
                     ...response.data.data.employeeInfo,
                     firstName: first || '',
                     lastName: last || '',
-                    skills: skillsArray.join(", ")
+                    skills: skillsArray.join(", "),
+                    
                 });
-                setProjectsInfo(response.data.data.projectsInfo);
+                
+                setProjectsInfo({
+                    ...response.data.data.projectsInfo,
+                    projecttitle: projectArray.join(", "), //배열 형태로 저장
+                    roleinproject: roleArray.join(", ")
+
+            });
+                
 
                 //const startDate = response.data.data.projectsInfo.
             
@@ -183,12 +220,12 @@ const EmployeeDetailPage = () =>
                     email: employeeInfo.email,
                     contact: employeeInfo.contact,
                     skills: employeeInfo.skills, 
-                    joiningDate: employeeInfo.joiningDate,
+                    joiningDate: formatDate(employeeInfo.joiningDate),
                     role: employeeInfo.role,
                     //projectsInfo 데이터는 배열임
-                    projecttitle: projectsInfo.length > 0 ? projectsInfo[0].projectInfo.name : "No project assigned",
-                    roleinproject: projectsInfo.length > 0? projectsInfo[0].employeeProjectInfo.roleInProject : "No project assinged",
-                    //imageUrl: null,
+                    projecttitle: projectsInfo.projecttitle || "No project assigned",
+                    roleinproject: projectsInfo.roleinproject || "No project assinged",
+                    
                 }}
 
                 
