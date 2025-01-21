@@ -10,7 +10,12 @@ const BarGraph = ({ title, data, height=400, }) => {
     ), [] );
     
     const secondaryAxes = React.useMemo( () => [
-        { getValue: (datum) => datum.secondary, },
+        {
+            getValue: (datum) => datum.secondary,
+            hardMin: 0, // y축 최소값 설정
+            hardMax: 100, // y축 최대값 설정
+            tickCount: 11, // 0부터 100까지 10단위로 표시
+        },
     ], [] );
 
     return (
