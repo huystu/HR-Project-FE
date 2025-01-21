@@ -85,4 +85,28 @@ body {
 .project-description-title {
     font-family: 'Pretendard-SemiBold';
     font-weight: 600;
+<<<<<<< Updated upstream
+=======
+}
+
+.profile-info {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    
+    text-align: center;
+    justify-content: center;
+}
+
+.tabs, .ant-tabs, .ant-tabs-top, 
+.ant-tabs-content, .ant-tabs-content-top,
+.ant-tabs-tabpane, .ant-tabs-tabpane-active {
+    height: 100%;
+}
+
+.ant-tabs-content-holder {
+    flex: 1
+>>>>>>> Stashed changes
 }
