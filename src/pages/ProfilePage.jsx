@@ -109,9 +109,9 @@ function ProfilePage() {
                 <div className="tabs">
                     <Tabs defaultActiveKey="1" onChange={handleTabChange}>
                         <Tabs.TabPane tab="Information" key="1">
-                            <div>
-                                <span style = {{fontSize: 20, padding: 10}}>{user}</span>
-                                <span style = {{color: '#6d6d6d'}}>{userEmail}</span>
+                            <div className="profile-info">
+                                <div className="profile-data" style = {{fontSize: 45}}>User Name: {user}</div>
+                                <div className="profile-data" style = {{fontSize: 20, color: '#6d6d6d'}}>User Email: {userEmail}</div>
                             </div>
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Change Password" key="2">
