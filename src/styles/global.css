@@ -85,11 +85,6 @@ body {
 .project-description-title {
     font-family: 'Pretendard-SemiBold';
     font-weight: 600;
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> 644bda96eaecc7070fd7f226b7a9647f4fa7b741
 }
 
 .profile-info {
@@ -103,11 +98,7 @@ body {
     justify-content: center;
 }
 
-<<<<<<< HEAD
 .tabs, .ant-tabs, .ant-tabs-top, 
-=======
-.tabs, .ant-tabs, .ant-tabs-top, .css-dev-only-do-not-override-7ny38l,
->>>>>>> 644bda96eaecc7070fd7f226b7a9647f4fa7b741
 .ant-tabs-content, .ant-tabs-content-top,
 .ant-tabs-tabpane, .ant-tabs-tabpane-active {
     height: 100%;
@@ -115,8 +106,4 @@ body {
 
 .ant-tabs-content-holder {
     flex: 1
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> 644bda96eaecc7070fd7f226b7a9647f4fa7b741
 }
