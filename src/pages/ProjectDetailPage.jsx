@@ -130,11 +130,11 @@ const ProjectDetailPage = () => {
                 const formattedMembersData = members.map(member =>({
                     Name: member.employeeInfo.name,
                     // Status: <Tag color="blue"><div onClick={() => handleClickMemberStatus(member.employeeProjectInfo.joinStatus, member.employeeInfo.id)}>{member.employeeProjectInfo.joinStatus}</div></Tag>,
-                    Status: <Select variant="borderless" defaultValue={`${member.employeeProjectInfo.joinStatus}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo.id)} options={statusOptions} />,
+                    Status: <Select variant="borderless" defaultValue={`${member.employeeProjectInfo.joinStatus}`} onChange={(value) => handleMemberStatusChange(value, member.employeeInfo.id, member.employeeInfo.name)} options={statusOptions} />,
                     "Start Date": member.employeeProjectInfo.joinDate,
                     "End Date": member.employeeProjectInfo.exitDate,
                     Email: member.employeeInfo.email,
-                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id)} options={roleOptions} />,
+                    Role: <Select defaultValue={`${member.employeeProjectInfo.roleInProject}`} onChange={(value) => handleMemberRoleChange(value, member.employeeInfo.id, member.employeeInfo.name)} options={roleOptions} />,
                     Action: ['Link', 'Delete'],
                     Category: <Select defaultValue={`${member.employeeProjectInfo.category}`} onChange={(value) => handleCategoryChange(value, member.employeeInfo.id)} options={categoryOptions} />,
                     id: member.employeeInfo.id,
@@ -335,9 +335,10 @@ const ProjectDetailPage = () => {
     });
     
     // Update Member's Role
-    const handleMemberRoleChange = async (value, employeeId) => {
+    const handleMemberRoleChange = async (value, employeeId, employeeName) => {
         console.log('Selected Role:', value);
         console.log('Member ID:', employeeId);
+        console.log('Member name', employeeName);
 
         setAuthToken(accessToken); // set accessToken
         const updatedData = { role: value, }
@@ -345,7 +346,8 @@ const ProjectDetailPage = () => {
         try {
             const response = await api.put(`/project/${id}/employee/${employeeId}/role`, updatedData);
             if (response.status === 200) {
-                alert(`${employeeId}'s role updated successfully!`);
+                console.log(response.data)
+                alert(`${employeeName}'s role updated successfully!`);
                 fetchData();
             }
         } catch (error) {
@@ -355,9 +357,10 @@ const ProjectDetailPage = () => {
     };
 
     // Update Member's Status
-    const handleMemberStatusChange = async (status, employeeId) => {
+    const handleMemberStatusChange = async (status, employeeId, employeeName) => {
         console.log('Selected Status:', status);
         console.log('Member ID:', employeeId);
+        console.log('Member name', employeeName);
 
         setAuthToken(accessToken); // set accessToken
         const updatedData = { joinStatus: status, }
@@ -365,7 +368,7 @@ const ProjectDetailPage = () => {
         try {
             const response = await api.put(`/project/${id}/employee/${employeeId}`, updatedData);
             if (response.status === 200) {
-                alert(`${employeeId}'s status updated successfully!`);
+                alert(`${employeeName}'s status updated successfully!`);
                 fetchData();
             }
         } catch (error) {
