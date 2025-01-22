@@ -363,7 +363,8 @@ const handleSaveClick = async (row) => {
           });
 
           if (response.status === 200) {
-            fetchData(currentPage - 1, pageSize);
+            if (searchValue === '') fetchData(currentPage - 1, pageSize);
+            else onSearch(searchValue, currentPage-1, pageSize);
             //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
 
             console.log(`Success Employee Info: ${JSON.stringify(response)}`);
@@ -439,7 +440,8 @@ const updateEmployee = async (id, updatedData) => {
     if (response.status === 200) {
       //데이터 갱신
       console.log("fetching updated data...");
-      await fetchData(currentPage - 1, pageSize);
+      if (searchValue === '') await fetchData(currentPage - 1, pageSize);
+      else await onSearch(searchValue, currentPage-1, pageSize);
       console.log("data refreshed!");
       console.log("formik initial values:", formik.initialValues);
       console.log(selectedEmployee);
