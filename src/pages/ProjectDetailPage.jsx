@@ -600,7 +600,7 @@ const ProjectDetailPage = () => {
                 date_tag={`${projectInfo.period}`}
             >
                 <div className="project-description">
-                    Description
+                    <div style={{fontWeight: '600'}}>Description</div>
                     <div>
                         {projectInfo.description}
                     </div>
