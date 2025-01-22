@@ -260,7 +260,7 @@ const handleSaveClick = async (row) => {
         
         //2. 데이터를 화면에 맞게 변환
         const formattedData = response.data.data.content.map(employee => ({
-          Date: parseDateFromBackend(employee.joiningDate), // 원하는 형식으로 날짜 변환 함수
+          Date: employee.joiningDate, // 원하는 형식으로 날짜 변환 함수
           Employee: employee.name, 
           Role: employee.role || 'N/A',
           Skills: employee.skills,
@@ -321,7 +321,7 @@ const handleSaveClick = async (row) => {
 
       if (!values.phoneNumber)
       {
-        errors.phoneNumber = 'phoneNumber is required';
+        errors.phoneNumber = 'Phone number is required';
       } else if (!/^\d{10}$/.test(values.phoneNumber)) {
         errors.phoneNumber = 'Phone number must be 10 digits';
       }
