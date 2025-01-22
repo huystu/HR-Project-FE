@@ -84,6 +84,16 @@
 }
 
 .input-field-select .ant-select {
-    width: 50%;
+    width: 100%;
     justify-items: start;
+}
+
+.input-field-textarea > textarea {
+    width: 95%;
+    background-color: #F7F7F7;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-family: "Pretendard-Regular";
+    font-size: 20px;
+    padding: 0 10px;
 }

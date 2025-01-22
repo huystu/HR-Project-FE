@@ -274,7 +274,7 @@ const ProjectsPage = () => {
                 >
                   <form onSubmit={formik.handleSubmit}>
                     <InputField label="Title" type="text" name="title" formik={formik} />
-                    <InputField label="Description" type="text" name="description" formik={formik} />
+                    <InputField label="Description" type="textarea" name="description" formik={formik} />
                     <InputField label="Category" type="select" name="category" formik={formik} options={categoryOptions}/>
                   </form>
                 </CustomModal>

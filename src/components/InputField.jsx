@@ -64,7 +64,16 @@ const InputField = ({ label, type, name, formik, className, options, value, onSe
             {showPassword ?  <EyeOutlined /> : <EyeInvisibleOutlined />}
           </button>
         </div>
-      ):(
+      ) : type === "textarea" ? (
+        <textarea
+          id={name}
+          name={name}
+          rows="5"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values[name]}
+        ></textarea>
+      ) : (
         <input
           type={type}
           name={name}
