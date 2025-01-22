@@ -12,7 +12,6 @@ import '../styles/Login.css';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Title from '../components/Title';
-import Descript from '../components/Descript';
 import InputField from '../components/InputField';
 
 function Login() {

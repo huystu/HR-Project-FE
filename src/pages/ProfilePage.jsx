@@ -43,6 +43,8 @@ function ProfilePage() {
             }
             if (!values.newPassword) {
                 errors.newPassword = 'New password is required';
+            } else if (values.newPassword.length < 8) { // `length`를 속성으로 사용
+                errors.newPassword = 'Password must be at least 8 characters long.';
             }
             if (!values.checkNewPassword) {
                 errors.checkNewPassword = 'Please confirm your new password';
