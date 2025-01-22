@@ -153,6 +153,8 @@ function AccountPage() {
             }
             if (!values.password) {
                 errors.password = 'Password is required';
+            } else if (values.password.length < 8) { // `length`를 속성으로 사용
+                errors.password = 'Password must be at least 8 characters long.';
             }
             if (!values.checkPassword) {
                 errors.checkPassword = 'Please confirm your password';
