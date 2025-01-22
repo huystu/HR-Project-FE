@@ -79,6 +79,46 @@ const ChatbotModal = ({ visible, handleClose }) => {
         }
     }
 
+    const callCV = async (id) => {
+        console.log('Employee ID', id);
+        
+        try {
+            const response = await api.get(`/employee/${id}/cv`, {
+                responseType: "blob", // Handle binary data
+            });
+            console.log("response status:", response.status);
+            console.log("response:", response);
+            if (response.status !== 200) {
+                const errorResponse = await response.clone().text(); // 복제된 객체에서 텍스트 읽기
+                console.error('Error response:', errorResponse);
+                throw new Error('Failed to fetch CV. HTTP Status: ${response.status');
+            }
+            // 응답이 PDF인지 확인
+            const contentType = response.headers.get('Content-Type');
+            if (!contentType || !contentType.includes('application/pdf')) {
+                const errorResponse = await response.clone().text(); // 복제된 객체에서 텍스트 읽기
+                console.error('Unexpected Response Body:', errorResponse);
+                throw new Error('The server did not return a PDF file.');
+            }
+            // Create a Blob URL and download the file
+            const blob = new Blob([response.data], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+    
+            // 파일 다운로드 처리
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `employee_${id}_cv.pdf`; // 다운로드 파일 이름 지정
+            document.body.appendChild(link);
+            link.click();
+            link.remove(); // 사용 후 링크 제거
+            // URL 해제
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading CV:', error);
+            alert('Failed to download CV. Please try again.');
+        }
+    };
+
     // 
     const handleSendMessage = async () => {
         if (input.trim()) {
@@ -111,12 +151,31 @@ const ChatbotModal = ({ visible, handleClose }) => {
                 if (response.status === 200) {
                     console.log("chatbot process-query: ", response);
                     const answer = response.data.data;
-                    const botMessage = { text: answer, isUser: false, time: time, loading: false };
-                    setMessages(prevMessages => 
-                        prevMessages.map((msg, index) => 
-                            index === prevMessages.length - 1 ? botMessage : msg // 마지막 메시지를 업데이트
-                        )
-                    );
+                    
+                    const regex = /^\[export\] \d+$/;
+                    
+                    if (regex.test(answer)) { // 패턴이 일치하는 경우 다른 처리
+                        console.log("Special handling for export pattern:", answer); // 원하는 작업 수행
+                        const [feature, employeeId] = answer.split(' ');
+
+                        const exportCV = <button className="glowing-button" onClick={() => callCV(employeeId)}>Export CV</button>;
+
+                        const botMessage = { text: exportCV, isUser: false, time: time, loading: false };
+                        setMessages(prevMessages => 
+                            prevMessages.map((msg, index) => 
+                                index === prevMessages.length - 1 ? botMessage : msg // 마지막 메시지를 업데이트
+                            )
+                        );
+
+                    } else { // 일반적인 문자열 처리
+                        console.log("General handling for string:", answer); // 원하는 작업 수행
+                        const botMessage = { text: answer, isUser: false, time: time, loading: false };
+                        setMessages(prevMessages => 
+                            prevMessages.map((msg, index) => 
+                                index === prevMessages.length - 1 ? botMessage : msg // 마지막 메시지를 업데이트
+                            )
+                        );
+                    }
                 }
             }
             catch (error) {
