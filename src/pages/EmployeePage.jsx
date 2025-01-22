@@ -603,7 +603,7 @@ const updateEmployee = async (id, updatedData) => {
                   </div>
                 }
               />
-            <Search placeholder="input search employee" onSearch={onSearch} style={{ width: 500, margin: 10, }} />
+            <Search placeholder="Enter employee information" onSearch={onSearch} style={{ width: 500, margin: 10, }} />
             {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
         : (
         <Table columns={columns} data={data} onEditClick = {handleEditClick} onDeleteClick = {handleDeleteClick} onViewClick = {handleViewClick} onSaveClick = {handleSaveClick} />)
