@@ -223,7 +223,9 @@ const handleSaveClick = async (row) => {
         //console.log()
         // 삭제 모달 닫기
         setIsDeleteModalOpen(false);
-        fetchData(currentPage - 1, pageSize);
+
+        if (searchValue === '') fetchData(currentPage - 1, pageSize);
+        else onSearch(searchValue, currentPage-1, pageSize);
         
         //성공적으로 추가된 후, fetchData로 데이터를 새로고침하여 테이블에 반영
       } else {
