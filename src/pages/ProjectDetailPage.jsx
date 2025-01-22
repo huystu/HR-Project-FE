@@ -201,7 +201,10 @@ const ProjectDetailPage = () => {
             }
             if (!values.description) {
                 errors.description = 'Description is required';
+            } else if (values.description.length > 255) {
+                errors.description = 'Description must be 255 characters or less';
             }
+            
             if (!values.status) {
                 errors.status = 'Status is required';
             }
