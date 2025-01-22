@@ -278,7 +278,7 @@ const ProjectsPage = () => {
                     <InputField label="Category" type="select" name="category" formik={formik} options={categoryOptions}/>
                   </form>
                 </CustomModal>
-                <Search placeholder="Enter project title" onSearch={onSearch} style={{ width: 500, margin: 10, }} />
+                <Search placeholder="Enter project title" onSearch={onSearch} style={{ width: 400, marginBottom: 10, }} />
                 {loading ? ( <LoadingSpinner /> ) // 로딩 중일 때 스피너 표시
                 : (
                     <Table columns={columns} data={data} onViewClick={handleViewClick} />
